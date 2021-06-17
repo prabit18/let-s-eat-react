@@ -3,7 +3,7 @@
     position: relative;
 }
 .custom-footer:after {
-    content: url("../images/footer-color.svg");
+    content: url("../../public/images/footer-color.svg");
     position: absolute;
     top: 0;
     left: 0;

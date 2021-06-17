@@ -15,7 +15,7 @@
     height: 40px;
     top: calc(50% - 20px);
     left: -20px;
-    content: url("../images/arrow-left.svg");
+    content: url("../../public/images/arrow-left.svg");
 }
 #offer-carousel .owl-nav button.owl-next:hover:after,
 #offer-carousel .owl-nav button.owl-prev:hover:after {
@@ -24,7 +24,7 @@
 #offer-carousel .owl-nav button.owl-next:after {
     left: auto;
     right: -20px;
-    content: url("../images/arrow-right.svg");
+    content: url("../../public/images/arrow-right.svg");
 }
 .custom-navigation .owl-dots,
 #offer-carousel .owl-nav button span,
@@ -113,23 +113,23 @@
     position: absolute;
     top: calc(50% - 10px);
     left: 0;
-    content: url("../images/black-arrow-l.svg");
+    content: url("../../public/images/black-arrow-l.svg");
     display: inline-block;
 }
 .custom-navigation .owl-nav .owl-next span:before {
     left: auto;
     right: 15px;
-    content: url("../images/black-arrow-r.svg");
+    content: url("../../public/images/black-arrow-r.svg");
 }
 .custom-navigation .owl-nav .owl-next span:hover:before,
 .custom-navigation .owl-nav .owl-prev span:hover:before {
     opacity: 0.7;
 }
 #mainCategory.custom-navigation .owl-nav .owl-prev span:before {
-    content: url("../images/white-arrow-l.svg");
+    content: url("../../public/images/white-arrow-l.svg");
 }
 #mainCategory.custom-navigation .owl-nav .owl-next span:before {
-    content: url("../images/white-arrow-r.svg");
+    content: url("../../public/images/white-arrow-r.svg");
 }
 .food-listing {
     padding: 20px 0;
