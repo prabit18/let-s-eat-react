@@ -1,0 +1,359 @@
+/*header-sec*/
+.filter-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0 25px;
+}
+
+.filter-box ul {
+    display: flex;
+}
+
+.filter-box li {
+    padding: 5px 15px;
+    border: 1px solid #909AB9;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.filter-box li a {
+    font-size: 14px;
+    line-height: 18px;
+    color: #404040;
+    font-family: Montserrat-Regular, sans-serif;
+}
+
+.filter {
+    margin-right: 0 !important;
+    background-color: #F4F4F4;
+}
+
+.filter span {
+    padding-left: 10px;
+}
+
+.resto-count h2 {
+    font-size: 30px;
+    line-height: 18px;
+    color: #404040;
+    font-family: Montserrat-Bold, sans-serif;
+}
+
+/*overflow*/
+.frame::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.frame::-webkit-scrollbar:vertical {
+    width: 3px;
+    background-color: #EBEBEB;
+    border: 1px solid #FFFFFF;
+}
+
+.frame::-webkit-scrollbar:horizontal {
+    height: 3px;
+    background-color: #EBEBEB;
+    border: 1px solid #FFFFFF;
+}
+
+.frame::-webkit-scrollbar-thumb {
+    background-color: lightgray;
+    border: 1px solid lightgray;
+    border-radius: 20px;
+    height: 5px;
+}
+
+.custom-scroll::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.custom-scroll::-webkit-scrollbar:horizontal {
+    height: 3px;
+    background-color: #EBEBEB;
+    border: 1px solid #FFFFFF;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background-color: lightgray;
+    border: 1px solid lightgray;
+    border-radius: 20px;
+    height: 5px;
+}
+
+.food-list.row {
+    max-height: 700px;
+    overflow-y: auto;
+}
+
+
+/*white box css*/
+.listing-box {
+    background-color: #FFFFFF;
+    border-radius: 20px;
+    padding: 35px;
+}
+
+.food-item {
+    position: relative;
+}
+
+
+.food-desc {
+    text-align: center;
+    padding: 15px 0 10px;
+    border-bottom: 1px solid #909AB9;
+    background-color: #fff;
+}
+
+.food-desc h4 {
+    font-size: 16px;
+    line-height: 18px;
+    color: #283350;
+    padding-bottom: 10px;
+    font-family: Montserrat-Bold, sans-serif;
+}
+
+.food-desc p {
+    font-size: 14px;
+    line-height: 16px;
+    color: #3B4148;
+    font-family: Montserrat-Regular, sans-serif;
+}
+
+.delivery-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    background-color: #fff;
+    border-radius: 0 0 10px 10px;
+}
+
+.delivery-time img {
+    padding-right: 15px;
+}
+
+.delivery-time span {
+    padding-left: 15px;
+    border-left: 1px solid #707070;
+    font-size: 13px;
+    line-height: 18px;
+    color: #3B4148;
+    font-family: Montserrat-Regular, sans-serif;
+}
+
+.bg-rating {
+    position: relative;
+}
+
+.rating-rank {
+    position: absolute;
+    top: 4px;
+    left: -10px;
+    transform: translate(50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+p.rating-content {
+    padding-left: 3px;
+    font-family: Montserrat-Regular, sans-serif;
+    color: #283350;
+    font-size: 13px;
+    line-height: 16px;
+}
+
+.food-product {
+    padding: 10px;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    margin-bottom: 30px;
+}
+
+.food-product:hover {
+    border: 1px solid #d3d4d6;
+}
+
+.deleted-product {
+    filter: grayscale(100%);
+    -webkit-filter: grayscale(100%);
+}
+
+.food-item img {
+    border-radius: 10px;
+}
+
+.diamond-pro {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.diamond-pro img {
+    border-radius: 10px 0;
+}
+
+
+.food-list .col-xl-3.col-lg-3.col-sm-6 {
+    padding: 5px;
+}
+
+.brand-logo img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    object-fit: none;
+}
+.brand-logo {
+    position: absolute;
+    bottom: -35px;
+    left: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 73px;
+    height: 73px;
+    padding: 6px;
+    background-color: #ffffff;
+}
+
+/*media queries*/
+@media (max-width: 991px) {
+    .resto-count h2 {
+        font-size: 28px;
+        line-height: 16px;
+    }
+
+    .filter-section {
+        padding: 0 0 20px;
+    }
+
+    .food-product {
+        margin-bottom: 25px;
+        width: 100%;
+    }
+
+    .filter-box {
+        overflow: auto;
+        white-space: nowrap;
+        max-width: 390px;
+        padding-bottom: 3px;
+    }
+
+    .filter span {
+        padding-right: 20px;
+    }
+
+    .main-section {
+        padding-bottom: 0;
+    }
+
+    .food-item img {
+        width: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    .filter-section {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+    }
+
+    .food-item img {
+        width: 100%;
+    }
+
+    .resto-count h2 {
+        font-size: 24px;
+        line-height: 14px;
+        padding-top: 30px;
+    }
+
+    .filter-box li {
+        padding: 3px 10px;
+    }
+
+    .filter-box {
+        max-width: 100%;
+    }
+
+    .listing-box {
+        padding: 30px;
+    }
+
+
+    .filter span {
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 575px) {
+    .resto-count h2 {
+        font-size: 20px;
+        line-height: 12px;
+    }
+
+    .listing-box {
+        padding: 15px;
+    }
+
+    .resto-count h2 {
+        font-size: 20px;
+        line-height: 10px;
+    }
+
+    .delivery-time span {
+        padding-left: 10px;
+    }
+
+    .delivery-time img {
+        padding-right: 10px;
+    }
+
+    .filter span {
+        padding-right: 20px;
+    }
+
+    .food-product {
+        width: 100%;
+    }
+
+    .food-desc p {
+        font-size: 13px;
+        line-height: 15px;
+    }
+
+    .food-desc h4 {
+        font-size: 15px;
+        line-height: 17px;
+    }
+}
+
+@media (max-width: 480px) {
+    .food-product {
+        margin-bottom: 15px;
+    }
+
+    .resto-count h2 {
+        font-size: 18px;
+        line-height: 8px;
+        padding-top: 25px;
+    }
+
+    .food-list.row {
+        max-height: 500px;
+    }
+}
+
+@media (max-width: 400px) {
+    .resto-count h2 {
+        font-size: 16px;
+        line-height: 8px;
+        padding-top: 20px;
+    }
+
+    .filter-section {
+        padding: 0 0 15px;
+    }
+
+}
