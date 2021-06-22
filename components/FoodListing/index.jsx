@@ -1,9 +1,10 @@
 import React from 'react';
+import {foodCategoryName} from "../constants";
 import dynamic from "next/dynamic";
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
-const FoodListing = () => {
+const FoodListing = ({title}) => {
     const options = {
         loop:true,
         margin:5,
@@ -39,9 +40,9 @@ const FoodListing = () => {
                     <div className="col-md-12">
                         <div className="title-header">
                             <div className="removable"></div>
-                            <img src="images/Top-rated.svg" alt="Top Rated Near By"/>
+                            <h2 className="header-text">{title.preName} <span>{title.name}</span> {title.postName}</h2>
                                 <div className="view-all-btn">
-                                    <a href="#">View All</a>
+                                    <a href="/">View All</a>
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>
