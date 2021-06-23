@@ -41,7 +41,7 @@ const FoodListing = () => {
                             <div className="removable"></div>
                             <img src="images/Top-rated.svg" alt="Top Rated Near By"/>
                                 <div className="view-all-btn">
-                                    <a href="#">View All</a>
+                                    <a href="/restaurant_listing">View All</a>
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>
