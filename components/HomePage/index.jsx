@@ -1,12 +1,13 @@
 import React from 'react';
 import HomeTopSection from "../HomeTopSection";
 import FoodListing from "../FoodListing";
+import {foodCategoryName} from "../constants";
 
 const HomePage = () => {
     return (
         <>
             <HomeTopSection/>
-            <FoodListing/>
+            {foodCategoryName.map((item) => <FoodListing key={item.id} title={item}/> )}
         </>
     );
 };
