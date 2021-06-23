@@ -26,43 +26,6 @@ const RestaurantListingPage = () => {
 
         
 	]
-	const result=[];
-
-	for(let i=0;i<resto.length;i+=1)
-	{ 
-		result.push(
-			 
-                                     <div className="col-xl-3 col-lg-3 col-sm-6">
-                                        <div className="food-product hvr-shadow">
-                                            <a className="clickable" href="#"></a>
-                                            <div className="food-item">
-                                                <img alt="food-item" src={resto[i].foodimgurl}/>
-                                                <div className="brand-logo">
-                                                    <img alt="restaurant-logo" src={resto[i].logoImgurl}/>
-                                                </div>
-                                            </div>
-                                            <div className="food-desc">
-                                                <h4>{resto[i].name}</h4>
-                                                <p>{resto[i].text}</p>
-                                            </div>
-                                            <div className="delivery-detail">
-                                                <div className="delivery-time">
-                                                    <img alt="deliver-icon" src="images/delivery-icon.svg"/>
-                                                    <span>{resto[i].deliverytime}</span>
-                                                </div>
-                                                <div className="bg-rating">
-                                                    <img alt="bg-rating" src="images/bg-rating.svg"/>
-                                                    <div className="rating-rank">
-                                                        <img alt="star-icon" src="images/Star-icon.svg"/>
-                                                        <p className="rating-content">{resto[i].rating}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-				)
-	}
-
 	return (
 		<>
         <section className="restaurant-list">
@@ -88,7 +51,36 @@ const RestaurantListingPage = () => {
                                     </div>
                                 </div>
                                 <div className="food-list row frame">
-									{result}
+                                    {resto.map((item) => (
+                                        <div className="col-xl-3 col-lg-3 col-sm-6">
+                                            <div className="food-product hvr-shadow">
+                                                <a className="clickable" href="#"/>
+                                            <div className="food-item">
+                                                <img alt="food-item" src={item.foodimgurl}/>
+                                                <div className="brand-logo">
+                                                    <img alt="restaurant-logo" src={item.logoImgurl}/>
+                                                </div>
+                                            </div>
+                                            <div className="food-desc">
+                                                <h4>{item.name}</h4>
+                                                <p>{item.text}</p>
+                                            </div>
+                                            <div className="delivery-detail">
+                                                <div className="delivery-time">
+                                                    <img alt="deliver-icon" src="images/delivery-icon.svg"/>
+                                                    <span>{item.deliverytime}</span>
+                                                </div>
+                                                <div className="bg-rating">
+                                                    <img alt="bg-rating" src="images/bg-rating.svg"/>
+                                                    <div className="rating-rank">
+                                                        <img alt="star-icon" src="images/Star-icon.svg"/>
+                                                        <p className="rating-content">{item.rating}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    ))}
 							    </div>
                             </div>
                         </div>

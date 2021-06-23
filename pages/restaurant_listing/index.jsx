@@ -4,8 +4,7 @@ import RestaurantListingPage from '../../components/RestaurantListing';
 const RestaurantListing = () => {
 	return (
 		<>
-		
-		<RestaurantListingPage/>
+			<RestaurantListingPage/>
 		</>
 	)
 }
