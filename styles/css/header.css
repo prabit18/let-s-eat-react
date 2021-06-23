@@ -216,13 +216,13 @@ li.search-li {
     width: 515px;
     max-height: 200px;
     background: white;
-    border-radius: 20px;
+    border-radius: 20px !important;
     position: absolute;
     left: 0;
     overflow: auto;
     border: 1px solid #cfcfcf;
     box-shadow: 0 2px 8px #1c1c1c14;
-    top: 40px;
+    top: 40px !important;
     visibility: visible;
     opacity: 1;
     transition: opacity 0.25s ease 0s, top 0.25s ease 0s;
@@ -420,6 +420,13 @@ li.search-li {
     height: 17px;
 }
 
+.address-popup .modal.fade.show {
+    display: block;
+}
+
+.search-popup .modal.fade.show {
+    display: block;
+}
 
 
 @media(min-width: 1024px) {

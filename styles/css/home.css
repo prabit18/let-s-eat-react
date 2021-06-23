@@ -259,6 +259,28 @@ p.rating-content {
     max-width: fit-content;
     height: 40px;
 }
+h2.header-text {
+    font-size: 30px;
+    line-height: 18px;
+    color: #2A3251;
+    font-family: Montserrat-Bold, sans-serif;
+}
+h2.header-text span {
+    position: relative;
+}
+h2.header-text span:after {
+    position: absolute;
+    content: '';
+    bottom: -10px;
+    left: 50%;
+    transform: translate(-50%);
+    background-image: url("../../public/images/brand-nnemonic.svg");
+    width: 50px;
+    height: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
 @media(max-width: 1023px) {
     .custom-navigation .owl-nav,
     #offer-carousel .owl-nav {
@@ -267,6 +289,10 @@ p.rating-content {
     #mainCategory .item span {
         font-size: 16px;
         line-height: 17px;
+    }
+    h2.header-text {
+        font-size: 26px;
+        line-height: 16px;
     }
 }
 @media(max-width: 575px) {
@@ -304,5 +330,26 @@ p.rating-content {
     }
     .main-section {
         padding-bottom: 30px;
+    }
+    h2.header-text {
+        font-size: 20px;
+        line-height: 14px;
+    }
+    h2.header-text span:after {
+        width: 35px;
+    }
+}
+@media(max-width: 400px) {
+    h2.header-text {
+        font-size: 16px;
+        line-height: 12px;
+    }
+}
+@media(max-width: 360px) {
+    h2.header-text span:after {
+        width: 30px;
+    }
+    h2.header-text {
+        font-size: 14px;
     }
 }
