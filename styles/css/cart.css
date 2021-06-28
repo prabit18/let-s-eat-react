@@ -106,18 +106,18 @@
 .toggle-item label.store-pick:before,
 .toggle-item label.delivery:before {
     position: absolute;
-    content: url("../images/delivery-icon.svg");
+    content: url("../../public/images/delivery-icon.svg");
     top: calc(50% - 8px);
     left: 20px;
 }
 .toggle-item [type="radio"]:checked + label.delivery:before {
-    content: url("../images/act_delivery_icon.svg");
+    content: url("../../public/images/act_delivery_icon.svg");
 }
 .toggle-item label.store-pick:before {
-    content: url("../images/store_pickup.svg");
+    content: url("../../public/images/store_pickup.svg");
 }
 .toggle-item [type="radio"]:checked + label.store-pick:before {
-    content: url("../images/act_store_pickup.svg");
+    content: url("../../public/images/act_store_pickup.svg");
 }
 .toggle-item [type="radio"]:checked + label span {
     color: #FFFFFF;
@@ -331,12 +331,12 @@ button.quantity-arrow-plus {
 .non-veg:after,
 .veg:after {
     position: absolute;
-    content: url("../images/veg.svg");
+    content: url("../../public/images/veg.svg");
     top: 0;
     left: 0;
 }
 .non-veg:after {
-    content: url("../images/non-veg.svg");
+    content: url("../../public/images/non-veg.svg");
 }
 .select-item-inner {
     display: flex;

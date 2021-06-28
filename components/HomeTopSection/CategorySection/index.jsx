@@ -1,9 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import dynamic from "next/dynamic";
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
-const CategorySection = () => {
+const CategorySection = (props) => {
     const options = {
         loop:true,
         margin:10,
@@ -32,6 +33,7 @@ const CategorySection = () => {
             }
         }
     }
+    const {cuisines} = props
     return (
         <section className="main-category">
             <div className="container custom-container">
@@ -45,30 +47,12 @@ const CategorySection = () => {
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation" id="mainCategory" {...options}>
-                            <a href="#" className="item hvr-shrink">
-                                <img src="images/Cui-list4.jpg" alt="Food Image"/>
-                                    <span>Pizzas</span>
-                            </a>
-                            <a href="#" className="item hvr-shrink">
-                                <img src="images/Cui-list5.jpg" alt="Food Image"/>
-                                    <span>Burger</span>
-                            </a>
-                            <a href="#" className="item hvr-shrink">
-                                <img src="images/Cui-list6.jpg" alt="Food Image"/>
-                                    <span>Wrap</span>
-                            </a>
-                            <a href="#" className="item hvr-shrink">
-                                <img src="images/Cui-list7.jpg" alt="Food Image"/>
-                                    <span>Garlic Bread</span>
-                            </a>
-                            <a href="#" className="item hvr-shrink">
-                                <img src="images/Cui-list8.jpg" alt="Food Image"/>
-                                    <span>Pasta</span>
-                            </a>
-                            <a href="#" className="item hvr-shrink">
-                                <img src="images/Cui-list9.jpg" alt="Food Image"/>
-                                    <span>Kebab</span>
-                            </a>
+                            {cuisines.data && cuisines.data.map((item) =>
+                                <a href="#" className="item hvr-shrink" key={item.id}>
+                                    <img src={item.image} alt="Food Image"/>
+                                    <span>{item.name}</span>
+                                </a>
+                            )}
                         </OwlCarousel>
                     </div>
                 </div>
@@ -77,4 +61,8 @@ const CategorySection = () => {
     );
 };
 
-export default CategorySection;
+const mapStateToProps = (state) => ({
+    cuisines: state.Cuisines, errors: state.errors
+})
+
+export default connect(mapStateToProps)(CategorySection);

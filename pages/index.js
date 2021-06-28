@@ -1,10 +1,28 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import React, { useEffect } from "react";
 import HomePage from "../components/HomePage";
+import {UserAction} from "../redux/actions/user.action";
+import { connect } from "react-redux";
 
-export default function Home() {
+const Home = (props) => {
+  useEffect(() => {
+    props.getCuisines();
+  },[]);
+const {Cuisines} = props
   return (
-    <HomePage/>
+      <div>
+        {Object.keys(Cuisines).length > 0 && <HomePage/>}
+      </div>
   )
 }
+
+const mapStateToProps = (state) => {
+  const {
+    Cuisines
+  } = state
+  return {Cuisines}
+}
+const actionCreator = {
+  getCuisines: UserAction.getCuisines
+}
+
+export default connect(mapStateToProps, actionCreator)(Home);
