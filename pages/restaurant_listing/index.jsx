@@ -4,7 +4,9 @@ import RestaurantListingPage from '../../components/RestaurantListing';
 const RestaurantListing = () => {
 	return (
 		<>
-			<RestaurantListingPage/>
+			<div className="page-banner">
+				<RestaurantListingPage/>
+			</div>
 		</>
 	)
 }

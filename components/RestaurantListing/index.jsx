@@ -52,7 +52,7 @@ const RestaurantListingPage = () => {
                                 </div>
                                 <div className="food-list row frame">
                                     {resto.map((item) => (
-                                        <div className="col-xl-3 col-lg-3 col-sm-6">
+                                        <div className="col-xl-3 col-lg-3 col-sm-6" key={item.id}>
                                             <div className="food-product hvr-shadow">
                                                 <a className="clickable" href="#"/>
                                             <div className="food-item">
@@ -74,7 +74,7 @@ const RestaurantListingPage = () => {
                                                     <img alt="bg-rating" src="images/bg-rating.svg"/>
                                                     <div className="rating-rank">
                                                         <img alt="star-icon" src="images/Star-icon.svg"/>
-                                                        <p className="rating-content">{item.rating}</p>
+                                                        <p className={["rating-content", "m-0"].join(' ')}>{item.rating}</p>
                                                     </div>
                                                 </div>
                                             </div>
