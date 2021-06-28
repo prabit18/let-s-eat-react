@@ -10,7 +10,7 @@ const Navbar = () => {
             <header className="custom-header">
                 <div className="container custom-container">
                     <nav className="navbar custom-navbar">
-                        <a className="header-logo" href="home.html"><img src="images/le-logo.svg" alt="Logo"/></a>
+                        <a className="header-logo" href="/"><img src="images/le-logo.svg" alt="Logo"/></a>
                         <div className="header-actions">
                             <ul className={["location-search", locationSearch ? 'show': ''].join(' ')}>
                                 <li className="select-li dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"
