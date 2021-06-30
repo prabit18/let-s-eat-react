@@ -1,14 +1,21 @@
 import React from 'react';
-import OffersSection from "./OffersSection";
-import CategorySection from "./CategorySection";
+import OffersSection from './OffersSection';
+import CategorySection from './CategorySection';
+import {connect} from 'react-redux';
 
-const HomeTopSection = () => {
+const HomeTopSection = (props) => {
+    const {Cuisines} = props
     return (
         <div className="top-bg">
             <OffersSection/>
-            <CategorySection/>
+            {Object.keys(Cuisines).length > 0 && <CategorySection/>}
         </div>
     );
 };
-
-export default HomeTopSection;
+const mapStateToProps = (state) => {
+    const {
+    Cuisines
+  } = state
+  return {Cuisines}
+}
+export default connect(mapStateToProps)(HomeTopSection);

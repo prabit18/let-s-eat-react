@@ -9,9 +9,11 @@ const Home = (props) => {
   },[]);
 const {Cuisines} = props
   return (
+    <>
       <div>
-        {Object.keys(Cuisines).length > 0 && <HomePage/>}
+        <HomePage/>
       </div>
+      </>
   )
 }
 
