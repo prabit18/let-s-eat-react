@@ -33,6 +33,7 @@ const CategorySection = (props) => {
             }
         }
     }
+
     const {cuisines} = props
     return (
         <section className="main-category">
@@ -47,7 +48,7 @@ const CategorySection = (props) => {
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation" id="mainCategory" {...options}>
-                            {cuisines.data && cuisines.data.map((item) =>
+                            { cuisines && cuisines.map((item) =>
                                 <a href="#" className="item hvr-shrink" key={item.id}>
                                     <img src={item.image} alt="Food Image"/>
                                     <span>{item.name}</span>
@@ -61,8 +62,10 @@ const CategorySection = (props) => {
     );
 };
 
-const mapStateToProps = (state) => ({
-    cuisines: state.Cuisines, errors: state.errors
-})
+const mapStateToProps = (state) => {
+    const { Cuisines, errors} = state
+    return { cuisines: Cuisines, errors }
+}
 
 export default connect(mapStateToProps)(CategorySection);
+

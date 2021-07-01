@@ -7,4 +7,4 @@ const store = createStore(
     compose(applyMiddleware(thunk))
 )
 
-export default store
+export default store;
