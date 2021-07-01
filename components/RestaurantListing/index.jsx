@@ -41,7 +41,7 @@ const {restaurants}=props;
                                             <div className="food-item">
                                                 <img alt="food-item" src={item.image_url}/>
                                                 <div className="brand-logo">
-                                                    <img alt="restaurant-logo" src={item.logoImgurl}/>
+                                                    <img alt="restaurant-logo" src={item.logo}/>
                                                 </div>
                                             </div>
                                             <div className="food-desc">
@@ -51,13 +51,13 @@ const {restaurants}=props;
                                             <div className="delivery-detail">
                                                 <div className="delivery-time">
                                                     <img alt="deliver-icon" src="images/delivery-icon.svg"/>
-                                                    <span>{item.deliverytime} min</span>
+                                                    <span>{item.delivery_time} min</span>
                                                 </div>
                                                 <div className="bg-rating">
                                                     <img alt="bg-rating" src="images/bg-rating.svg"/>
                                                     <div className="rating-rank">
                                                         <img alt="star-icon" src="images/Star-icon.svg"/>
-                                                        <p className={["rating-content", "m-2"].join(' ')}>{item.rating}</p>
+                                                        <p className={["rating-content", "m-2"].join(' ')}>{item.ratings}</p>
                                                     </div>
                                                 </div>
                                             </div>
