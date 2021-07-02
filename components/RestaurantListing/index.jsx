@@ -6,9 +6,6 @@ import { connect } from 'react-redux';
 
 
 const RestaurantListingPage = (props) => {
-	
-const {restaurants}=props;
-
 	return (
 		<>
         <section className="restaurant-list">
@@ -18,7 +15,7 @@ const {restaurants}=props;
                             <div className="listing-box">
                                 <div className="filter-section">
                                     <div className="resto-count">
-                                        <h2>680 Restaurents</h2>
+                                        <h2>680 Restaurants</h2>
                                     </div>
                                     <div className="filter-box custom-scroll">
                                         <ul>
@@ -34,8 +31,8 @@ const {restaurants}=props;
                                     </div>
                                 </div>
                                 <div className="food-list row frame">
-                                    {restaurants.data && restaurants.data.map((item) => (
-                                        <div className="col-xl-3 col-lg-3 col-sm-6" key={item.id}>
+                                    { props.restaurants && props.restaurants.map((item) => (                
+                                    <div className="col-xl-3 col-lg-3 col-sm-6" key={item.id}>
                                             <div className="food-product hvr-shadow" >
                                                 <a className="clickable" href="#"/>
                                             <div className="food-item">
@@ -57,13 +54,13 @@ const {restaurants}=props;
                                                     <img alt="bg-rating" src="images/bg-rating.svg"/>
                                                     <div className="rating-rank">
                                                         <img alt="star-icon" src="images/Star-icon.svg"/>
-                                                        <p className={["rating-content", "m-2"].join(' ')}>{item.ratings}</p>
+                                                        <p className={["rating-content", "m-0"].join(' ')}>{item.ratings}</p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         </div>
-                                    ))}
+                                      ))}
 							    </div>
                             </div>
                         </div>
