@@ -42,7 +42,7 @@ const FoodListing = ({title}) => {
                             <div className="removable"></div>
                             <h2 className="header-text">{title.preName} <span>{title.name}</span> {title.postName}</h2>
                                 <div className="view-all-btn">
-                                    <a href="/restaurant_listing">View All</a>
+                                    <a href="/restaurants">View All</a>
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>

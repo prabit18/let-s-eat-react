@@ -6,8 +6,6 @@ import { connect } from 'react-redux';
 
 
 const RestaurantListingPage = (props) => {
-	
-
 	return (
 		<>
         <section className="restaurant-list">
@@ -56,7 +54,7 @@ const RestaurantListingPage = (props) => {
                                                     <img alt="bg-rating" src="images/bg-rating.svg"/>
                                                     <div className="rating-rank">
                                                         <img alt="star-icon" src="images/Star-icon.svg"/>
-                                                        <p className={["rating-content", "m-2"].join(' ')}>{item.ratings}</p>
+                                                        <p className={["rating-content", "m-0"].join(' ')}>{item.ratings}</p>
                                                     </div>
                                                 </div>
                                             </div>
