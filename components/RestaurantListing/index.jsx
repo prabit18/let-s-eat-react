@@ -1,11 +1,11 @@
 import { event } from 'jquery';
 import {React,useEffect, useState} from 'react';
 import { connect } from 'react-redux';
-
-
-
-
+import { UserAction } from '../../redux/actions/user.action';
 const RestaurantListingPage = (props) => {
+  const  handleFilter = (type) => {
+      props.getRestaurants(type)
+  }
 	return (
 		<>
         <section className="restaurant-list">
@@ -19,7 +19,7 @@ const RestaurantListingPage = (props) => {
                                     </div>
                                     <div className="filter-box custom-scroll">
                                         <ul>
-                                            <li value="rating"><a href="#">Rating</a></li>
+                                            <li value="rating"><a href="#" onClick={()=> handleFilter('ratings')}>Rating</a></li>
                                             <li value="deliverytime"><a href="#">Delivery Time</a></li>
                                             <li value="pureVeg"><a href="#">Pure Veg</a></li>
                                             <li value="offers"><a href="#">Offers</a></li>
@@ -48,13 +48,13 @@ const RestaurantListingPage = (props) => {
                                             <div className="delivery-detail">
                                                 <div className="delivery-time">
                                                     <img alt="deliver-icon" src="images/delivery-icon.svg"/>
-                                                    <span>{item.delivery_time} min</span>
+                                                    <span>{item.delivery_time}</span>
                                                 </div>
                                                 <div className="bg-rating">
                                                     <img alt="bg-rating" src="images/bg-rating.svg"/>
                                                     <div className="rating-rank">
                                                         <img alt="star-icon" src="images/Star-icon.svg"/>
-                                                        <p className={["rating-content", "m-0"].join(' ')}>{item.ratings}</p>
+                                                        <p className={["rating-content", "m-0"].join(' ')}>{item.ratings.length < 2 ? item.ratings + '.0' : item.ratings}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -80,4 +80,7 @@ const mapStateToProps = (state) => {
     const {Restaurants, errors} = state
    return {restaurants: Restaurants, errors}
 }
-export default connect(mapStateToProps)(RestaurantListingPage);
+const actionCreator = {
+    getRestaurants: UserAction.getRestaurants
+}
+export default connect(mapStateToProps, actionCreator)(RestaurantListingPage);

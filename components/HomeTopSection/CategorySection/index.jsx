@@ -7,31 +7,35 @@ const OwlCarousel  = dynamic(import('react-owl-carousel'), {
 const CategorySection = (props) => {
     const options = {
         loop:true,
-        margin:10,
+        margin:15,
         nav:true,
         responsiveClass:true,
-        responsive:{
-            0:{
-                items:1.5,
-                margin:10
-            },
-            400:{
-                items:2.5,
-                margin:15
-            },
-            600:{
-                items:3.5,
-                margin:15
-            },
-            900:{
-                items:4.5,
-                margin:15
-            },
-            1200:{
-                items:5,
-                margin:15
+            responsive:{
+                0:{
+                    items:1.5,
+                    margin:15
+                },
+                400:{
+                    items:1.8,
+                    margin:15
+                },
+                480:{
+                    items:2.5,
+                    margin:15
+                },
+                600:{
+                    items:3.5,
+                    margin:15
+                },
+                900:{
+                    items:4.5,
+                    margin:15
+                },
+                1200:{
+                    items:5,
+                    margin:15
+                }
             }
-        }
     }
 
     const {cuisines} = props
