@@ -18,9 +18,9 @@ async function getCuisines() {
 async function getRestaurants(type) {
     try {
         const body = {}
-        // if (type) {
-        //     body.filter =''
-        // }
+        if (type) {
+            body.filter =''
+        }
       
         const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/restaurants/list', body);
         return {error: false, data: data}

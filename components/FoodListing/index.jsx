@@ -57,9 +57,9 @@ const FoodListing = (props) => {
                             <div className="food-product hvr-shadow" key={item.id}>
                                 <a href="#" className="clickable"></a>
                                 <div className="food-item" >
-                                    <img src="images/food-list2.jpg" alt="Food Image" className="banner-image"/>
+                                    <img src={`https://development-cdn.letseat.co.uk/${item.image_url}`} alt="Food Image" className="banner-image"/>
                                         <div className="brand-logo">
-                                            <img src={item.logo} alt="Brand Logo"/>
+                                            <img src={`https://development-cdn.letseat.co.uk/${item.logo}`} alt="Brand Logo"/>
                                         </div>
                                         <div className="diamond-pro">
                                             <img src="images/diamond-pro.svg" alt="Promoted"/>

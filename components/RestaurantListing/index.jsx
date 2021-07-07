@@ -36,9 +36,9 @@ const RestaurantListingPage = (props) => {
                                             <div className="food-product hvr-shadow" >
                                                 <a className="clickable" href="#"/>
                                             <div className="food-item">
-                                                <img alt="food-item" src={item.image_url}/>
+                                                <img alt="food-item" src={`https://development-cdn.letseat.co.uk/${item.image_url}`}/>
                                                 <div className="brand-logo">
-                                                    <img alt="restaurant-logo" src={item.logo}/>
+                                                    <img alt="restaurant-logo" src={`https://development-cdn.letseat.co.uk/${item.logo}`}/>
                                                 </div>
                                             </div>
                                             <div className="food-desc">

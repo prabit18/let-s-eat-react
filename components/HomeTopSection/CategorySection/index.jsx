@@ -54,7 +54,7 @@ const CategorySection = (props) => {
                         <OwlCarousel className="slider-items owl-carousel custom-navigation" id="mainCategory" {...options}>
                             { cuisines && cuisines.map((item) =>
                                 <a href="#" className="item hvr-shrink" key={item.id}>
-                                    <img src={item.image} alt="Food Image"/>
+                                    <img src={`https://development-cdn.letseat.co.uk/${item.image}`} alt="Food Image"/>
                                     <span>{item.name}</span>
                                 </a>
                             )}
