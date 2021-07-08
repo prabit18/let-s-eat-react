@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import {foodCategoryName} from "../constants";
 import dynamic from "next/dynamic";
 import { connect } from 'react-redux';
+import RestaurantListing from '../RestaurantListing';
+import RestaurantsList from '../RestaurantListing/restaurantslist';
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
 //{title}
 const FoodListing = (props) => {
+  //  console.log(props);
     const options = {
         loop:true,
         margin:15,
@@ -53,7 +56,9 @@ const FoodListing = (props) => {
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>
+                          
                          { props.restaurants && props.restaurants.map((item)=>(
+                             //<RestaurantsList item={elem}/>
                             <div className="food-product hvr-shadow" key={item.id}>
                                 <a href="#" className="clickable"></a>
                                 <div className="food-item" >

@@ -17,10 +17,34 @@ async function getCuisines() {
 
 async function getRestaurants(type) {
     try {
-        const body = {}
-        if (type) {
-            body.filter =''
-        }
+         var body = {}
+         if(type==="pure_veg")
+         {
+             body={
+                  "Filter":{
+        "key":type,
+        "value":"true"
+    }
+             }
+         }
+       else if (type==="ratings") {
+            body={
+                "page_size":3,
+       "sort_by":{
+        "key":type,
+        "value":"desc"
+             }
+            }      
+       }
+       else if (type) {
+            body={
+                "page_size":3,
+       "sort_by":{
+        "key":type,
+        "value":"asc"
+             }
+            }      
+       }
       
         const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/restaurants/list', body);
         return {error: false, data: data}

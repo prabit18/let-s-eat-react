@@ -2,6 +2,9 @@ import { event } from 'jquery';
 import {React,useEffect, useState} from 'react';
 import { connect } from 'react-redux';
 import { UserAction } from '../../redux/actions/user.action';
+import RestaurantsList from './restaurantslist';
+
+
 const RestaurantListingPage = (props) => {
   const  handleFilter = (type) => {
       props.getRestaurants(type)
@@ -20,9 +23,9 @@ const RestaurantListingPage = (props) => {
                                     <div className="filter-box custom-scroll">
                                         <ul>
                                             <li value="rating"><a href="#" onClick={()=> handleFilter('ratings')}>Rating</a></li>
-                                            <li value="deliverytime"><a href="#">Delivery Time</a></li>
-                                            <li value="pureVeg"><a href="#">Pure Veg</a></li>
-                                            <li value="offers"><a href="#">Offers</a></li>
+                                            <li value="deliverytime"><a href="#" onClick={()=> handleFilter('delivery_time')}>Delivery Time</a></li>
+                                            <li value="pureVeg"><a href="#"onClick={()=> handleFilter('pure_veg')}>Pure Veg</a></li>
+                                            <li value="offers"><a href="#" onClick={()=> handleFilter('offers')}>Offers</a></li>
                                             <li className="filter"><a href="#">Filters
                                                 <span>
                                         <img alt="filter-icon" src="images/filter.svg"/>
@@ -30,46 +33,13 @@ const RestaurantListingPage = (props) => {
                                         </ul>
                                     </div>
                                 </div>
-                                <div className="food-list row frame">
-                                    { props.restaurants && props.restaurants.map((item) => (                
-                                    <div className="col-xl-3 col-lg-3 col-sm-6" key={item.id}>
-                                            <div className="food-product hvr-shadow" >
-                                                <a className="clickable" href="#"/>
-                                            <div className="food-item">
-                                                <img alt="food-item" src={`https://development-cdn.letseat.co.uk/${item.image_url}`}/>
-                                                <div className="brand-logo">
-                                                    <img alt="restaurant-logo" src={`https://development-cdn.letseat.co.uk/${item.logo}`}/>
-                                                </div>
-                                            </div>
-                                            <div className="food-desc">
-                                                <h4>{item.name}</h4>
-                                                <p>{item.description}</p>
-                                            </div>
-                                            <div className="delivery-detail">
-                                                <div className="delivery-time">
-                                                    <img alt="deliver-icon" src="images/delivery-icon.svg"/>
-                                                    <span>{item.delivery_time}</span>
-                                                </div>
-                                                <div className="bg-rating">
-                                                    <img alt="bg-rating" src="images/bg-rating.svg"/>
-                                                    <div className="rating-rank">
-                                                        <img alt="star-icon" src="images/Star-icon.svg"/>
-                                                        <p className={["rating-content", "m-0"].join(' ')}>{item.ratings.length < 2 ? item.ratings + '.0' : item.ratings}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        </div>
-                                      ))}
-							    </div>
+                            <RestaurantsList/>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 				   
-
-              
 
 								</>	
 	
