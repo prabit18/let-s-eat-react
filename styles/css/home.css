@@ -338,6 +338,14 @@ h2.header-text span:after {
     h2.header-text span:after {
         width: 35px;
     }
+    food-product {
+        padding: 0;
+        border: none;
+        border-radius: 0;
+    }
+    .food-product:hover {
+        border: none;
+    }
 }
 @media(max-width: 400px) {
     h2.header-text {

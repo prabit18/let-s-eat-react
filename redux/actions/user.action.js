@@ -2,7 +2,7 @@ import {dataService} from '../../services'
 import {passActions} from './actionType';
 import {setErrors} from './error.action';
 export const UserAction = {
-    getRestaurants ,getCuisines
+    getRestaurants ,getCuisines, getCuratedlist
 }
 
 function getCuisines() {
@@ -14,10 +14,18 @@ function getCuisines() {
 }
 
 
-function getRestaurants() {
+function getRestaurants(type) {
     return dispatch => {
-        dataService.getRestaurants()
+        dataService.getRestaurants(type)
             .then(data => data.error ? dispatch(setErrors(data.error)) : dispatch(setRestaurants(data.data.data.data)))
     }
     function setRestaurants(data) {return {type: passActions.SET_RESTAURANTS, data}}
+}
+
+function getCuratedlist() {
+    return dispatch => {
+        dataService.getCuratedList()
+            .then(data => data.error ? dispatch(setErrors(data.error)) : dispatch(setCuratedlist(data.data.data.data)))
+    }
+    function setCuratedlist(data) {return {type: passActions.SET_CURATEDLIST, data}}
 }

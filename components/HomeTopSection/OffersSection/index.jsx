@@ -9,22 +9,27 @@ const OffersSection = () => {
         loop:true,
         margin:15,
         nav:true,
-        responsiveClass:true,
-        responsive:{
-            0:{
-                items:1.5,
-                margin:10
-            },
-            400:{
-                items:2.5,
-            },
-            600:{
-                items:3.5,
-            },
-            900:{
-                items:4.5,
+         responsiveClass:true,
+            responsive:{
+                0:{
+                    items:1.5,
+                    margin:15
+                },
+                400:{
+                    items:1.8,
+                    margin:15
+                },
+                480:{
+                    items:2.5,
+                    margin:15
+                },
+                600:{
+                    items:3.5,
+                },
+                900:{
+                    items:4.5,
+                }
             }
-        }
     }
     return (
         <section className="offer-section">
