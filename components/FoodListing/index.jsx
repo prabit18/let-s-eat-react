@@ -60,7 +60,7 @@ const FoodListing = (props) => {
                          { props.restaurants && props.restaurants.map((item)=>(
                              //<RestaurantsList item={elem}/>
                             <div className="food-product hvr-shadow" key={item.id}>
-                                <a href="#" className="clickable"></a>
+                                <a href="restaurantdetail" className="clickable"></a>
                                 <div className="food-item" >
                                     <img src={`https://development-cdn.letseat.co.uk/${item.image_url}`} alt="Food Image" className="banner-image"/>
                                         <div className="brand-logo">
