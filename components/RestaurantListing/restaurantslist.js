@@ -2,7 +2,15 @@ import { event } from 'jquery';
 import {React,useEffect, useState} from 'react';
 import { connect } from 'react-redux';
 import { UserAction } from '../../redux/actions/user.action';
+import { useHistory } from "react-router-dom";
 const RestaurantsList = (props) => {
+    const history=useHistory();
+    const handleRoute =()=>{
+        history.push({
+            pathname: '/restaurantdetail',
+            search: `/${item.url}`
+        });
+    }
     
 	return (
 		<> 
@@ -10,7 +18,7 @@ const RestaurantsList = (props) => {
                                   {   props.restaurants && props.restaurants.map((item) => (        
                                     <div className="col-xl-3 col-lg-3 col-sm-6" key={item.id}>
                                             <div className="food-product hvr-shadow" >
-                                                <a className="clickable" href="#"/>
+                                                <a className="clickable" href="/restaurantdetail"/>
                                             <div className="food-item">
                                                 <img alt="food-item" src={`https://development-cdn.letseat.co.uk/${item.image_url}`}/>
                                                 <div className="brand-logo">
