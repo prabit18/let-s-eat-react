@@ -4,12 +4,17 @@ import dynamic from "next/dynamic";
 import { connect } from 'react-redux';
 import RestaurantListing from '../RestaurantListing';
 import RestaurantsList from '../RestaurantListing/restaurantslist';
+import router, { useRouter } from 'next/router';
+// import restaurantdetailpage from '../../pages/restaurantdetail';
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
 //{title}
 const FoodListing = (props) => {
-  //  console.log(props);
+    const router = useRouter()
+    const handleroute=(url)=>{
+        router.push({pathname:"/restaurant/"+url });
+    }
     const options = {
         loop:true,
         margin:15,
@@ -52,15 +57,15 @@ const FoodListing = (props) => {
                             <h2 className="header-text" ><span>{props.data.name} </span></h2>
                             
                                 <div className="view-all-btn">
-                                    <a href="/restaurants">View All</a>
+                                    <a onClick={()=>router.push({pathname:"/restaurants/",query:{Curated_type:props.data.name}})}>View All</a>
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>
                           
-                         { props.restaurants && props.restaurants.map((item)=>(
+                         { props.restaurants.data && props.restaurants.data.map((item)=>(
                              //<RestaurantsList item={elem}/>
                             <div className="food-product hvr-shadow" key={item.id}>
-                                <a href="#" className="clickable"></a>
+                                <a onClick={()=>handleroute(item.url)} className="clickable"></a>
                                 <div className="food-item" >
                                     <img src={`https://development-cdn.letseat.co.uk/${item.image_url}`} alt="Food Image" className="banner-image"/>
                                         <div className="brand-logo">

@@ -3,10 +3,9 @@ import {React,useEffect, useState} from 'react';
 import { connect } from 'react-redux';
 import { UserAction } from '../../redux/actions/user.action';
 import RestaurantsList from './restaurantslist';
-
-
 const RestaurantListingPage = (props) => {
   const  handleFilter = (type) => {
+     
       props.getRestaurants(type)
   }
 	return (
@@ -18,11 +17,11 @@ const RestaurantListingPage = (props) => {
                             <div className="listing-box">
                                 <div className="filter-section">
                                     <div className="resto-count">
-                                        <h2>680 Restaurants</h2>
+                                        <h2>{props.restaurants.pagination.total_records} Restaurants</h2>
                                     </div>
                                     <div className="filter-box custom-scroll">
                                         <ul>
-                                            <li value="rating"><a href="#" onClick={()=> handleFilter('ratings')}>Rating</a></li>
+                                            <li value="rating"><a href="#"onClick={()=> handleFilter('ratings')}>Rating</a></li>
                                             <li value="deliverytime"><a href="#" onClick={()=> handleFilter('delivery_time')}>Delivery Time</a></li>
                                             <li value="pureVeg"><a href="#"onClick={()=> handleFilter('pure_veg')}>Pure Veg</a></li>
                                             <li value="offers"><a href="#" onClick={()=> handleFilter('offers')}>Offers</a></li>
@@ -33,7 +32,7 @@ const RestaurantListingPage = (props) => {
                                         </ul>
                                     </div>
                                 </div>
-                            <RestaurantsList/>
+                            <RestaurantsList/> 
                             </div>
                         </div>
                     </div>

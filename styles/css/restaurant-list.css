@@ -169,6 +169,7 @@ p.rating-content {
     border: 1px solid transparent;
     border-radius: 20px;
     margin-bottom: 30px;
+    cursor: pointer;
 }
 
 .food-product:hover {
