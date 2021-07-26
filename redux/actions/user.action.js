@@ -31,13 +31,30 @@ function getCuratedlist() {
     function setCuratedlist(data) {return {type: passActions.SET_CURATEDLIST, data}}
 }
 
+const handleFoodItems = (foodItems) => {
+    const FoodData = [...foodItems];
+    FoodData.map((value, i) => {
+      FoodData[i]["cart"] = [];
+      FoodData[i]["count"] = 0;
+    });
+    if(!localStorage.getItem('menuItems')){
+        localStorage.setItem('menuItems',JSON.stringify(FoodData))
+    }
+
+  };
+
 function getMenulist(type) {
     // debugger
     return dispatch => {
         dataService.getMenuList(type)
             .then(data => data.error ? dispatch(setErrors(data.error)) : dispatch(setMenulist(data.data.data.data))).catch((e)=>{console.log(e)})
     }
-    function setMenulist(data) {return {type: passActions.SET_MENULIST, data}}
+    function setMenulist(data) {
+        handleFoodItems(data)
+        return {type: passActions.SET_MENULIST, data}
+        
+        
+    }
 }
 
 function getcart(body){

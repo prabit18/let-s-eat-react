@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { UserAction } from "../../../redux/actions/user.action";
 import MenuList from "../MenuList";
 const CartSummary = (props) => {
-  const { Menulist,Restaurant } = props;
-  const doEmptyAction = Menulist.some((o) => o.count === 0);
+  const { Menulist, Restaurant } = props;
+  const [menuListDetails, setMenuListDetais] = useState(JSON.parse(localStorage.getItem('menuItems'))
+  );
+  var localData = JSON.parse(localStorage.getItem("menuItems"));
+  useEffect(() => {
+      // When local storage changes, dump the list to
+      // the console.
+      setMenuListDetais(JSON.parse(localStorage.getItem("menuItems")));
+    
+  }, [menuListDetails]);
+
+  const doEmptyAction = localData && localData.some((o) => o.count === 0);
+  
   var cartArray = [];
   if (doEmptyAction) {
-    Menulist.filter((val) => {
-      if (val.count != 0) {
+    menuListDetails.filter((val) => {
+      if (val.count !== 0) {
         cartArray.push({
           id: val.cart[0].id,
           name: val.cart[0].name,
@@ -18,32 +29,38 @@ const CartSummary = (props) => {
       }
     });
   }
-
+  const findindex = (id) => {
+    var elementPos = menuListDetails
+      .map(function (x) {
+        return x.id;
+      })
+      .indexOf(id);
+    return elementPos;
+  };
   const decrement = (id) => {
-    let food = [...Menulist];
+    let food = [...menuListDetails];
     let index = findindex(id);
     let product = food[index];
     product.count = product.count - 1;
     if (product.count === 0) {
       product.cart = [];
-      props.getcart(food);
+      localStorage.setItem('menuItems',JSON.stringify(food))
+      setMenuListDetais(food);
     } else {
-      props.getcart(food);
+      localStorage.setItem('menuItems',JSON.stringify(food))
+      setMenuListDetais(food);
     }
   };
-
-  const findindex = (id) => {
-    var elementPos = Menulist.map(function (x) {
-      return x.id;
-    }).indexOf(id);
-    return elementPos;
-  };
+  
   const increment = (id) => {
-    let food = [...Menulist];
+    let food = [...menuListDetails]
     let index = findindex(id);
     let product = food[index];
+
     product.count = product.count + 1;
-    props.getcart(food);
+    localStorage.setItem("menuItems", JSON.stringify(food));
+
+    setMenuListDetais(localStorage.setItem("menuItems", JSON.stringify(food)));
   };
 
   return (
@@ -86,59 +103,65 @@ const CartSummary = (props) => {
                 <h4>{Restaurant.name}</h4>
                 <p>{Restaurant.area}</p>
               </div>
-              {cartArray.length > 0 ? (
-                cartArray.map((item, i) => (
-                  <div className="added-food-box">
-                    <div className="summery-food-item">
-                      <div className="food-item-wrap">
-                        <p>{item.name}</p>
-                        <p className="food-item-price">£{item.price}</p>
-                      </div>
-                    </div>
-                    <div className="quantity-change">
-                      <div className="new-counter quantity-block">
-                        <div className="new-up">
-                          <button
-                            className="quantity-arrow-minus quantity"
-                            onClick={() => decrement(item.id)}
-                          >
-                            -
-                          </button>
-                        </div>
-                        <label
-                          className="restaurant-list-label"
-                          for="quantity-one"
-                        ></label>
-                        <input
-                          about="317"
-                          className="quantity-num form-control quantity qty"
-                          type="number"
-                          value={item.count}
-                          id="quantity-one"
-                        />
-                        <div className="new-down">
-                          <button
-                            className="quantity-arrow-plus quantity"
-                            onClick={() => increment(item.id)}
-                          >
-                            +
-                          </button>
+              {cartArray.length > 0
+                ? cartArray.map((item, i) => (
+                    <div className="added-food-box">
+                      <div className="summery-food-item">
+                        <div className="food-item-wrap">
+                          <p>{item.name}</p>
+                          <p className="food-item-price">£{item.price}</p>
                         </div>
                       </div>
-                      <p>£{item.price}</p>
+                      <div className="quantity-change">
+                        <div className="new-counter quantity-block">
+                          <div className="new-up">
+                            <button
+                              className="quantity-arrow-minus quantity"
+                              onClick={() => decrement(item.id)}
+                            >
+                              -
+                            </button>
+                          </div>
+                          <label
+                            className="restaurant-list-label"
+                            for="quantity-one"
+                          ></label>
+                          <input
+                            about="317"
+                            className="quantity-num form-control quantity qty"
+                            type="number"
+                            value={item.count}
+                            id="quantity-one"
+                          />
+                          <div className="new-down">
+                            <button
+                              className="quantity-arrow-plus quantity"
+                              onClick={() => increment(item.id)}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                        <p>£{item.price}</p>
+                      </div>
                     </div>
-                  </div>
-                ))
-              ) : (
+                )) : (
                 <div style={{ textAlign: "center" }}></div>
-              )}
-            </div>
+              )
+                }
+                </div>
             <div className="card-footer">
-              { cartArray.length>0?
-              (<div className="proceed-btn">
-                <a href="/checkout">Proceed to Checkout</a>
-              </div>):""
-              }
+              <div className="proceed-btn">
+                {cartArray.length > 0 ? (
+                  <a href="/checkout" className={"disbled"}>
+                    Proceed to checkout
+                  </a>
+                ) : (
+                  <a href="#" style={{ opacity: 0.4, cursor: "default" }}>
+                    Proceed to checkout
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -147,12 +170,11 @@ const CartSummary = (props) => {
   );
 };
 const mapStateToProps = (state) => {
-  const { Menulist,Restaurant } = state;
-  return { Menulist,Restaurant };
+  const { Menulist, Restaurant } = state;
+  return { Menulist, Restaurant };
 };
 const actionCreator = {
   getMenulist: UserAction.getMenulist,
   getcart: UserAction.getcart,
-  
 };
 export default connect(mapStateToProps, actionCreator)(CartSummary);

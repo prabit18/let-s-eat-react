@@ -715,6 +715,10 @@ button.quantity-arrow-plus {
 .delivery-address {
     margin-bottom: 20px;
 }
+.disabled{
+    opacity: .4;
+    cursor:default;
+}
 /*Payment Section*/
 .payment .address-text p {
     font-size: 15px;
