@@ -7,7 +7,8 @@ import '../styles/css/header.css';
 import '../styles/css/home.css';
 import '../styles/css/footer.css';
 import '../styles/css/restaurant-list.css';
-import '../styles/css/restaurant-detail-page.css'
+import '../styles/css/restaurant-detail-page.css';
+import '../styles/css/checkout.css'
 import Layout from "../components/Layout";
 import {Provider} from "react-redux";
 import store from "../redux/store";

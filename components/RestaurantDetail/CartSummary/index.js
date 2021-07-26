@@ -130,13 +130,15 @@ const CartSummary = (props) => {
                   </div>
                 ))
               ) : (
-                <div style={{ textAlign: "center" }}>Add Items </div>
+                <div style={{ textAlign: "center" }}></div>
               )}
             </div>
             <div className="card-footer">
-              <div className="proceed-btn">
-                <a href="checkout.html">Proceed</a>
-              </div>
+              { cartArray.length>0?
+              (<div className="proceed-btn">
+                <a href="/checkout">Proceed to Checkout</a>
+              </div>):""
+              }
             </div>
           </div>
         </div>

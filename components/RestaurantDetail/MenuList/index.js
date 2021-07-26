@@ -92,6 +92,7 @@ const MenuItems = (props) => {
       product.cart = [];
       SetFoodItems(food);
       props.getcart(food);
+      
     } else {
       SetFoodItems(food);
       props.getcart(food);
