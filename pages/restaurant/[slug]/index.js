@@ -7,12 +7,13 @@ import { useRouter } from 'next/router';
 const restaurantdetailpage= (props) =>{
   const router = useRouter()
   const { slug } = router.query
+  console.log("query",router.query);
   const type=slug;
     useEffect(() => {
 
         props.getMenulist(type);
         props.getRestaurant(type);
-         },[type]);
+         },[router.query]);
      const {Menulist,Restaurant} = props
     return(
     <>

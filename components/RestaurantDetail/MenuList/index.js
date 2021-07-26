@@ -13,24 +13,21 @@ const MenuItems = (props) => {
     ...new Set(props.Menulist.map((item) => item.food_type_name)),
   ];
   var c = 0;
-  const [addItem, setaddItem] = useState(0);
-  const [cartItems, setcartItems] = useState([{ cart: [], count: "" }]);
   var item_count = {};
-  console.log("menu", props.Menulist);
+
   const handleFoodItems = () => {
     const FoodData = [...foodItems];
     FoodData.map((value, i) => {
       FoodData[i]["cart"] = [];
       FoodData[i]["count"] = 0;
     });
-    console.log("food daata", FoodData);
     SetFoodItems(FoodData);
-    // localStorage.setItem('menulist',JSON.stringify(FoodData))
   };
 
   useEffect(() => {
     handleFoodItems();
   }, []);
+
   item_count["Menu"] = props.Menulist.length;
   for (let i = 0; i < allfoodtypes.length; i++) {
     c = 0;
@@ -47,14 +44,12 @@ const MenuItems = (props) => {
   };
 
   const clickhandler = (type) => {
-    //setClick(true);
     setFoodType(type);
     if (type === "Menu") {
       SetFoodItems(props.Menulist);
     } else {
       filterhandler(type);
     }
-    console.log("type", foodtype);
   };
   const handlecustom = (item, name) => {
     setShow(true);
@@ -81,11 +76,7 @@ const MenuItems = (props) => {
       product.count = product.count + 1;
       result.push({ id: id, name, name, price: le_price });
       product.cart = result;
-      console.log("index", food);
       SetFoodItems(food);
-      console.log("result->", result);
-      setcartItems({ cart: result, count: product.count });
-      localStorage.setItem("menulist", JSON.stringify(food));
       props.getcart(food);
       result = [];
     }

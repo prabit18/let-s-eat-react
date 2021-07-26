@@ -35,7 +35,7 @@ function getMenulist(type) {
     // debugger
     return dispatch => {
         dataService.getMenuList(type)
-            .then(data => data.error ? dispatch(setErrors(data.error)) : dispatch(setMenulist(data.data.data.data)))
+            .then(data => data.error ? dispatch(setErrors(data.error)) : dispatch(setMenulist(data.data.data.data))).catch((e)=>{console.log(e)})
     }
     function setMenulist(data) {return {type: passActions.SET_MENULIST, data}}
 }

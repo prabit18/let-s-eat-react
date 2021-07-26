@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { UserAction } from "../../../redux/actions/user.action";
 import MenuList from "../MenuList";
 const CartSummary = (props) => {
-  console.log("index menu list", props.Restaurant);
   const { Menulist,Restaurant } = props;
   const doEmptyAction = Menulist.some((o) => o.count === 0);
   var cartArray = [];
@@ -25,7 +24,6 @@ const CartSummary = (props) => {
     let index = findindex(id);
     let product = food[index];
     product.count = product.count - 1;
-    console.log("final food", food);
     if (product.count === 0) {
       product.cart = [];
       props.getcart(food);
