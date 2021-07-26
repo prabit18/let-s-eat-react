@@ -98,6 +98,7 @@ const MenuItems = (props) => {
       localStorage.setItem('menuItems',JSON.stringify(food))
       SetFoodItems(food);
       props.getcart(food);
+      
     } else {
       localStorage.setItem('menuItems',JSON.stringify(food))
       SetFoodItems(food);

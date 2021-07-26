@@ -145,21 +145,18 @@ const CartSummary = (props) => {
                         <p>£{item.price}</p>
                       </div>
                     </div>
-                  ))
-                : ""}
+                  </div>
+                ))
+              ) : (
+                <div style={{ textAlign: "center" }}></div>
+              )}
             </div>
             <div className="card-footer">
-              <div className="proceed-btn">
-                {cartArray.length > 0 ? (
-                  <a href="checkout.html" className={"disbled"}>
-                    Proceed to checkout
-                  </a>
-                ) : (
-                  <a href="#" style={{ opacity: 0.4, cursor: "default" }}>
-                    Proceed to checkout
-                  </a>
-                )}
-              </div>
+              { cartArray.length>0?
+              (<div className="proceed-btn">
+                <a href="/checkout">Proceed to Checkout</a>
+              </div>):""
+              }
             </div>
           </div>
         </div>
