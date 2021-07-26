@@ -1,4 +1,4 @@
-import React from'react';
+import React,{useState} from'react';
 import BasicDetail from './RestaurantBasicDetail';
 import { useRouter } from 'next/router';
 import { UserAction } from '../../redux/actions/user.action';
@@ -7,12 +7,18 @@ import { connect } from 'react-redux';
 import MenuItems from './MenuList';
 import Customizable from './Customizable';
 import CartSummary from './CartSummary';
+import LoadingSpinner from '../Loader';
+
 const RestaurantDetail=(props)=>{
   // console.log("qw",props);
+  const [loader, setloader] = useState(true)
+  setTimeout(() => {
+      setloader(false)
+  }, 2000);
    const{query}=useRouter();
     return(
         <>      
-  <section className="main-section restaurant-main">
+  {!loader?<section className="main-section restaurant-main">
      <div className="page-banner restaurant-page-banner">
         <div className="offer-section-outer">
             <div className="container custom-container">
@@ -106,7 +112,7 @@ const RestaurantDetail=(props)=>{
         </div>
     </div>
     </div>
-    </section>
+    </section>:<LoadingSpinner/>}
       </>
     )
 }  

@@ -1,3 +1,4 @@
+import React,{useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css'
@@ -14,15 +15,18 @@ import {Provider} from "react-redux";
 import store from "../redux/store";
 import {BrowserRouter, Route, Router, useHistory} from 'react-router-dom';
 import {history}   from 'history';
-
+import LoadingSpinner from '../components/Loader'
 function MyApp({ Component, pageProps }) {
-   
+   const [loader, setloader] = useState(true)
+   setTimeout(() => {
+       setloader(false)
+   }, 2000);
   return (
       <Provider store={store}>
          
           <Layout>
               
-              <Component {...pageProps} />
+              {!loader?<Component {...pageProps} />:<LoadingSpinner/>}
               
           </Layout>
          
