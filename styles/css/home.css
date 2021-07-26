@@ -47,7 +47,7 @@
 }
 .view-all-btn a {
     background-color: #2A3251;
-    color: #FFFFFF;
+    color: #FFFFFF!important;
     min-width: 100px;
     font-size: 14px;
     line-height: 18px;
@@ -60,13 +60,14 @@
     -webkit-align-items: center;
     border-radius: 20px;
     padding: 7px 24px;
+    cursor: pointer;
 }
 .view-all-btn a:hover {
     opacity: 0.9;
 }
 .view-all-btn.white-btn a{
     background-color: #FFFFFF;
-    color: #2A3251;
+    color: #2A3251!important;
     box-shadow: 0 3px 6px #00000029;
 }
 .title-header {
@@ -337,6 +338,14 @@ h2.header-text span:after {
     }
     h2.header-text span:after {
         width: 35px;
+    }
+    food-product {
+        padding: 0;
+        border: none;
+        border-radius: 0;
+    }
+    .food-product:hover {
+        border: none;
     }
 }
 @media(max-width: 400px) {
