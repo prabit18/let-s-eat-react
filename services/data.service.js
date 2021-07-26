@@ -64,16 +64,32 @@ async function getCuratedList(type) {
         return {error: true, message: e}
     }
 }
-async function getMenuList(type) {
-    //console.log("prakash",type);
-    var body={ "url":type};
 
+
+
+async function getMenuList(type) {
+    if(typeof type==="string"){
+    console.log("prakash",typeof type);
+    var body={ "url":type};
     try {
+        if(typeof type==="string"||undefined){
+
         const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/menu-items/web/restaurants/menu',body);
         return {error: false, data: data}
+        }else{
+            debugger
+            console.log("cart details",type)
+           var menulist=type;
+           menulist["error"]=false
+            console.log("body",menulist);
+            return {error: false, data: menulist}
+}
     } catch (e) {
         return {error: true, message: e}
     }
+}
+
+
 }
 async function getRestaurant(type) {
     //console.log('s',type);
