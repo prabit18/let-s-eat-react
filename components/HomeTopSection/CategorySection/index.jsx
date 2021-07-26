@@ -1,10 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import dynamic from "next/dynamic";
+import router, { useRouter } from 'next/router';
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
 const CategorySection = (props) => {
+    const router=useRouter();
+
     const options = {
         loop:true,
         margin:15,
@@ -37,7 +40,7 @@ const CategorySection = (props) => {
                 }
             }
     }
-
+    
     const {cuisines} = props
     return (
         <section className="main-category">
@@ -48,13 +51,13 @@ const CategorySection = (props) => {
                             <div className="removable"></div>
                             <img src="images/Inspiration.svg" alt="Inspiration For Your Order"/>
                                 <div className="view-all-btn white-btn">
-                                    <a href="#">View All</a>
+                                <a href="/view-all-cuisines">View All</a>
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation" id="mainCategory" {...options}>
-                            { cuisines && cuisines.map((item) =>
-                                <a href="/cuisines" className="item hvr-shrink" key={item.id}>
-                                    <img src={`https://development-cdn.letseat.co.uk/${item.image}`} alt="Food Image"/>
+                            { cuisines.data && cuisines.data.map((item) =>
+                                <a onClick={()=>router.push({pathname:"/restaurants/",query:{Cuisine_type:item.name}})} className="item hvr-shrink" key={item.id}>
+                                    <img src={`https://development-cdn.letseat.co.uk/resize-image/175x280/${item.image}`} alt="Food Image"/>
                                     <span>{item.name}</span>
                                 </a>
                             )}

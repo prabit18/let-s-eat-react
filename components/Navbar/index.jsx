@@ -10,7 +10,7 @@ const Navbar = () => {
             <header className="custom-header">
                 <div className="container custom-container">
                     <nav className="navbar custom-navbar">
-                        <a className="header-logo" href="/"><img src="images/le-logo.svg" alt="Logo"/></a>
+                        <a className="header-logo" href="/"><img src="/images/le-logo.svg" alt="Logo"/></a>
                         <div className="header-actions">
                             <ul className={["location-search", locationSearch ? 'show': ''].join(' ')}>
                                 <li className="select-li dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"
@@ -18,7 +18,7 @@ const Navbar = () => {
                                     aria-haspopup="true" aria-expanded="false">
                                     <div className="select-field">
                                         <em className="outer-icon">
-                                            <img className="location-icon" src="images/location.svg" alt="location"/>
+                                            <img className="location-icon" src="/images/location.svg" alt="location"/>
                                         </em>
                                         <label>
                                             <input placeholder="Sugnall Street, Liverpool, UK"
@@ -69,7 +69,7 @@ const Navbar = () => {
                                             </label>
                                             <div className="search" onClick={() => setSearchBox(!searchBox)}>
                                                 <span>Search</span>
-                                                <img src="images/search.svg" alt="search"/>
+                                                <img src="/images/search.svg" alt="search"/>
                                             </div>
                                         </form>
                                     </div>
@@ -78,14 +78,14 @@ const Navbar = () => {
                             <ul className="header-right">
                                 <li>
                                     <a href="#">
-                                        <img src="images/help.svg" alt="help"/>
+                                        <img src="/images/help.svg" alt="help"/>
                                             <span>Help</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="#">
                                         <div className="cart">
-                                            <img src="images/cart.svg" alt="cart"/>
+                                            <img src="/images/cart.svg" alt="cart"/>
                                                 <div className="cart-qty">
                                                     <span>2</span>
                                                 </div>
@@ -95,7 +95,7 @@ const Navbar = () => {
                                 </li>
                                 <li>
                                     <a href="#">
-                                        <img src="images/login.svg" alt="login"/>
+                                        <img src="/images/login.svg" alt="login"/>
                                             <span>Login</span>
                                     </a>
                                 </li>
@@ -110,7 +110,7 @@ const Navbar = () => {
                     <div className={["select-outer"]} onClick={() => setLocationSearchSmall(!locationSearchSmall)}>
                         <div className="select-inner">
                             <div className="outer-icon">
-                                <img className="location-icon" src="images/location.svg" alt="location"/>
+                                <img className="location-icon" src="/images/location.svg" alt="location"/>
                             </div>
                             <div className="select-placeholder">Sugnall Street, <span>Liverpool, UK</span></div>
                         </div>
@@ -126,7 +126,7 @@ const Navbar = () => {
                     <div className="modal-dialog" role="document">
                         <div className="modal-content" id="exampleModalLabel">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={() => setSearchBoxSmall(false)}>
-                                <img src="images/new-close.svg" alt="close-icon"/>
+                                <img src="/images/new-close.svg" alt="close-icon"/>
                             </button>
                             <div className="modal-header">
                                 <div className="location-guide">
@@ -137,7 +137,7 @@ const Navbar = () => {
                             <div className="modal-body">
                                 <form className="search-form" method="post">
                                     <div className="form-group material-textfield">
-                                        <div><img className="search-icon" src="images/search.svg" alt="search"/></div>
+                                        <div><img className="search-icon" src="/images/search.svg" alt="search"/></div>
                                         <input className="form-control" id="first-name" name="first-name"
                                                placeholder="Search for restaurant, cuisine or a dish" type="text"
                                                autoComplete="off"/>
@@ -149,7 +149,7 @@ const Navbar = () => {
                                     <div className="card">
                                         <div className="card-body">
                                             <div className="restaurant-info">
-                                                <img className="search-list-img" src="images/food-list2.jpg"
+                                                <img className="search-list-img" src="/images/food-list2.jpg"
                                                      alt="food-item"/>
                                                     <div className="resto-detail">
                                                         <div className="food-desc">
@@ -159,7 +159,7 @@ const Navbar = () => {
                                                     </div>
                                             </div>
                                             <div className="restaurant-info">
-                                                <img className="search-list-img" src="images/food-list4.jpg"
+                                                <img className="search-list-img" src="/images/food-list4.jpg"
                                                      alt="food-item"/>
                                                     <div className="resto-detail">
                                                         <div className="food-desc">
@@ -169,7 +169,7 @@ const Navbar = () => {
                                                     </div>
                                             </div>
                                             <div className="restaurant-info">
-                                                <img className="search-list-img" src="images/food-list6.jpg"
+                                                <img className="search-list-img" src="/images/food-list6.jpg"
                                                      alt="food-item"/>
                                                     <div className="resto-detail">
                                                         <div className="food-desc">
@@ -192,7 +192,7 @@ const Navbar = () => {
                     <div className="modal-dialog" role="document">
                         <div className="modal-content" id="exampleModalLabel1">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={() => setLocationSearchSmall(false)}>
-                                <img src="images/new-close.svg" alt="close-icon"/>
+                                <img src="/images/new-close.svg" alt="close-icon"/>
                             </button>
                             <div className="modal-header">
                                 <h2>Select delivery location</h2>

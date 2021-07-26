@@ -1,13 +1,16 @@
 import axios from "axios";
+import { useState } from "react";
 export const dataService = {
     getCuisines,
     getRestaurants,
-    getCuratedList
+    getCuratedList,
+    getMenuList,
+    getRestaurant,
 }
 
 async function getCuisines() {
     try {
-        const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/cuisines/web/list', {});
+        const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/cuisines/web/featured_cuisine_list', {});
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
@@ -17,7 +20,8 @@ async function getCuisines() {
 
 async function getRestaurants(type) {
     try {
-         var body = {}
+         
+           var body={};
          if(type==="pure_veg")
          {
              body={
@@ -29,7 +33,7 @@ async function getRestaurants(type) {
          }
        else if (type==="ratings") {
             body={
-                "page_size":3,
+                
        "sort_by":{
         "key":type,
         "value":"desc"
@@ -37,8 +41,7 @@ async function getRestaurants(type) {
             }      
        }
        else if (type) {
-            body={
-                "page_size":3,
+            body={      
        "sort_by":{
         "key":type,
         "value":"asc"
@@ -46,16 +49,37 @@ async function getRestaurants(type) {
             }      
        }
       
-        const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/restaurants/list', body);
+        const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/restaurants/web/list', body);
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
     }
 }
 
-async function getCuratedList() {
+async function getCuratedList(type) {
     try {
         const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/curatedlist/web/featured_curated_list', {});
+        return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+async function getMenuList(type) {
+    //console.log("prakash",type);
+    var body={ "url":type};
+
+    try {
+        const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/menu-items/web/restaurants/menu',body);
+        return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+async function getRestaurant(type) {
+    //console.log('s',type);
+    var body={"url":type};
+    try {
+        const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/restaurants/web/view',body);
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}

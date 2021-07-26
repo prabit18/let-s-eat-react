@@ -257,7 +257,7 @@ body {
     content: "";
     top: 0;
     left: 0;
-    background-image: url('../../public/images/header-bg.svg');
+    background-image: url(../../public/images/header-bg.svg);
     background-size: cover;
     background-position: bottom;
     background-repeat: no-repeat;
@@ -595,6 +595,18 @@ body {
     top: 0 !important;
     transform: translateY(-50%) scale(.9) !important;
 }
+.page-banner {
+    background-image: url(../../public/images/header-bg.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+    background-position: bottom;
+    min-height: 420px;
+    background-attachment: fixed;
+}
+
 @media (min-width: 576px) {
     .signup-modal .modal-dialog {
         max-width: 580px;
