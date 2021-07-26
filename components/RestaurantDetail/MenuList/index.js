@@ -6,7 +6,7 @@ import Menu from "./menu";
 const MenuItems = (props) => {
   const [foodtype, setFoodType] = useState("Menu");
   const [Name, setName] = useState("");
-  const [foodItems, SetFoodItems] = useState(props.Menulist);
+  const [foodItems, SetFoodItems] = useState(JSON.parse(localStorage.getItem('menuItems')));
   const [show, setShow] = useState(false);
   const [variant, setVariant] = useState(props.Menulist[0].variants);
   const allfoodtypes = [
@@ -23,10 +23,14 @@ const MenuItems = (props) => {
     });
     SetFoodItems(FoodData);
   };
-
   useEffect(() => {
-    handleFoodItems();
-  }, []);
+    //handleFoodItems();
+        // When local storage changes, dump the list to
+        // the console.
+        SetFoodItems(JSON.parse(localStorage.getItem('menuItems')))
+      
+
+  }, [foodItems]);
 
   item_count["Menu"] = props.Menulist.length;
   for (let i = 0; i < allfoodtypes.length; i++) {
@@ -76,6 +80,7 @@ const MenuItems = (props) => {
       product.count = product.count + 1;
       result.push({ id: id, name, name, price: le_price });
       product.cart = result;
+      localStorage.setItem('menuItems',JSON.stringify(food))
       SetFoodItems(food);
       props.getcart(food);
       result = [];
@@ -90,9 +95,11 @@ const MenuItems = (props) => {
     console.log("final food", food);
     if (product.count === 0) {
       product.cart = [];
+      localStorage.setItem('menuItems',JSON.stringify(food))
       SetFoodItems(food);
       props.getcart(food);
     } else {
+      localStorage.setItem('menuItems',JSON.stringify(food))
       SetFoodItems(food);
       props.getcart(food);
     }
@@ -103,6 +110,8 @@ const MenuItems = (props) => {
     let index = findindex(id);
     let product = food[index];
     product.count = product.count + 1;
+    localStorage.setItem('menuItems',JSON.stringify(food))
+
     SetFoodItems(food);
     props.getcart(food);
   };
