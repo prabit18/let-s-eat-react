@@ -70,7 +70,7 @@ const MenuItems = (props) => {
     return elementPos;
   };
 
-  const handleAdd = (id, val, i, name, price) => {
+  const handleAdd = (id, val, i, name, price,veg) => {
     if (val === "add") {
       var le_price = price[0].le_price;
       let result = [];
@@ -78,7 +78,7 @@ const MenuItems = (props) => {
       let index = findindex(id);
       let product = food[index];
       product.count = product.count + 1;
-      result.push({ id: id, name, name, price: le_price });
+      result.push({ id: id, name, name, price: le_price,veg:veg });
       product.cart = result;
       localStorage.setItem('menuItems',JSON.stringify(food))
       SetFoodItems(food);
@@ -277,7 +277,7 @@ const MenuItems = (props) => {
                                 "add",
                                 i,
                                 item.name,
-                                item.variants
+                                item.variants, item.veg
                               )
                             }
                           >

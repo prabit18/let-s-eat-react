@@ -4,13 +4,13 @@ import { UserAction } from "../../../redux/actions/user.action";
 import MenuList from "../MenuList";
 const CartSummary = (props) => {
   const { Menulist, Restaurant } = props;
-  const [menuListDetails, setMenuListDetais] = useState(JSON.parse(localStorage.getItem('menuItems'))
+  const [menuListDetails, setMenuListDetails] = useState(JSON.parse(localStorage.getItem('menuItems'))
   );
   var localData = JSON.parse(localStorage.getItem("menuItems"));
   useEffect(() => {
       // When local storage changes, dump the list to
       // the console.
-      setMenuListDetais(JSON.parse(localStorage.getItem("menuItems")));
+      setMenuListDetails(JSON.parse(localStorage.getItem("menuItems")));
     
   }, [menuListDetails]);
 
@@ -25,6 +25,7 @@ const CartSummary = (props) => {
           name: val.cart[0].name,
           count: val.count,
           price: val.cart[0].price,
+          veg:val.cart[0].veg,
         });
       }
     });
@@ -45,10 +46,10 @@ const CartSummary = (props) => {
     if (product.count === 0) {
       product.cart = [];
       localStorage.setItem('menuItems',JSON.stringify(food))
-      setMenuListDetais(food);
+      setMenuListDetails(food);
     } else {
       localStorage.setItem('menuItems',JSON.stringify(food))
-      setMenuListDetais(food);
+      setMenuListDetails(food);
     }
   };
   
@@ -60,7 +61,7 @@ const CartSummary = (props) => {
     product.count = product.count + 1;
     localStorage.setItem("menuItems", JSON.stringify(food));
 
-    setMenuListDetais(localStorage.setItem("menuItems", JSON.stringify(food)));
+    setMenuListDetails(localStorage.setItem("menuItems", JSON.stringify(food)));
   };
 
   return (

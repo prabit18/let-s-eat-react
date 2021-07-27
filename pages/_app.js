@@ -16,6 +16,8 @@ import store from "../redux/store";
 import {BrowserRouter, Route, Router, useHistory} from 'react-router-dom';
 import {history}   from 'history';
 import LoadingSpinner from '../components/Loader'
+import Favicon from 'react-favicon'
+
 function MyApp({ Component, pageProps }) {
    const [loader, setloader] = useState(true)
    setTimeout(() => {
@@ -23,7 +25,7 @@ function MyApp({ Component, pageProps }) {
    }, 2000);
   return (
       <Provider store={store}>
-         
+         <Favicon url='/images/le-logo.svg'/>
           <Layout>
               
               {!loader?<Component {...pageProps} />:<LoadingSpinner/>}

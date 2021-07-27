@@ -282,6 +282,7 @@ body {
 .hvr-shrink:hover, .hvr-shrink:focus, .hvr-shrink:active {
     -webkit-transform: scale(0.97);
     transform: scale(0.97);
+    cursor: pointer;
 }
 
 /*Signup popup*/
