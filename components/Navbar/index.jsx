@@ -7,6 +7,7 @@ const Navbar = () => {
     const [locationSearchSmall, setLocationSearchSmall] = useState(false);
     return (
         <>
+                
             <header className="custom-header">
                 <div className="container custom-container">
                     <nav className="navbar custom-navbar">

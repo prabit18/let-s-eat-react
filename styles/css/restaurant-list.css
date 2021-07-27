@@ -15,8 +15,11 @@
     border: 1px solid #909AB9;
     border-radius: 4px;
     margin-right: 10px;
+    cursor: pointer;
 }
-
+.filter-box li.active {
+    background-color: #FFD438;
+}
 .filter-box li a {
     font-size: 14px;
     line-height: 18px;
