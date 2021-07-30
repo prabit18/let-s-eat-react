@@ -18,7 +18,10 @@
     cursor: pointer;
 }
 .filter-box li.active {
-    background-color: #FFD438;
+    background-color: #0A83EA;
+}
+.filter-box li.active a{
+    color: #ffffff;
 }
 .filter-box li a {
     font-size: 14px;
@@ -122,6 +125,11 @@
     line-height: 16px;
     color: #3B4148;
     font-family: Montserrat-Regular, sans-serif;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: 32px;
 }
 
 .delivery-detail {
@@ -325,6 +333,8 @@ p.rating-content {
     .food-desc p {
         font-size: 13px;
         line-height: 15px;
+        height: auto;
+        -webkit-line-clamp: unset;
     }
 
     .food-desc h4 {

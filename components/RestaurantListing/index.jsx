@@ -3,13 +3,15 @@ import {React,useEffect, useState} from 'react';
 import { connect } from 'react-redux';
 import { UserAction } from '../../redux/actions/user.action';
 import RestaurantsList from './restaurantslist';
+import { useRouter } from 'next/router';
 const RestaurantListingPage = (props) => {
-    const[click,setClick]=useState(false);
     const[filtertype,setFiltertype]=useState("");
+    const router=useRouter();
+    console.log(router.query.Curated_type);  
+    //props.getRestaurants(router.query.curated_type);
   const  handleFilter = (type) => {
       props.getRestaurants(type)
       setFiltertype(type);
-      setClick(true);
   }
 	return (
 		<>

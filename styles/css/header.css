@@ -15,6 +15,7 @@ header.custom-header {
 }
 .header-right li {
     margin-left: 15px;
+    position: relative;
 }
 .header-right li img{
     padding-right: 5px;

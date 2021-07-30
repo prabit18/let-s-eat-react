@@ -8,14 +8,15 @@ import { connect } from "react-redux";
 const HomePage = (props) => {
     useEffect(() => {
     props.getCuratedlist();
-    props.getRestaurants();
+    props.getRestaurants('curated_list');
   },[]);
 
 const {Curatedlist,Restaurants} = props
+// console.log(Restaurants);
     return (
         <>
             <HomeTopSection/>
-            {Curatedlist.length > 0 && Curatedlist.map((item) => <FoodListing data={item} /> )}
+            {Curatedlist.length > 0 && Curatedlist.map((item) => <FoodListing data={item} key={item.id} /> )}
         </>
     );
 };

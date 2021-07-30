@@ -211,6 +211,37 @@ body {
     -webkit-transform: translateX(-4px);
     transform: translateX(-4px);
 }
+.login-modal .modal-body form input:not(:placeholder-shown) + label {
+    color: #293250 !important;
+    top: 0;
+    transform: translateY(-50%) scale(.9);
+}
+#otp-fade-btn {
+    background-color: #DCDFE8!important;
+    color: #FFFFFF!important;
+    cursor: unset;
+}
+.profile-menu.dropdown-menu.show {
+    position: absolute;
+    right: 0;
+    left: auto;
+    top: 35px;
+    min-width: 230px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 6px #909ab926;
+    padding: 20px 30px 0 30px;
+}
+.profile-menu.dropdown-menu li a {
+    font-size: 15px;
+    line-height: 18px;
+    color: #283350;
+    font-family: 'Montserrat-Regular', sans-serif;
+    margin-bottom: 10px;
+}
+.profile-menu.dropdown-menu li:last-child {
+    border-top: 1px solid #C0C6D9;
+    padding-top: 10px;
+}
 
 /*@media(max-width: 1199px) {*/
 /*    .page-banner:after {*/
@@ -740,4 +771,5 @@ body {
     .login-modal .modal-body.success-body p {
         font-size: 16px;
     }
+
 }

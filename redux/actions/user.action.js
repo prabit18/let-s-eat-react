@@ -2,7 +2,7 @@ import {dataService} from '../../services'
 import {passActions} from './actionType';
 import {setErrors} from './error.action';
 export const UserAction = {
-    getRestaurants ,getCuisines, getCuratedlist,getMenulist,getRestaurant,getcart
+    getRestaurants ,getCuisines, getCuratedlist,getMenulist,getRestaurant,getcart,
 }
 
 function getCuisines() {
@@ -73,3 +73,4 @@ function getRestaurant(type) {
     }
     function setRestaurant(data) {return {type: passActions.SET_RESTAURANT, data}}
 }
+

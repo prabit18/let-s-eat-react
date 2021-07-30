@@ -5,16 +5,20 @@ import { connect } from 'react-redux';
 import RestaurantListing from '../RestaurantListing';
 import RestaurantsList from '../RestaurantListing/restaurantslist';
 import router, { useRouter } from 'next/router';
+import { UserAction } from '../../redux/actions/user.action';
 // import restaurantdetailpage from '../../pages/restaurantdetail';
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
 //{title}
 const FoodListing = (props) => {
+    //props.getRestaurants("curated_list");
     const router = useRouter()
-    const handleroute=(url)=>{
-        router.push({pathname:"/restaurant/"+url });
+    const handleroute=(type)=>{
+        router.push({pathname:"/restaurants/",query:{Curated_type:type}})
+        props.getRestaurants("curated_list");
     }
+    //console.log("data is coming 2",props.restaurants.data);
     const options = {
         loop:true,
         margin:15,
@@ -57,7 +61,7 @@ const FoodListing = (props) => {
                             <h2 className="header-text" ><span>{props.data.name} </span></h2>
                             
                                 <div className="view-all-btn">
-                                    <a onClick={()=>router.push({pathname:"/restaurants/",query:{Curated_type:props.data.name}})}>View All</a>
+                                    <a onClick={()=>handleroute(props.data.name)}>View All</a>
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>
@@ -105,6 +109,10 @@ const mapStateToProps = (state) => {
     const {Restaurants, Curatedlist,errors} = state
    return {restaurants: Restaurants,curatedlist:Curatedlist, errors}
 }
+const actionCreator = {
+    getCuratedlist: UserAction.getCuratedlist ,
+       getRestaurants: UserAction.getRestaurants
+  }
 
-export default connect(mapStateToProps)(FoodListing);
+export default connect(mapStateToProps,actionCreator)(FoodListing);
 

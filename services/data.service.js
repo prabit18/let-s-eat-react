@@ -6,6 +6,9 @@ export const dataService = {
     getCuratedList,
     getMenuList,
     getRestaurant,
+    getSignup,
+    verifyOtp,
+    getLogin,
 }
 
 async function getCuisines() {
@@ -19,10 +22,21 @@ async function getCuisines() {
  
 
 async function getRestaurants(type) {
+    console.log("type is",type);
     try {
          
            var body={};
-         if(type==="pure_veg")
+           if(type=="curated_list")
+           { 
+               console.log("passed")
+             body={
+                "Filter":[{
+                    "key":"curated_list",
+                    "value":["Chef’s Plate"]
+                }]
+             }
+           }
+         else if(type==="pure_veg")
          {
              body={
                   "Filter":{
@@ -69,7 +83,6 @@ async function getCuratedList(type) {
 
 async function getMenuList(type) {
     if(typeof type==="string"){
-    console.log("prakash",typeof type);
     var body={ "url":type};
     try {
         if(typeof type==="string"||undefined){
@@ -77,7 +90,7 @@ async function getMenuList(type) {
         const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/menu-items/web/restaurants/menu',body);
         return {error: false, data: data}
         }else{
-            debugger
+            //debugger
             console.log("cart details",type)
            var menulist=type;
            menulist["error"]=false
@@ -97,6 +110,47 @@ async function getRestaurant(type) {
     try {
         const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/restaurants/web/view',body);
         return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+async function getSignup(Email,first_name,last_name) {
+    var body={
+        "email":Email,
+        "first_name":first_name,
+        "last_name":last_name
+     }
+    try {
+        const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/customers/web/sign_up',body);
+        return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+async function verifyOtp(sessiontoken,otp,username) {
+     var body={ 
+               "otp":otp,   
+               "session":sessiontoken,
+               "username":username,
+             }
+     try {
+         const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/customers/web/verify_otp',body);
+         console.log("data----",data)
+         return {error: false, data: data}
+     } catch (e) {
+         return {error: true, message: e}
+     }
+ }
+ async function getLogin(Email) {
+     console.log(Email);
+    var body={
+        "username":Email
+     }
+    try {
+        
+        const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/customers/web/login',body);
+        console.log("Data--->>",data)
+        return data.data
     } catch (e) {
         return {error: true, message: e}
     }

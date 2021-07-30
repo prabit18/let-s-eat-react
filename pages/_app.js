@@ -25,7 +25,7 @@ function MyApp({ Component, pageProps }) {
    }, 2000);
   return (
       <Provider store={store}>
-         <Favicon url='/images/le-logo.svg'/>
+         <Favicon url='/images/favicon.ico'/>
           <Layout>
               
               {!loader?<Component {...pageProps} />:<LoadingSpinner/>}

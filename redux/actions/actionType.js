@@ -9,6 +9,7 @@ export const passActions = {
     SET_LOAD_MENULIST: 'SET_LOAD_MENULIST',
     SET_RESTAURANT: 'SET_RESTAURANT',
     SET_LOAD_RESTAURANT: 'SET_LOAD_RESTAURANT',
+
 }
 export const errorActions = {
     SET_ERROR: 'SET_ERROR',
