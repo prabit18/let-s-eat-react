@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps }) {
          
           <Layout>
               
-              {!loader?<Component {...pageProps} />:<LoadingSpinner/>}
+              <Component {...pageProps} />
               
           </Layout>
          

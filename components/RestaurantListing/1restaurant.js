@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import react from 'react';
 import RestaurantDetail from "../RestaurantDetail";
 import { useRouter} from 'next/router'
+import InfiniteScroll from "react-infinite-scroll-component";
+
 const Restaurant=(props)=>{
     const router = useRouter()
     const handleroute=(url)=>{
         
         router.push({pathname:"/restaurant/"+url });
     }
+  
     return(
-        <>      
+        <>     
+      
+        
                                      <div className="col-xl-3 col-lg-3 col-sm-6" key={props.item.id}>
                                             <div className="food-product hvr-shadow" >
                                                <a className="clickable" onClick={()=>handleroute(props.item.url)}/>
@@ -37,7 +42,8 @@ const Restaurant=(props)=>{
                                                 </div>
                                             </div>
                                         </div>
-                                      </div>                                 
+                                      </div>    
+                             
         </>  
     )
 }

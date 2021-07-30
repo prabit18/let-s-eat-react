@@ -8,10 +8,12 @@ import MenuItems from './MenuList';
 import Customizable from './Customizable';
 import CartSummary from './CartSummary';
 import LoadingSpinner from '../Loader';
-
+import MenulistContext from '../Context/MenulistContext';
 const RestaurantDetail=(props)=>{
   // console.log("qw",props);
   const [loader, setloader] = useState(true)
+  const [foodItems, SetFoodItems] = useState([]);
+
   setTimeout(() => {
       setloader(false)
   }, 2000);
@@ -36,6 +38,7 @@ const RestaurantDetail=(props)=>{
          </div>
          <section className="restaurant-list">
             <div className="container custom-container restaurant-container">
+                <MenulistContext.Provider value={{foodItems,SetFoodItems,loader}}>
                 <div className="row restaurant-row">
                     <div className="col-md-8 restaurant-list-col">
                         <div className="menu-section">
@@ -44,7 +47,9 @@ const RestaurantDetail=(props)=>{
                     </div>
                     <CartSummary/>
                     </div>
+                    </MenulistContext.Provider>
             </div>
+            
         </section>
         
  <div className="filter-overlay header-overlay"></div>
