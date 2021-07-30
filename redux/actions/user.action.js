@@ -15,18 +15,26 @@ function getCuisines() {
 
 
 function getRestaurants(type) {
-    return dispatch => {
-        dataService.getRestaurants(type)
-            .then(data => data.error ? dispatch(setErrors(data.error)) : dispatch(setRestaurants(data.data.data)))
+    return async dispatch => {
+        const data = await dataService.getRestaurants(type);
+        if ((await data).error) {
+            dispatch(setErrors(data.error))
+        } else {
+            dispatch(setRestaurants(data.data.data))
+        }
     }
     function setRestaurants(data) {return {type: passActions.SET_RESTAURANTS, data}}
 }
 
 function getCuratedlist() {
-    return dispatch => {
+    return async dispatch => {
         
-        dataService.getCuratedList()
-            .then(data => data.error ? dispatch(setErrors(data.error)) : dispatch(setCuratedlist(data.data.data.data)))
+        const data = await dataService.getCuratedList()
+        if ((await data).error) {
+            dispatch(setErrors(data.error))
+        } else {
+            dispatch(setCuratedlist(data.data.data.data))
+        }
     }
     function setCuratedlist(data) {return {type: passActions.SET_CURATEDLIST, data}}
 }
@@ -71,5 +79,6 @@ function getRestaurant(type) {
         dataService.getRestaurant(type)
             .then(data => data.error ? dispatch(setErrors(data.error)) : dispatch(setRestaurant(data.data.data.data)))
     }
-    function setRestaurant(data) {return {type: passActions.SET_RESTAURANT, data}}
+    function setRestaurant(data) {
+        return {type: passActions.SET_RESTAURANT, data}}
 }

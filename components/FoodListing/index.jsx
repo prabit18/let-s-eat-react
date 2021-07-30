@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {foodCategoryName} from "../constants";
 import dynamic from "next/dynamic";
 import { connect } from 'react-redux';
 import RestaurantListing from '../RestaurantListing';
 import RestaurantsList from '../RestaurantListing/restaurantslist';
 import router, { useRouter } from 'next/router';
+import BottomSectionLoader from '../Loader/BottomSectionLoader';
+import CategorySectionLoader from '../Loader/CategorySectionLoader';
 // import restaurantdetailpage from '../../pages/restaurantdetail';
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
@@ -15,6 +17,13 @@ const FoodListing = (props) => {
     const handleroute=(url)=>{
         router.push({pathname:"/restaurant/"+url });
     }
+    const [loading, setloading] = useState(true)
+    useEffect(() => {
+        setTimeout(() => {
+            setloading(false)
+
+        }, 100);
+    }, [])
     const options = {
         loop:true,
         margin:15,
@@ -32,7 +41,7 @@ const FoodListing = (props) => {
                 576:{
                     items:1.8,
                     margin:5
-                },
+                },  
                 600:{
                     items:2.5,
                     margin:10
@@ -48,13 +57,14 @@ const FoodListing = (props) => {
             }
     }
     return (
-        <section className="food-listing">
+        <>
+       {props.restaurants.data && !loading &&<section className="food-listing">
             <div className="container custom-container" >
                 <div className="row">
                     <div className="col-md-12">
                         <div className="title-header">
                             <div className="removable"></div>
-                            <h2 className="header-text" ><span>{props.data.name} </span></h2>
+                            <h2 className="header-text" >{props.restaurants.data&&<span>{props.data.name} </span>}</h2>
                             
                                 <div className="view-all-btn">
                                     <a onClick={()=>router.push({pathname:"/restaurants/",query:{Curated_type:props.data.name}})}>View All</a>
@@ -62,7 +72,7 @@ const FoodListing = (props) => {
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>
                           
-                         { props.restaurants.data && props.restaurants.data.map((item)=>(
+                         {props.restaurants.data.map((item)=>(
                              //<RestaurantsList item={elem}/>
                             <div className="food-product hvr-shadow" key={item.id}>
                                 <a onClick={()=>handleroute(item.url)} className="clickable"></a>
@@ -98,7 +108,7 @@ const FoodListing = (props) => {
                     </div>
                 </div>
             </div>
-        </section>
+        </section>        }</>
     );
 };
 const mapStateToProps = (state) => {

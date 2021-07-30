@@ -1,5 +1,83 @@
-import React from 'react';
-const Checkout=()=>{
+import { useRouter } from 'next/router';
+import React, { useEffect,useState } from 'react';
+import { connect } from "react-redux";
+import restaurants from '../../pages/restaurants';
+import { UserAction } from '../../redux/actions/user.action';
+
+const Checkout=(props)=>{
+    const history=useRouter()
+    const [foodItems, SetFoodItems] = useState([])
+    const [deliveryOption, setdeliveryOption] = useState();
+    const [restaurantdetail, setrestaurantdetail] = useState([])
+    useEffect(() => {
+        SetFoodItems(JSON.parse(localStorage.getItem('menuItems')))
+        setdeliveryOption(localStorage.getItem('delivery_type'))
+        setrestaurantdetail(JSON.parse(localStorage.getItem('Restaurant-details')))
+    }, [])
+  
+    var cartArray = [];
+  
+    const doEmptyAction = foodItems && foodItems.some((o) => o.count === 0);
+  
+    if (doEmptyAction) {
+      foodItems.filter((val) => {
+        if (val.count !== 0) {
+          cartArray.push({
+            id: val.cart[0].id,
+            name: val.cart[0].name,
+            count: val.count,
+            price: val.cart[0].price,
+            veg:val.veg
+          });
+        }
+      });
+    }
+    const findindex = (id) => {
+      var elementPos = foodItems
+        .map(function (x) {
+          return x.id;
+        })
+        .indexOf(id);
+      return elementPos;
+    };
+    const decrement = (id) => {
+      let food = [...foodItems];
+      let index = findindex(id);
+      let product = food[index];
+      product.count = product.count - 1;
+      if (product.count === 0) {
+        product.cart = [];
+        localStorage.setItem("menuItems", JSON.stringify(food));
+        history.back()
+        SetFoodItems(food);
+      } else {
+        localStorage.setItem("menuItems", JSON.stringify(food));
+        SetFoodItems(food);
+
+      }
+    };
+  
+    const increment = (id) => {
+      let food = [...foodItems];
+      let index = findindex(id);
+      let product = food[index];
+  
+      product.count = product.count + 1;
+      localStorage.setItem("menuItems", JSON.stringify(food));
+      SetFoodItems(food);
+    };
+  
+    const handleDeliveryOption = (e) => {
+      console.log("event", e.target.name);
+      localStorage.setItem('delivery_type',e.target.name)
+      setdeliveryOption(e.target.name);
+    };
+    const handleback=()=>{
+        console.log("calling back");
+        history.back()
+    }
+    console.log("restaurantdetail",restaurantdetail["name"])
+
 return(
   <>
  <div className="page-banner">
@@ -10,21 +88,21 @@ return(
                     <div className="row custom-row custom-scrollbar">
                         <div className="col-lg-6">
                             <div className="cart-left">
-                                <a className="back-to-restaurant" href="#"></a>
+                                <a className="back-to-restaurant" onClick={()=>handleback()}></a>
                                 <h2>Order Summary</h2>
                                 <div className="cart-left-content">
                                     <div className="cart-details">
                                         <div className="cart-details-header">
-                                            <h3>KFC</h3>
-                                            <p>95 Linthorpe Road, Middlesbrough, TS1 5DD</p>
+                                            <h3>{restaurantdetail["name"]}</h3>
+                                            <p>{restaurantdetail["address"]}</p>
                                         </div>
                                         <div className="toggle-section">
                                             <div className="toggle-item">
-                                                <input type="radio" id="test1" name="radio-group"/>
+                                                <input type="radio" id="test1" name="delivery"  checked={deliveryOption==="delivery"?true:false} onChange={(e)=>handleDeliveryOption(e)}/>
                                                 <label for="test1" className="delivery">Delivery<br/><span>30-40 Mins</span></label>
                                             </div>
                                             <div className="toggle-item">
-                                                <input type="radio" id="test2" name="radio-group"/>
+                                                <input type="radio" id="test2" name="store-pickup" checked={deliveryOption==="store-pickup"?true:false} onChange={(e)=>handleDeliveryOption(e)}/>
                                                 <label for="test2" className="store-pick">Store Pick up<br/><span>15-20 Mins</span></label>
                                             </div>
                                         </div>
@@ -89,49 +167,30 @@ return(
                                         </div>
                                         <div className="selected-items">
                                             <div className="select-item">
-                                                <div className="select-item-inner">
+                                                {cartArray&&cartArray.map((item,i)=>(
+                                                    <div className="select-item-inner">
                                                     <div className="selected-item-left veg">
-                                                        <h4>Dream Team Bucket</h4>
-                                                        <p>£5.00</p>
+                                                        <h4>{item.name}</h4>
+                                                        <p>{item.price}</p>
                                                     </div>
                                                     <div className="selected-item-right">
                                                         <div className="new-counter quantity-block">
                                                             <div className="new-up">
-                                                                <button className="quantity-arrow-minus quantity">-</button>
+                                                                <button className="quantity-arrow-minus quantity" onClick={() => decrement(item.id)}>-</button>
                                                             </div>
                                                             <label className="label-input">
-                                                                <input className="quantity-num form-control quantity qty" type="text" value="1"/>
+                                                                <input className="quantity-num form-control quantity qty" type="text" value={item.count}/>
                                                             </label>
                                                             <div className="new-down">
-                                                                <button className="quantity-arrow-plus quantity">+</button>
+                                                                <button className="quantity-arrow-plus quantity" onClick={() => increment(item.id)}>+</button>
                                                             </div>
                                                         </div>
                                                         <h4>£5.00</h4>
                                                     </div>
                                                 </div>
+                                                ))}
                                             </div>
-                                            <div className="select-item">
-                                                <div className="select-item-inner">
-                                                    <div className="selected-item-left non-veg">
-                                                        <h4>Dream Team Bucket</h4>
-                                                        <p>£5.00</p>
-                                                    </div>
-                                                    <div className="selected-item-right">
-                                                        <div className="new-counter quantity-block">
-                                                            <div className="new-up">
-                                                                <button className="quantity-arrow-minus quantity">-</button>
-                                                            </div>
-                                                            <label className="label-input">
-                                                                <input className="quantity-num form-control quantity qty" type="text" value="1"/>
-                                                            </label>
-                                                            <div className="new-down">
-                                                                <button className="quantity-arrow-plus quantity">+</button>
-                                                            </div>
-                                                        </div>
-                                                        <h4>£5.00</h4>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
                                             <div className="select-item">
                                                 <div className="not-available-text">
                                                     <p>Below Item not available</p>
@@ -315,4 +374,12 @@ return(
   </>
   )
 }
-export default Checkout;
+const mapStateToProps = (state) => {
+    const { Menulist, Restaurant } = state;
+    return { Menulist, Restaurant  };
+  };
+  const actionCreator = {
+    getMenulist: UserAction.getMenulist,
+    getcart: UserAction.getcart,
+  };
+  export default connect(mapStateToProps, actionCreator)(Checkout);
