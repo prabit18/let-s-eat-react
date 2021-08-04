@@ -243,6 +243,7 @@ body {
     padding-top: 10px;
 }
 
+
 /*@media(max-width: 1199px) {*/
 /*    .page-banner:after {*/
 /*        min-height: 520px;*/
@@ -324,6 +325,7 @@ body {
     border-radius: 20px;
     background-color: #FFFFFF;
     box-shadow: 3px 3px 6px #00000029;
+    max-width: 500px;
 }
 .login-modal .close {
     border-radius: 50%;

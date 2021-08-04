@@ -4,9 +4,12 @@ import OtpInput from 'react-otp-input';
 import { UserAction } from '../../redux/actions/user.action';
 import { connect } from 'react-redux';
 import { dataService } from '../../services';
+import ProfileDropdown from '../dropdown';
+import { setErrors } from '../../redux/actions/error.action';
+import {GoogleLogin} from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import { googleClientID, facebookAppID } from '../../config/env';
 const Navbar = (props) => {
-    
-    // debugger
     const [searchBox, setSearchBox] = useState(false);
     const [searchBoxSmall, setSearchBoxSmall] = useState(false);
     const [locationSearch, setLocationSearch] = useState(false);
@@ -19,14 +22,16 @@ const Navbar = (props) => {
     const [Email,setEmail]=useState('');
     const[veri,setVeri]=useState(false);
     const[login,setLogin]=useState(false);
-    const [Error, setError] = useState(true);
+    const [Error, setError] = useState(false);
     const[activatebutton,setActivatebutton]=useState(false);
     const[profilename,setProfilename]=useState('');
-    const[message,setMessage]=useState('');
+    const[ErrorMessage,setErrorMessage]=useState('');
     const[session,setSession]=useState('');
-    const[Dropdown,setDropdown]=useState(false);
+    const[successMessage,setSuccessMessage]=useState('')
     const [otp, setOtp] = useState('');  
     const [attempt,setAttempt] = useState(0) 
+    const[loading,setloading]=useState(false)
+    const[Disabled,setdisabled]=useState(false)
     useEffect(() => {
         const loggedInUser = localStorage.getItem("user");        
         if (loggedInUser) {
@@ -37,7 +42,37 @@ const Navbar = (props) => {
         }
         else console.log("user is not loggedin");
       }, []);
-      const Otpverification=async()=>{
+
+
+      const FBLogin = (response) => {
+        if (response.status !== 'unknown' && response.status !== 'not_authorized') {
+            console.log(response)
+            const body = {
+                access_token: response.accessToken,
+                provider: "facebook",
+            }
+            dataService.socialLogin(body).then((res)=>{
+                setLogin(true);
+                localStorage.setItem('user',JSON.stringify(res.data))
+                setProfilename(res.data.info.first_name);
+        })
+        }
+    }
+
+    const GLogin = (response) => {
+        if (!response.error) {
+            const body = {
+                access_token: response.tokenObj.access_token,
+                provider: "google",
+            }
+            dataService.socialLogin(body).then((res)=>{
+                setLogin(true);
+                localStorage.setItem('user',JSON.stringify(res.data))
+                setProfilename(res.data.info.first_name);
+        })
+    }
+}
+      const Otpverification=async(type)=>{
         console.log(attempt)
         let currentAttempt = attempt+1
         setAttempt(currentAttempt)
@@ -50,49 +85,72 @@ const Navbar = (props) => {
         else{
         dataService.verifyOtp(session,otp,Email).then((res)=>{
             console.log(res);
+            setloading(false);
             if(res.data.data.error_status){
                 if(res.data.data.attempts!=undefined)
                 {
                     console.log("Incorrect OTP")
+                    console.log(res.data.data.message)
                     setSession(res.data.data.data.session)
                     setLogin(false);
-                    setpopup('otp');
+                    setErrorMessage(res.data.data.message);
+                    setError(true)
+                    setOtp('')
+                   setVeri(false)
                 }
                 else{
                     setshow(true);
-                    setpopup('otp');
-                    handleLoginOtp()
+                    setOtp('');
+                    if(type==='signup')
+                    {
+                        setpopup('otpsignup')
+                    }else if(type==='login')
+                    { 
+                        setpopup('otp');
+                    }
+                   setVeri(false)
+                   handleLoginOtp()
                 }
             }
             else{
                 setLogin(true);
                 localStorage.setItem('user',JSON.stringify(res.data.data.data))
                 console.log("response otp",res);
-                setSuccess(true);
-                setpopup('success')
+                //setError(true);
+                setVeri(false);
+                setError(true);
+                setErrorMessage("You Have Successfully Logged in!")
+                if(type==='signup'){
+                    setpopup('success')
+                   setSuccessMessage('Signed up')
+                }
                 setProfilename(res.data.data.data.info.first_name);
                 console.log(res.data.data.data.info.first_name);
                 }
         })
     }
     }
-    // const handleLoginOtp=async()=>{
-    //     dataService.getLogin(Email).then((response)=>{
-    //         console.log("response",response)
-    //         setSession(response.data.session)
-    //     });
-    // }
-
+    const handleResendOtp=async()=>{
+        dataService.ResendOtp(Email).then((response)=>{
+            console.log("resend response is",response)
+            setError(true)
+            setErrorMessage(response.data.data.message)
+            setSession(response.data.data.data.session)
+        });
+    }
     const handleLoginOtp=async()=>{
         dataService.getLogin(Email).then((response)=>{
             console.log("response",response)
+            setloading(false)
             if(response.error_status)
-            {
-                setError(true)
+            {   
+                setError(true);
+                setErrorMessage(response.message)
                 console.log(response.message)
             }
             else {
                 setError(false)
+                setpopup('otp');
             setSession(response.data.session)
             }
         });
@@ -100,73 +158,109 @@ const Navbar = (props) => {
     const handleSignupOtp=async()=>{
         dataService.getSignup(Email,firstname,lastname).then((response)=>{
             console.log("response",response)
-            setSession(response.data.data.data.session)
+           setloading(false);
+            if(response.error_status)
+            {
+                setError(true)
+                setErrorMessage(response.message)
+                console.log(response.message)
+            }
+            else {
+                setError(false)
+                setpopup('otpsignup');
+                setSession(response.data.data.data.session)
+            }
+            
         });
     }
     const Loginhandler=(type)=>{
-            setshow(true);
-            setpopup(type);
-      if(type==='otp'|| type==='resend') {
-            handleLoginOtp()    
-            setActivatebutton(false)    
-        }
-        else if(type=='otpverification' && !Error) {
-                Otpverification()
-                setActivatebutton(false)
+                setErrorMessage('')
+                setshow(true);
+            if(type==='login'){
+            setpopup(type)
             }
+             if(type==='otp') {
+                 setloading(true)
+                     handleLoginOtp() 
+                    //  setdisabled(false)
+            }else if(type==='resend'){
+                handleResendOtp();
+                setdisabled(true);
+            }else if(type=='otpverification') {
+                       setloading(true)
+                       Otpverification('login') 
+                        setActivatebutton(false)
+                        
+                    }           
+        else if(type==='change')
+        {
+            setpopup(type)
+           setActivatebutton(true)
         }
+    }
     
     const Signuphandler=(type)=>{
-            setshow(true);
-            setpopup(type);
-        if(type==='otpsignup'|| type==='resend1'){   
-            handleSignupOtp();
-            setActivatebutton(false)
-        }
-         else if(type==="otpverification") {
-           Otpverification();
-           setActivatebutton(false)
-        }
+             setErrorMessage('')
+             setshow(true);
+                if(type==='signup'){
+                    setpopup(type);
+                }   
+                if(type==='otpsignup'){ 
+                    setdisabled(false)
+                    setloading(true); 
+                     if(!validateInput())
+                    {
+                        setError(true);
+                        return;
+                    }
+                    handleSignupOtp()
+                     
+                }else if(type==='resend')
+                {
+                    handleResendOtp();
+                    setdisabled(true);
+                }
+                else if(type==="otpverification") {
+                    setloading(true)
+                    Otpverification('signup')
+                     setActivatebutton(false)
+                }
     }
-    const logouthandler=()=>{
-        console.log('function')
-        localStorage.removeItem('user')
-        setDropdown(false);
-        setLogin(false);
-      }
-    const dropdownhandler=()=>{
-        console.log("this dropdown function is calling")
-      setDropdown(true);
+   const validateInput=()=>{
+       if(!firstname || !lastname || !validateEmailforsignup(Email)){
+           setErrorMessage('Please Fill All the Fields')
+           return false
+       }
+    return true
+}
+   const validateEmailforsignup = (email) => {
+    setErrorMessage('')
+    setEmail(email);
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(Email).toLowerCase())
+}
+    const validateEmail = (e) => {
+        setErrorMessage('')
+        setEmail(e.target.value);
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(re.test(String(Email).toLowerCase())) {
+            setActivatebutton(true);
+        }
+        else setActivatebutton(false);
     }
-    
         const takeFirstname=(e)=>{
+            setErrorMessage('')
             setFirstname(e.target.value);
         }
         const takeLastname=(e)=>{
-            setFirstname(e.target.value);
-        }
-        const validateEmail = (e) => {
-            var email = e.target.value
-            setEmail(email);
-            if (validator.isEmail(email)) {
-            if(email.length>0){
-             setActivatebutton(true);
-            }else{
-                setActivatebutton(false);
-             }
-            }
-            else {
-            setActivatebutton(false);
-            }
+            setErrorMessage('')
+            setLastname(e.target.value);
         }
         const handleotpchange=(otp)=>{
             setOtp(otp);
             if(otp.length===6)
                  setVeri(true);
-        }
-        const reloadhandler=()=>{
-            setshow(false)
-            window.location.reload();
+             else setVeri(false);    
         }
     return (
         <>     
@@ -257,46 +351,16 @@ const Navbar = (props) => {
                                     </a>
                                 </li>
                             { !login ?
-                                (<li className="dropdown">
+                             (<li className="dropdown">
                             <a href="#" data-toggle="modal" data-target="#loginModal">
                                 <img src="../../images/login.svg" alt="login"/>
                                 <span onClick={()=>Loginhandler('login')}>Login/Sign Up</span>
                             </a>
                             </li>):
-                            (
-                            <li className="dropdown">
-                                <a aria-expanded="false" className="login-signup-link" aria-haspopup="true" data-toggle="dropdown" href="#"
-                                   id="dropdownMenuButton1">
-                                    <img alt="login" src="../../images/login.svg"/>
-                                    <span onClick={()=>dropdownhandler()}>{profilename}</span>
-                                </a>
-                                <ul aria-labelledby="dropdownMenuButton1" className={["dropdown-menu profile-menu ", Dropdown? 'show' : ''].join(' ')}>
-                                    <li>
-                                        <a href="#">Profile</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Orders</a>
-                                    </li>
-                                    <li>
-                                       <a href="#">Favourites</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Rewards</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Notifications</a>
-                                   </li>
-                                    <li>
-                                        <a href="#">Reviews</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Settings</a>
-                                  </li>
-                                    <li>
-                                        <a className="logout-link" href="#" onClick={logouthandler}>Logout</a>
-                                   </li>
-                               </ul>
-                            </li>
+                            (     <>
+                                  
+                                   <ProfileDropdown profile={profilename}/>
+                                   </>
                             )
                             }
                             </ul>
@@ -444,9 +508,8 @@ const Navbar = (props) => {
                     </div>
                 </div>
             </div>
-            
-        <div className={["modal fade login-modal", show && popup==='login'? "show display-popup" : ""].join(" ")}
-            id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div className={["modal fade login-modal", show && (popup==='login' || popup==='change')? "show display-popup" : ""].join(" ")}
+            id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
            <div className="modal-dialog modal-dialog-centered" role="document">
               <div className="modal-content" id="loginModalLabel">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -458,20 +521,49 @@ const Navbar = (props) => {
                 <div className="modal-body">
                     <p>Login with your Email Address</p>
                     <form autoComplete="off">
-                        <div className="form-group">
+                        <div className={["form-group",Error? " form-error":" "].join('')}>
                             <input type="text" id="mob-email" name="mob-email" className="form-control"  placeholder=" "onChange={(e)=>validateEmail(e)}/>
-                            <label for="mob-email" className="input-label">Enter Email Address</label>
-                        </div>
+                            <label htmlFor="mob-email" className="input-label"> Email Address</label>
+                        </div> 
+                        {Error && <p className="error"> {ErrorMessage} </p>}
+                        {/* {success && <p> {successMessage} </p>} */}
                         <div className="form-group">
-                            <button type="reset" className="form-control login-buttons" id={!activatebutton?"otp-fade-btn":"" }value="Send OTP" data-toggle="modal" data-target={activatebutton?"#mobileOtpModal":""} data-dismiss="modal" aria-label="Close" onClick={()=>Loginhandler('otp')}>Send OTP</button>
+                            {!activatebutton?
+                            (<button type ="button"className="form-control login-buttons" id="otp-fade-btn" value="Send OTP" data-toggle="modal" data-target={activatebutton?"#mobileOtpModal":""} data-dismiss="modal" aria-label="Close" >Send OTP</button>)
+                            :
+                            (
+                            <button  type="button"className="form-control login-buttons" value="Send OTP" data-toggle="modal" data-target="#mobileOtpModal" data-dismiss="modal" aria-label="Close" onClick={()=>Loginhandler('otp')} disabled={loading}>
+                             Send OTP
+                             {loading && (
+                                       <span className="spinner-border custom-spinner " role="status" aria-hidden="true"></span>
+                             )}
+                             </button>)
+                            }
                         </div>
                     </form>
                     <div className="or">
                         <span>or</span>
                     </div>
                     <div className="login-with">
-                        <a href="#"><img src="../../images/g-icon.svg" alt="Google_Icon"/>with Google</a>
-                        <a href="#"><img src="../../images/f-icon.svg" alt="Facebook_Icon"/>with Facebook</a>
+                        <GoogleLogin
+                        clientId={googleClientID}
+                        autoLoad={false}
+                        render={renderProps => (
+                        <a href="#" onClick={renderProps.onClick} disabled={renderProps.disabled}><img src="images/g-icon.svg" alt="Google"/>with Google</a>
+                        )}
+                        buttonText="Login"
+                        onSuccess={GLogin}
+                        onFailure={GLogin}
+                       />
+                        <FacebookLogin
+                                    appId={facebookAppID}
+                                    autoLoad={false}
+                                    fields='first_name,last_name,email, picture'
+                                    callback={FBLogin}
+                                    render={renderProps => (
+                                        <a href="#" onClick={renderProps.onClick}><img src="../../images/f-icon.svg" alt="Facebook"/>with Facebook</a>
+                                    )}
+                                />
                     </div>
                 </div>
                 <div className="modal-footer">
@@ -480,7 +572,7 @@ const Navbar = (props) => {
             </div>
         </div>
     </div>
-    <div className={["modal fade login-modal", show && (popup==='otp'||popup==='resend')? "show display-popup" : ""].join(" ")} id="mobileOtpModal" tabindex="-1" role="dialog" aria-labelledby="mobileOtpModalLabel" aria-hidden="true">
+    <div className={["modal fade login-modal",show && (popup==='otp')? "show display-popup" : ""].join(" ")} id="mobileOtpModal" tabIndex="-1" role="dialog" aria-labelledby="mobileOtpModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content" id="mobileOtpModalLabel">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -492,33 +584,38 @@ const Navbar = (props) => {
                 <div className="modal-body">
                     <div className="mobile-otp">
                         <p>6 digit OTP has been sent to your Email Address,{Email}, please enter to Log in <span>OTP valid for 10 minutes.</span></p>
-                        <a href="#" data-toggle="modal" data-target="#loginModal" data-dismiss="modal" aria-label="Close"onClick={()=>Loginhandler('login')}>Change Email Address</a>
+                        <a href="#" data-toggle="modal" data-target="#loginModal" data-dismiss="modal" aria-label="Close"onClick={()=>Loginhandler('change')}>Change Email Address</a>
                     </div>
-                    {/* <form className="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">
-                        <div className="form-group">
-                            <label for="digit-1"></label><input className="ml-0" type="password" id="digit-1" name="digit-1" data-next="digit-2" />
-                            <label for="digit-2"></label><input type="password" id="digit-2" name="digit-2" data-next="digit-3" data-previous="digit-1" />
-                            <label for="digit-3"></label><input type="password" id="digit-3" name="digit-3" data-next="digit-4" data-previous="digit-2" />
-                            <label for="digit-4"></label><input type="password" id="digit-4" name="digit-4" data-next="digit-5" data-previous="digit-3" />
-                            <label for="digit-5"></label><input type="password" id="digit-5" name="digit-5" data-next="digit-6" data-previous="digit-4" />
-                            <label for="digit-6"></label><input type="password" id="digit-6" name="digit-6" data-previous="digit-5" />
-                        </div>
-                    </form> */}
-                    <OtpInput
+                    {Error &&
+                            (<>
+                            <p className="error">{ErrorMessage}</p> 
+                            </> )
+                          }
+                    <OtpInput className="otp-input"
                     value={otp}
                     onChange={handleotpchange}
                     numInputs={6}
-                    separator={<span>-</span>}
+                    clearInputs={true}
+                    separator={<span> </span>}
                 /> 
-                  <form>
+                  <form autoComplete="off">
                    <div className="form-group">
-                            <button type="reset" className="form-control login-buttons" id={!veri?"otp-fade-btn":""} value="check OTP" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" onClick={()=>Loginhandler('otpverification')}>Verify OTP</button>
+                     {!veri?
+                           (<button type="reset" className="form-control login-buttons" id="otp-fade-btn" value="check OTP" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" >Verify OTP</button>)
+                           :
+                           (<button type="reset" className="form-control login-buttons"  value="check OTP" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" onClick={()=>Loginhandler('otpverification')} disabled={loading}>
+                               Verify OTP
+                               {loading && (
+                                       <span className="spinner-border custom-spinner " role="status" aria-hidden="true"></span>
+                             )}
+                             </button>)
+                     }
                         </div>
                         </form>
                     <div className="remain-timer">
                         <h2 id="timer"></h2>
                         <div className="resend-otp">
-                            <p>Did not receive? <a href="#" onClick={()=>Loginhandler('resend')}>Resend</a></p>
+                            <p>Did not receive? <a href="#" onClick={()=>Loginhandler('resend')}disabled={Disabled}>Resend</a></p>
                         </div>
                     </div>
                 </div>
@@ -527,7 +624,7 @@ const Navbar = (props) => {
     </div>
     <div className={["modal fade login-modal signup-modal", show && popup==='signup'? "show display-popup" : ""].join(
               " "
-            )}id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel" aria-hidden="true">
+            )}id="signupModal" tabIndex="-1" role="dialog" aria-labelledby="signupModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content" id="signupModalLabel">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -537,30 +634,64 @@ const Navbar = (props) => {
                     <h2>Sign up</h2>
                 </div>
                 <div className="modal-body">
+                       {Error &&
+                            (<>
+                            <p className="error">{ErrorMessage}</p> 
+                            </> )
+                          }
                     <form autoComplete="off">
                         <div className="form-group full-name">
                             <input type="text" id="first-name" name="first-name" className="form-control" placeholder=" "onChange={(e)=>takeFirstname(e)}/>
-                            <label for="first-name" className="input-label" >First Name</label>
+                            <label htmlFor="first-name" className="input-label" >First Name</label>
                         </div>
                         <div className="form-group full-name">
                             <input type="text" id="Last-name" name="Last-name" className="form-control" placeholder=" "onChange={(e)=>takeLastname(e)}/>
-                            <label for="Last-name" className="input-label" >Last Name</label>
+                            <label htmlFor="Last-name" className="input-label" >Last Name</label>
                         </div>
                         <div className="form-group">
-                            <input type="email" id="email" name="email" className="form-control" placeholder=" " onChange={(e)=>validateEmail(e)}/>
-                            <label for="email" className="input-label">Email Address</label>
+                            <input type="email" id="email" name="email" className="form-control" placeholder=" " onChange={(e)=>validateEmailforsignup(e.target.value)}/>
+                            <label htmlFor="email" className="input-label">Email Address</label>
                         </div>
                         <p className="text-agree">Signing up for an account, you agree to our <br/><a href="#">Terms & Conditions</a>, <a href="#">Privacy Policy</a> and <a href="#">Cancellation & Refund Policies</a></p>
                         <div className="form-group">
-                            <button type="reset" className="form-control login-buttons" id={!activatebutton?"otp-fade-btn":""} value="Send OTP" data-toggle="modal" data-target="#emailOtpModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('otpsignup')}>Send OTP</button>
+                        {/* {!activatebutton?
+                            (
+                            <button type="button"className="form-control login-buttons" id="otp-fade-btn" value="Send OTP" data-toggle="modal" data-target="#emailOtpModal" data-dismiss="modal" aria-label="Close">Send OTP</button>)
+                            : */}
+                            <button type="button" className="form-control login-buttons" value="Send OTP" data-toggle="modal" data-target="#emailOtpModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('otpsignup')} disabled={loading}>
+                                Send OTP
+                                {loading && (
+                                       <span className="spinner-border custom-spinner " role="status" aria-hidden="true"></span>
+                                 )}
+                                </button>
+                            
                         </div>
                     </form>
                     <div className="or">
                         <span>or</span>
                     </div>
                     <div className="login-with">
-                        <a href="#"><img src="../../images/g-icon.svg" alt="Google_Icon"/>with Google</a>
-                        <a href="#"><img src="../../images/f-icon.svg" alt="Facebook_Icon"/>with Facebook</a>
+                        {/* <a href="#"><img src="../../images/g-icon.svg" alt="Google_Icon"/>with Google</a> */}
+                        <GoogleLogin
+                        clientId={googleClientID}
+                        autoLoad={false}
+                        render={renderProps => (
+                        <a href="#" onClick={renderProps.onClick} disabled={renderProps.disabled}><img src="images/g-icon.svg" alt="Google"/>with Google</a>
+                        )}
+                        buttonText="Login"
+                        onSuccess={GLogin}
+                        onFailure={GLogin}
+                    />
+                        {/* <a href="#"><img src="../../images/f-icon.svg" alt="Facebook_Icon"/>with Facebook</a> */}
+                        <FacebookLogin
+                                    appId={facebookAppID}
+                                    autoLoad={false}
+                                    fields='first_name,last_name,email, picture'
+                                    callback={FBLogin}
+                                    render={renderProps => (
+                                        <a href="#" onClick={renderProps.onClick}><img src="../../images/f-icon.svg" alt="Facebook"/>with Facebook</a>
+                                    )}
+                                />
                     </div>
                 </div>
                 <div className="modal-footer">
@@ -569,9 +700,9 @@ const Navbar = (props) => {
             </div>
         </div>
     </div>
-    <div className={["modal fade login-modal signup-modal", show && (popup==='otpsignup'||popup==='resend1')? "show display-popup" : ""].join(
+    <div className={["modal fade login-modal signup-modal", show && (popup==='otpsignup')? "show display-popup" : ""].join(
               " "
-            )} id="emailOtpModal" tabindex="-1" role="dialog" aria-labelledby="emailOtpModalLabel" aria-hidden="true">
+            )} id="emailOtpModal" tabIndex="-1" role="dialog" aria-labelledby="emailOtpModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content" id="emailOtpModalLabel">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -583,34 +714,35 @@ const Navbar = (props) => {
                 <div className="modal-body">
                     <div className="mobile-otp">
                         <p>6 digit OTP has been sent to your Email Address, {Email}, please enter to Signup <span>OTP valid for 10 minutes.</span></p>
-                        <a href="#" data-toggle="modal" data-target="#signupModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('signup')}>Change Email Address</a>
                     </div>
-                    {/* <form className="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">
-                        <div className="form-group">
-                            <label for="digit-11"></label><input className="ml-0" type="password" id="digit-11" name="digit-11" data-next="digit-12" onChange={(e)=>inputcheck(e)}/>
-                            <label for="digit-12"></label><input type="password" id="digit-12" name="digit-12" data-next="digit-13" data-previous="digit-11" onChange={(e)=>inputcheck(e)}/>
-                            <label for="digit-13"></label><input type="password" id="digit-13" name="digit-13" data-next="digit-14" data-previous="digit-12" onChange={(e)=>inputcheck(e)}/>
-                            <label for="digit-14"></label><input type="password" id="digit-14" name="digit-14" data-next="digit-15" data-previous="digit-13" onChange={(e)=>inputcheck(e)}/>
-                            <label for="digit-15"></label><input type="password" id="digit-15" name="digit-15" data-next="digit-16" data-previous="digit-14" onChange={(e)=>inputcheck(e)}/>
-                            <label for="digit-16"></label><input type="password" id="digit-16" name="digit-16" data-next="digit-17" data-previous="digit-14" onChange={(e)=>inputcheck(e)}/>
-                        </div>
-                        
-                    </form> */}
-                     <OtpInput
+                    {Error &&
+                            (<>
+                            <p className="error">{ErrorMessage}</p> 
+                            </> )
+                          }
+                     <OtpInput className="otp-input"
                     value={otp}
                     onChange={handleotpchange}
                     numInputs={6}
-                    separator={<span>-</span>}
-                /> 
+                    separator={<span> </span>}/> 
                   <form>
                    <div className="form-group">
-                            <button type="reset" className="form-control login-buttons" id={!veri?"otp-fade-btn":""} value="check OTP" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('success')}>Verify OTP</button>
-                        </div>
-                        </form>
+                     {!veri?
+                           ( <button type="reset" className="form-control login-buttons" id="otp-fade-btn" value="check OTP" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" >Verify OTP</button>)
+                           :
+                           ( <button type="reset" className="form-control login-buttons" id={!veri?"otp-fade-btn":""} value="check OTP" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('otpverification')} disabled={loading}>
+                               Verify OTP
+                               {loading && (
+                                       <span className="spinner-border custom-spinner " role="status" aria-hidden="true"></span>
+                             )}
+                               </button>)
+                     }
+                    </div>
+                    </form>
                     <div className="remain-timer">
                         <h2 id="newtimer"></h2>
                         <div className="resend-otp">
-                            <p>Did not receive? <a href="#" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('resend')}>Resend</a></p>
+                            <p>Did not receive? <a href="#" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('resend')} disabled={Disabled}>Resend</a></p>
                         </div>
                     </div>
                 </div>
@@ -621,31 +753,18 @@ const Navbar = (props) => {
             <div className="modal-dialog modal-dialog-centered" role="document">
                 <div className="modal-content" id="successModalLabel">
                     <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                        <img src="../../images/close.svg" alt="close-icon" onClick={reloadhandler}/>
+                        <img src="../../images/close.svg" alt="close-icon" onClick={()=>setshow(false)}/>
                     </button>
                     <div className="modal-header">
                     </div>
                     <div className="modal-body success-body">
                         <img src="../../images/success_icon.svg" alt="Success_Image"/>
-                        <p>You have Successfully Signed up!</p>
+                        <p>You have Successfully {successMessage}!</p>
                     </div>
                 </div>
             </div>
         </div>
         </>
     );
-};
-const mapStateToProps = (state) => {
-    const {
-      Signup,Signupotp,Login
-    } = state
-    return {Signup,Signupotp,Login}
-  }
-  const actionCreator = {
-    getSignup: UserAction.getSignup ,
-    getSignupOtp: UserAction.getSignupOtp ,
-    getLogin:UserAction.getLogin
-       
-  }
-    
-  export default connect(mapStateToProps, actionCreator)(Navbar);
+};    
+  export default Navbar;

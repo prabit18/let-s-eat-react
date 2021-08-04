@@ -1,24 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import {foodCategoryName} from "../constants";
 import dynamic from "next/dynamic";
 import { connect } from 'react-redux';
-import RestaurantListing from '../RestaurantListing';
 import RestaurantsList from '../RestaurantListing/restaurantslist';
 import router, { useRouter } from 'next/router';
 import { UserAction } from '../../redux/actions/user.action';
-// import restaurantdetailpage from '../../pages/restaurantdetail';
+import Restaurant from '../RestaurantListing/1restaurant';
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
-//{title}
 const FoodListing = (props) => {
-    //props.getRestaurants("curated_list");
+   // console.log(props)
     const router = useRouter()
     const handleroute=(type)=>{
         router.push({pathname:"/restaurants/",query:{Curated_type:type}})
         props.getRestaurants("curated_list");
     }
-    //console.log("data is coming 2",props.restaurants.data);
     const options = {
         loop:true,
         margin:15,
@@ -65,7 +62,6 @@ const FoodListing = (props) => {
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>
-                          
                          { props.restaurants.data && props.restaurants.data.map((item)=>(
                              //<RestaurantsList item={elem}/>
                             <div className="food-product hvr-shadow" key={item.id}>

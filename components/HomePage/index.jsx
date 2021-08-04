@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 const HomePage = (props) => {
     useEffect(() => {
     props.getCuratedlist();
-    props.getRestaurants('curated_list');
+     props.getRestaurants();
   },[]);
 
 const {Curatedlist,Restaurants} = props
@@ -16,16 +16,16 @@ const {Curatedlist,Restaurants} = props
     return (
         <>
             <HomeTopSection/>
-            {Curatedlist.length > 0 && Curatedlist.map((item) => <FoodListing data={item} key={item.id} /> )}
+            {Curatedlist.length > 0 && Curatedlist.map((item) => <FoodListing data={item} key={item.id} {...props} /> )}
         </>
     );
 };
 
 const mapStateToProps = (state) => {
   const {
-    Curatedlist,Restaurant
+    Curatedlist,Restaurants
   } = state
-  return {Curatedlist,Restaurant}
+  return {Curatedlist,Restaurants}
 }
 const actionCreator = {
   getCuratedlist: UserAction.getCuratedlist ,
