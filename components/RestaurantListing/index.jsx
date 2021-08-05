@@ -1,5 +1,6 @@
 import { event } from 'jquery';
 import {React,useEffect, useState} from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { connect } from 'react-redux';
 import { UserAction } from '../../redux/actions/user.action';
 import RestaurantsList from './restaurantslist';
@@ -13,6 +14,7 @@ const RestaurantListingPage = (props) => {
       props.getRestaurants(type)
       setFiltertype(type);
   }
+  
 	return (
 		<>
         <section className="restaurant-list">
@@ -37,7 +39,8 @@ const RestaurantListingPage = (props) => {
                                         </ul>
                                     </div>
                                 </div>
-                            <RestaurantsList/> 
+                                
+                                <RestaurantsList handleFilter={handleFilter}/> 
                             </div>
                         </div>
                     </div>

@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import { connect, useSelector } from "react-redux";
 import { UserAction } from "../../../redux/actions/user.action";
+import MenulistContext from "../../Context/MenulistContext";
+import MenulistContetx from "../../Context/MenulistContext";
 import Customizable from "../Customizable";
 import Menu from "./menu";
 const MenuItems = (props) => {
+  const {foodItems,SetFoodItems,loader} =useContext(MenulistContext)
+
   const [foodtype, setFoodType] = useState("Menu");
   const [Name, setName] = useState("");
-  const [foodItems, SetFoodItems] = useState(JSON.parse(localStorage.getItem('menuItems')));
+  // const [foodItems, SetFoodItems] = useState([]);
   const [show, setShow] = useState(false);
   const [variant, setVariant] = useState(props.Menulist[0].variants);
   const allfoodtypes = [
@@ -15,22 +19,32 @@ const MenuItems = (props) => {
   var c = 0;
   var item_count = {};
 
-  const handleFoodItems = () => {
-    const FoodData = [...foodItems];
-    FoodData.map((value, i) => {
-      FoodData[i]["cart"] = [];
-      FoodData[i]["count"] = 0;
-    });
-    SetFoodItems(FoodData);
-  };
+  const [searchValue,setSearchValue]=useState('')
+  const searchFood =(val)=>{
+    if(searchValue===""){
+      return val
+    }else if(val.name.toLowerCase().includes(searchValue.toLowerCase())){
+return val
+  }
+}
+// useEffect(() => {
+//   SetFoodItems(JSON.parse(localStorage.getItem('menuItems')))
+
+// }, [])
+
+
   useEffect(() => {
     //handleFoodItems();
         // When local storage changes, dump the list to
         // the console.
-        SetFoodItems(JSON.parse(localStorage.getItem('menuItems')))
+        if(foodItems!==localStorage.getItem('menuItems')){
+          SetFoodItems(JSON.parse(localStorage.getItem('menuItems')))
+
+        }
       
 
-  }, [foodItems]);
+  }, []);
+ 
 
   item_count["Menu"] = props.Menulist.length;
   for (let i = 0; i < allfoodtypes.length; i++) {
@@ -98,7 +112,6 @@ const MenuItems = (props) => {
       localStorage.setItem('menuItems',JSON.stringify(food))
       SetFoodItems(food);
       props.getcart(food);
-      
     } else {
       localStorage.setItem('menuItems',JSON.stringify(food))
       SetFoodItems(food);
@@ -116,6 +129,10 @@ const MenuItems = (props) => {
     SetFoodItems(food);
     props.getcart(food);
   };
+const handleSearchChange=(e)=>{
+  console.log("caling",e.target.value);
+setSearchValue(e.target.value)
+}
   return (
     <>
       <div className="header-border">
@@ -129,6 +146,7 @@ const MenuItems = (props) => {
               name="search-dish"
               placeholder="Search your dish"
               id="search-dish"
+              
             />
             <img
               alt="close Icon"
@@ -164,6 +182,7 @@ const MenuItems = (props) => {
                 name="Search"
                 placeholder="Search your dish"
                 id="search-your-dish"
+                onChange={(e)=>handleSearchChange(e)}
               />
               <img
                 alt="Search Icon"
@@ -188,7 +207,7 @@ const MenuItems = (props) => {
                   foodtype === type ? "active food-filter" : "food-filter"
                 }
               >
-                <a href="#">
+                <a >
                   {type}({item_count[type]})
                 </a>
               </li>
@@ -200,10 +219,10 @@ const MenuItems = (props) => {
             {foodtype}({item_count[foodtype]})
           </h2>
           {foodItems &&
-            foodItems.map((item, i) => (
+            foodItems.filter((val)=>searchFood(val)).map((item, i) => (
               // <Menu item={item}/>
 
-              <div className="menu-items" key={item.id}>
+              <div className={item.status?"menu-items":'menu-items menu-status-deactivate'} key={item.id}>
                 <img
                   alt={item.alt_text}
                   src={`https://development-cdn.letseat.co.uk/resize-image/140/${item.image_url}`}
@@ -269,20 +288,21 @@ const MenuItems = (props) => {
                         </div>
                       ) : (
                         <div className="menu-add-btn" key={i}>
-                          <a
-                            href="#"
+                          <button
+                           
                             onClick={() =>
                               handleAdd(
                                 item.id,
                                 "add",
                                 i,
                                 item.name,
-                                item.variants, item.veg
+                                item.variants,
+                                item.veg
                               )
                             }
                           >
                             Add
-                          </a>
+                          </button>
                         </div>
                       )}
                     </>
@@ -386,3 +406,4 @@ const actionCreator = {
   getcart: UserAction.getcart,
 };
 export default connect(mapStateToProps, actionCreator)(MenuItems);
+

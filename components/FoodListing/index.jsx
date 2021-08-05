@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import {foodCategoryName} from "../constants";
 import dynamic from "next/dynamic";
 import { connect } from 'react-redux';
@@ -6,6 +6,9 @@ import RestaurantsList from '../RestaurantListing/restaurantslist';
 import router, { useRouter } from 'next/router';
 import { UserAction } from '../../redux/actions/user.action';
 import Restaurant from '../RestaurantListing/1restaurant';
+import BottomSectionLoader from '../Loader/BottomSectionLoader';
+import CategorySectionLoader from '../Loader/CategorySectionLoader';
+// import restaurantdetailpage from '../../pages/restaurantdetail';
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
@@ -16,6 +19,13 @@ const FoodListing = (props) => {
         router.push({pathname:"/restaurants/",query:{Curated_type:type}})
         // props.getRestaurants();
     }
+    const [loading, setloading] = useState(true)
+    useEffect(() => {
+        setTimeout(() => {
+            setloading(false)
+
+        }, 100);
+    }, [])
     const options = {
         loop:true,
         margin:15,
@@ -33,7 +43,7 @@ const FoodListing = (props) => {
                 576:{
                     items:1.8,
                     margin:5
-                },
+                },  
                 600:{
                     items:2.5,
                     margin:10
@@ -49,13 +59,14 @@ const FoodListing = (props) => {
             }
     }
     return (
-        <section className="food-listing">
+        <>
+       {props.restaurants.data && !loading &&<section className="food-listing">
             <div className="container custom-container" >
                 <div className="row">
                     <div className="col-md-12">
                         <div className="title-header">
                             <div className="removable"></div>
-                            <h2 className="header-text" ><span>{props.data.name} </span></h2>
+                            <h2 className="header-text" >{props.restaurants.data&&<span>{props.data.name} </span>}</h2>
                             
                                 <div className="view-all-btn">
                                 <a href={`/restaurants/?curated-list=${props.data.url}`}>View All</a>
@@ -100,7 +111,7 @@ const FoodListing = (props) => {
                     </div>
                 </div>
             </div>
-        </section>
+        </section>        }</>
     );
 };
 const mapStateToProps = (state) => {

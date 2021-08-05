@@ -14,6 +14,7 @@ export const dataService = {
     socialLogin,
     Mobileupadte,
     verifyMobileNumber,
+    getRestaurantsInfinite
 }
 
 async function getCuisines() {
@@ -49,6 +50,13 @@ async function getRestaurants(type) {
         "value":"desc"
              }
             }      
+       }else if(typeof type==="number"){
+                body={
+                    "pagination":{
+                     "page_size":10,
+                     "page":type
+                     }
+                 }
        }
        else if (type) {
             body={      
@@ -66,6 +74,30 @@ async function getRestaurants(type) {
     }
 }
 
+async function getRestaurantsInfinite(type) {
+    var body={}
+    console.log(typeof type)
+    try {
+         
+            
+       if(typeof type==="number"){
+                body={
+                    "pagination":{
+                     "page_size":10,
+                     "page":parseInt(type)
+                     }
+                 }
+       }
+       
+      
+        const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/restaurants/web/list', body);
+        return data.data
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+
+
 async function getCuratedList(type) {
     try {
         const data = await axios.post( apiURL+'curatedlist/web/featured_curated_list', {});
@@ -78,6 +110,7 @@ async function getCuratedList(type) {
 
 
 async function getMenuList(type) {
+    
     if(typeof type==="string"){
     var body={ "url":type};
     try {

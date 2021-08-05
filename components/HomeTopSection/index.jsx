@@ -1,21 +1,28 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import OffersSection from './OffersSection';
 import CategorySection from './CategorySection';
 import {connect} from 'react-redux';
-
+import HomepageTopLoader from '../Loader/HomepageTopLoader';
+import CategorySectionLoader from '../Loader/CategorySectionLoader';
+import { useRouter } from 'next/router';
 const HomeTopSection = (props) => {
-    const {Cuisines} = props
+    const history=useRouter()
+    const {Cuisines,Curatedlist} = props
+    const [loading, setloading] = useState(true)
+  
     return (
-        <div className="top-bg">
+        <div className={history.pathname.includes('/restaurants')?`page-banner`:'top-bg'}>
             <OffersSection/>
-            {Object.keys(Cuisines).length > 0 && <CategorySection/>}
+
+             <CategorySection/>
         </div>
     );
 };
 const mapStateToProps = (state) => {
     const {
-    Cuisines
+    Cuisines,
+    Curatedlist
   } = state
-  return {Cuisines}
+  return {Cuisines,Curatedlist}
 }
 export default connect(mapStateToProps)(HomeTopSection);

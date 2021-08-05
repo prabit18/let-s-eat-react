@@ -1,37 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import { UserAction } from "../../../redux/actions/user.action";
+import MenulistContext from "../../Context/MenulistContext";
 import MenuList from "../MenuList";
 const CartSummary = (props) => {
+  const { foodItems, SetFoodItems, loader } = useContext(MenulistContext);
+  console.log("Cart food", foodItems);
   const { Menulist, Restaurant } = props;
-  const [menuListDetails, setMenuListDetails] = useState(JSON.parse(localStorage.getItem('menuItems'))
-  );
-  var localData = JSON.parse(localStorage.getItem("menuItems"));
-  useEffect(() => {
-      // When local storage changes, dump the list to
-      // the console.
-      setMenuListDetails(JSON.parse(localStorage.getItem("menuItems")));
-    
-  }, [menuListDetails]);
-
-  const doEmptyAction = localData && localData.some((o) => o.count === 0);
-  
   var cartArray = [];
+
+  const doEmptyAction = foodItems && foodItems.some((o) => o.count === 0);
+useEffect(() => {
+  localStorage.setItem('Restaurant-details',JSON.stringify(Restaurant))
+}, [])
   if (doEmptyAction) {
-    menuListDetails.filter((val) => {
+    foodItems.filter((val) => {
       if (val.count !== 0) {
         cartArray.push({
           id: val.cart[0].id,
           name: val.cart[0].name,
           count: val.count,
           price: val.cart[0].price,
-          veg:val.cart[0].veg,
+          veg:val.veg
         });
       }
     });
   }
   const findindex = (id) => {
-    var elementPos = menuListDetails
+    var elementPos = foodItems
       .map(function (x) {
         return x.id;
       })
@@ -39,31 +35,38 @@ const CartSummary = (props) => {
     return elementPos;
   };
   const decrement = (id) => {
-    let food = [...menuListDetails];
+    let food = [...foodItems];
     let index = findindex(id);
     let product = food[index];
     product.count = product.count - 1;
     if (product.count === 0) {
       product.cart = [];
-      localStorage.setItem('menuItems',JSON.stringify(food))
-      setMenuListDetails(food);
+      localStorage.setItem("menuItems", JSON.stringify(food));
+      SetFoodItems(food);
+      props.getcart(food);
     } else {
-      localStorage.setItem('menuItems',JSON.stringify(food))
-      setMenuListDetails(food);
+      localStorage.setItem("menuItems", JSON.stringify(food));
+      props.getcart(food);
     }
   };
-  
+
   const increment = (id) => {
-    let food = [...menuListDetails]
+    let food = [...foodItems];
     let index = findindex(id);
     let product = food[index];
 
     product.count = product.count + 1;
     localStorage.setItem("menuItems", JSON.stringify(food));
-
-    setMenuListDetails(localStorage.setItem("menuItems", JSON.stringify(food)));
+    SetFoodItems(food);
+    props.getcart(food);
   };
 
+  const [deliveryOption, setdeliveryOption] = useState();
+  const handleDeliveryOption = (e) => {
+    console.log("event", e.target.name);
+    localStorage.setItem('delivery_type',e.target.name)
+    setdeliveryOption(e.target.name);
+  };
   return (
     <>
       <div className="col-md-4 cart-summery-col">
@@ -82,7 +85,13 @@ const CartSummary = (props) => {
             <div className="delivery-option">
               <div className="toggle-section">
                 <div className="toggle-item">
-                  <input id="test3" name="radio-group" type="radio" />
+                  <input
+                    id="test3"
+                    name="delivery"
+                    checked={deliveryOption === "delivery" ? true : false}
+                    type="radio"
+                    onChange={(e) => handleDeliveryOption(e)}
+                  />
                   <label className="delivery" for="test3">
                     Delivery
                     <br />
@@ -90,7 +99,13 @@ const CartSummary = (props) => {
                   </label>
                 </div>
                 <div className="toggle-item">
-                  <input id="test4" name="radio-group" type="radio" />
+                  <input
+                    id="test4"
+                    name="store-pickup"
+                    checked={deliveryOption === "store-pickup" ? true : false}
+                    type="radio"
+                    onChange={(e) => handleDeliveryOption(e)}
+                  />
                   <label className="store-pick" for="test4">
                     Store Pick up
                     <br />
@@ -107,7 +122,7 @@ const CartSummary = (props) => {
               {cartArray.length > 0
                 ? cartArray.map((item, i) => (
                     <div className="added-food-box">
-                      <div className="summery-food-item">
+                      <div className={"summery-food-item"}>
                         <div className="food-item-wrap">
                           <p>{item.name}</p>
                           <p className="food-item-price">£{item.price}</p>
@@ -146,23 +161,20 @@ const CartSummary = (props) => {
                         <p>£{item.price}</p>
                       </div>
                     </div>
-                )) : (
-                <div style={{ textAlign: "center" }}></div>
-              )
-                }
-                </div>
+                  ))
+                : ""}
+            </div>
             <div className="card-footer">
-              <div className="proceed-btn">
-                {cartArray.length > 0 ? (
-                  <a href="/checkout" className={"disbled"}>
-                    Proceed to checkout
-                  </a>
-                ) : (
-                  <a href="#" style={{ opacity: 0.4, cursor: "default" }}>
-                    Proceed to checkout
-                  </a>
-                )}
-              </div>
+              {cartArray.length > 0 &&deliveryOption!==undefined ? (
+                <div className="proceed-btn">
+                  <a href="/checkout">Proceed to Checkout</a>
+                </div>
+              ) : (cartArray.length <1&&
+                <div class="empty-cart-summery">
+                  <img src="/images/empty-bg.svg" alt="empty-cart" />
+                  <p>your cart is currently empty</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

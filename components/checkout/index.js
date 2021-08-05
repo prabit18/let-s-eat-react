@@ -181,8 +181,8 @@ return(
                                 <div className="cart-left-content">
                                     <div className="cart-details">
                                         <div className="cart-details-header">
-                                            <h3>KFC</h3>
-                                            <p>95 Linthorpe Road, Middlesbrough, TS1 5DD</p>
+                                            <h3>{restaurantdetail["name"]}</h3>
+                                            <p>{restaurantdetail["address"]}</p>
                                         </div>
                                         <div className="toggle-section">
                                             <div className="payment-item delivery-item">
@@ -257,49 +257,30 @@ return(
                                         </div> 
                                         <div className="selected-items">
                                             <div className="select-item">
-                                                <div className="select-item-inner">
+                                                {cartArray&&cartArray.map((item,i)=>(
+                                                    <div className="select-item-inner">
                                                     <div className="selected-item-left veg">
-                                                        <h4>Dream Team Bucket</h4>
-                                                        <p>£5.00</p>
+                                                        <h4>{item.name}</h4>
+                                                        <p>{item.price}</p>
                                                     </div>
                                                     <div className="selected-item-right">
                                                         <div className="new-counter quantity-block">
                                                             <div className="new-up">
-                                                                <button className="quantity-arrow-minus quantity">-</button>
+                                                                <button className="quantity-arrow-minus quantity" onClick={() => decrement(item.id)}>-</button>
                                                             </div>
                                                             <label className="label-input">
-                                                                <input className="quantity-num form-control quantity qty" type="text" value="1"/>
+                                                                <input className="quantity-num form-control quantity qty" type="text" value={item.count}/>
                                                             </label>
                                                             <div className="new-down">
-                                                                <button className="quantity-arrow-plus quantity">+</button>
+                                                                <button className="quantity-arrow-plus quantity" onClick={() => increment(item.id)}>+</button>
                                                             </div>
                                                         </div>
                                                         <h4>£5.00</h4>
                                                     </div>
                                                 </div>
+                                                ))}
                                             </div>
-                                            <div className="select-item">
-                                                <div className="select-item-inner">
-                                                    <div className="selected-item-left non-veg">
-                                                        <h4>Dream Team Bucket</h4>
-                                                        <p>£5.00</p>
-                                                    </div>
-                                                    <div className="selected-item-right">
-                                                        <div className="new-counter quantity-block">
-                                                            <div className="new-up">
-                                                                <button className="quantity-arrow-minus quantity">-</button>
-                                                            </div>
-                                                            <label className="label-input">
-                                                                <input className="quantity-num form-control quantity qty" type="text" value="1"/>
-                                                            </label>
-                                                            <div className="new-down">
-                                                                <button className="quantity-arrow-plus quantity">+</button>
-                                                            </div>
-                                                        </div>
-                                                        <h4>£5.00</h4>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
                                             <div className="select-item">
                                                 <div className="not-available-text">
                                                     <p>Below Item not available</p>
@@ -576,4 +557,12 @@ return(
   </>
   )
 }
-export default Checkout;
+const mapStateToProps = (state) => {
+    const { Menulist, Restaurant } = state;
+    return { Menulist, Restaurant  };
+  };
+  const actionCreator = {
+    getMenulist: UserAction.getMenulist,
+    getcart: UserAction.getcart,
+  };
+  export default connect(mapStateToProps, actionCreator)(Checkout);

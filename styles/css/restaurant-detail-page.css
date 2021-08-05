@@ -371,7 +371,7 @@ section.restaurant-list {
     font-family: 'Montserrat-SemiBold', sans-serif;
 }
 
-.menu-add-btn a, .menu-add-btn-small a {
+.menu-add-btn button , .menu-add-btn-small button {
     font-size: 15px;
     line-height: 16px;
     color: #457CD6;
@@ -379,6 +379,7 @@ section.restaurant-list {
     border: 1px solid #4F83D8;
     border-radius: 24px;
     font-family: 'Montserrat-Medium', sans-serif;
+    background-color: transparent;
 }
 
 .menu-wrap span {
@@ -1172,7 +1173,10 @@ p.food-item-price {
     overflow: hidden;
 }
 
-
+.menu-status-deactivate{
+    filter: grayscale(1);
+    pointer-events:none;
+}
 
 /*media query*/
 @media (max-width: 1200px) {

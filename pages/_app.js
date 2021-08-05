@@ -28,7 +28,7 @@ function MyApp({ Component, pageProps }) {
          <Favicon url='/images/favicon.ico'/>
           <Layout>
               
-              {!loader?<Component {...pageProps} />:<LoadingSpinner/>}
+              <Component {...pageProps} />
               
           </Layout>
          

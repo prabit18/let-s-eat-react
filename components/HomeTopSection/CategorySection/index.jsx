@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import dynamic from "next/dynamic";
 import router, { useRouter } from 'next/router';
+import CategorySectionLoader from '../../Loader/CategorySectionLoader';
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
@@ -43,7 +44,8 @@ const CategorySection = (props) => {
     
     const {cuisines} = props
     return (
-        <section className="main-category">
+        <>
+       {cuisines.data &&<section className="main-category">
             <div className="container custom-container">
                 <div className="row">
                     <div className="col-md-12">
@@ -51,7 +53,7 @@ const CategorySection = (props) => {
                             <div className="removable"></div>
                             <img src="images/Inspiration.svg" alt="Inspiration For Your Order"/>
                                 <div className="view-all-btn white-btn">
-                                <a href="/view-all-cuisines">View All</a>
+                                {/* <a href="/view-all-cuisines">View All</a> */}
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation" id="mainCategory" {...options}>
@@ -65,7 +67,8 @@ const CategorySection = (props) => {
                     </div>
                 </div>
             </div>
-        </section>
+        </section>}
+        </>
     );
 };
 

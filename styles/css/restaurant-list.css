@@ -228,6 +228,99 @@ p.rating-content {
     padding: 6px;
     background-color: #ffffff;
 }
+/*placeholder*/
+.white-background {
+    background: #FFF;
+    width: 100%;
+    height: 230px;
+    position: relative;
+    border: 1px solid #eeeeee;
+    border-radius: 10px;
+    box-shadow: 0 0 12px #e4eaea;
+    overflow: hidden;
+  }
+  
+  .inspirational-background{
+      height: 170px;
+      background: transparent;
+  }
+  .top-rated{
+      height: 320px;
+  }
+  /*placeholder for listing*/
+  .listing-placeholder{
+      width: 22.2%;
+      margin: 0 15px 30px 15px;
+  }
+@keyframes placeHolderShimmer{
+    0%{
+      background-position: -468px 0
+    }
+    100%{
+      background-position: 468px 0
+    }
+}
+.white-background .gray-background {
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #f6f7f8;
+  background: linear-gradient(to right, #eeeeee 8%, #eae9e9 18%, #eeeeee 33%);
+  background-size: 1000px 104px;
+  position: absolute;
+  height: 15px;
+}
+.gray-background.inter-crop-img {
+    height: 230px;
+    border-radius: 0;
+    top: 0;
+    width: 100%;
+    left: 0;
+}
+.inspirational-background .gray-background.inter-crop-img {
+    height: 140px;
+    border-radius: 10px;
+}
+.inspirational-background {
+    height: 170px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+.top-rated .gray-background.inter-crop-img{
+    height: 165px;
+}
+.inter-crop-name,.inter-crop-desc,
+.inter-crop-distance,.inter-crop-rating {
+    border-radius: 10px;
+    top: 146px;
+    width: 70%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.inter-crop-desc {
+    top: 210px;
+    height: 20px!important;
+    width: 90%!important;
+}
+.inter-crop-distance,.inter-crop-rating {
+    top: 280px;
+    height: 20px!important;
+    width: 35%!important;
+    left: 60px;
+}
+.inter-crop-rating{
+    right: -15px;
+    width: 20%!important;
+    left: auto;
+}
+.top-rated .inter-crop-name {
+    top: 180px;
+    width: 90%!important;
+    height: 20px!important;
+}
 
 /*media queries*/
 @media (max-width: 991px) {
@@ -298,6 +391,8 @@ p.rating-content {
         padding-right: 0;
     }
 }
+
+
 
 @media (max-width: 575px) {
     .resto-count h2 {
