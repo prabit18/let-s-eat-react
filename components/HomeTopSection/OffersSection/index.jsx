@@ -44,10 +44,10 @@ const OffersSection = (props) => {
               {...options}
             >
               {Data.map((data, i) => (
-                <a href="#" className="item hvr-shrink">
+                <a href="#" className="item hvr-shrink" key={i}>
                   <img
-                    src={`images/new-offers${i + 1}.jpg`}
-                    // src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/food-deliver-%26-offer-ads-design-template-664c0400c6b3d38642ed37f0f1e2134c_screen.jpg?ts=1591836204"
+                    // src={`images/new-offers${i + 1}.jpg`}
+                    src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/food-deliver-%26-offer-ads-design-template-664c0400c6b3d38642ed37f0f1e2134c_screen.jpg?ts=1591836204"
                     alt="Offer Image"
                   />
                 </a>

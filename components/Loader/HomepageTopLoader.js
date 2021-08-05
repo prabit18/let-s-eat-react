@@ -32,7 +32,7 @@ function HomepageTopLoader() {
     }
     return (
     <>
-<section className="offer-section">
+<section className="offer-section" >
             <div className="container custom-container">
                 <div className="row">
                     <div className="col-md-12">

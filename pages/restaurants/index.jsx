@@ -5,6 +5,7 @@ import store from "../../redux/store";
 import {UserAction} from "../../redux/actions/user.action";
 import { connect } from "react-redux";
 import RestaurantListLoader from '../../components/Loader/RestaurantListLoader';
+import MenuList from '../../components/RestaurantDetail/MenuList';
 
 
 const RestaurantListing = (props) => {
@@ -15,7 +16,7 @@ const {Restaurants} = props
 	return (
 		<>
 			<div className="page-banner">
-				{Object.keys(Restaurants).length > 0 ? <RestaurantListingPage/>:<RestaurantListLoader/>}
+				{Object.keys(Restaurants).length > 0 && Object.keys(MenuList).length>0 ? <RestaurantListingPage/>:<RestaurantListLoader/>}
 			</div>
 			
 		</>

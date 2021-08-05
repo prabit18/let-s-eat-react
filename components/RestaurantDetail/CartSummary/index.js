@@ -1,71 +1,168 @@
+import router from "next/router";
 import React, { useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import { UserAction } from "../../../redux/actions/user.action";
 import MenulistContext from "../../Context/MenulistContext";
 import MenuList from "../MenuList";
 const CartSummary = (props) => {
-  const { foodItems, SetFoodItems, loader } = useContext(MenulistContext);
-  console.log("Cart food", foodItems);
+  const { foodItems,
+    SetFoodItems,
+    loader,
+    menuObject,
+    setmenuObject,
+    cart_item_objs_v1,
+    setcart_item_objs_v1,
+    cart_item_objs_v2,
+    setcart_item_objs_v2,
+    cartItem, 
+    setCartItem} = useContext(MenulistContext);
+  const [alert, setalert] = useState(false);
+  const[count,setcount]=useState([])
   const { Menulist, Restaurant } = props;
-  var cartArray = [];
+ 
 
-  const doEmptyAction = foodItems && foodItems.some((o) => o.count === 0);
-useEffect(() => {
-  localStorage.setItem('Restaurant-details',JSON.stringify(Restaurant))
-}, [])
-  if (doEmptyAction) {
-    foodItems.filter((val) => {
-      if (val.count !== 0) {
-        cartArray.push({
-          id: val.cart[0].id,
-          name: val.cart[0].name,
-          count: val.count,
-          price: val.cart[0].price,
-          veg:val.veg
-        });
-      }
-    });
-  }
-  const findindex = (id) => {
-    var elementPos = foodItems
-      .map(function (x) {
+
+  useEffect(() => { 
+
+
+   }, [cartItem,cart_item_objs_v1,cart_item_objs_v2]);
+  
+  const findindex = (id) => { 
+    var elementPos = cartItem.map(function (x) {
         return x.id;
-      })
-      .indexOf(id);
+      }).indexOf(id);
     return elementPos;
   };
-  const decrement = (id) => {
-    let food = [...foodItems];
-    let index = findindex(id);
-    let product = food[index];
-    product.count = product.count - 1;
-    if (product.count === 0) {
-      product.cart = [];
-      localStorage.setItem("menuItems", JSON.stringify(food));
-      SetFoodItems(food);
-      props.getcart(food);
-    } else {
-      localStorage.setItem("menuItems", JSON.stringify(food));
-      props.getcart(food);
+  
+  const handleIncrement = (data) => {
+    let final = [
+      {
+        id: data.id,
+        quantity: 1,
+        name:data.name,
+        menu_id: data.id,
+        restaurant_id: data.restaurant_id,
+        
+      },
+    ];
+
+    handleCartinc(final);
+  };
+  const handleCartinc = (cartItemvalue) => {
+    // handlecartV2(cartItemvalue)
+    let CartV1={...cart_item_objs_v1}
+    if (CartV1[cartItemvalue[0].id]) {
+      CartV1[cartItemvalue[0].id]++;
     }
+    setcart_item_objs_v1(CartV1 );
+    localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
+
+    setcount((prevValue) => [...prevValue, count + 1]);
   };
 
-  const increment = (id) => {
-    let food = [...foodItems];
-    let index = findindex(id);
-    let product = food[index];
+  const handleDecrement = (data) => {
+    let final = [{
+        id: data.id,
+        quantity: 1,
+        name:data.name,
+        menu_id: data.id,
+        restaurant_id: data.restaurant_id,
+      }];
+    if (cart_item_objs_v1[data.id] === 1) {
+      let index = findindex(data.id);
+      if (index > -1) {
+        let originlArray=[...cartItem]
+        originlArray.filter((val)=>val!==originlArray[index])
+        originlArray.splice(index, 1);
+        setCartItem(originlArray);
+        localStorage.setItem('cartItem',JSON.stringify(originlArray))
 
-    product.count = product.count + 1;
-    localStorage.setItem("menuItems", JSON.stringify(food));
-    SetFoodItems(food);
-    props.getcart(food);
+        setcount((prevValue) => [...prevValue, count + 1]);      
+      }
+    }
+    handleCartRemove(final);
+  };
+
+  const handleCartRemove = (cartItemvalue) => {
+    let CartV1={...cart_item_objs_v1}
+    if (CartV1[cartItemvalue[0].id]) {
+      CartV1[cartItemvalue[0].id]--;
+    }
+    setcart_item_objs_v1(CartV1);
+    localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
+
+    setcount((prevValue) => [...prevValue, count + 1]);
+  };
+
+  //varient increment
+  const handleVarientincrement = (data) => {
+    handlecartSingleIncrement(data);
+    let CartV1={...cart_item_objs_v1}
+    if (CartV1[data.id]) {
+      CartV1[data.id]++;
+    }
+    setcart_item_objs_v1(CartV1);
+    localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
+
+    setcount((prv) => [...prv, count + 1]);
+  };
+  const handlecartSingleIncrement = (data) => {
+    let CartV2={...cart_item_objs_v2}
+    if (CartV2[data.menu_id]) {
+      CartV2[data.menu_id]++ ;
+    }
+    setcart_item_objs_v2(CartV2);
+    localStorage.setItem('cart_item_objs_v2',JSON.stringify(CartV2))
+
+    setcount((prv) => [...prv, count+1]);
+  };
+
+  //varient decrement
+  const handleVarientDecrement = (data) => {
+    handlecartSingleDecrement(data);
+    if (cart_item_objs_v1[data.id] === 1) {
+      let index = findindex(data.id);
+      if (index > -1) {
+        let originlArray=[...cartItem]
+        originlArray.filter((val)=>val!==originlArray[index])
+        originlArray.splice(index, 1);
+        setCartItem(originlArray);
+        localStorage.setItem('cartItem',JSON.stringify(originlArray))
+        setcount((prevValue) => [...prevValue, count + 1]);
+        
+      }
+     
+    }
+    let CartV1={...cart_item_objs_v1}
+    if (CartV1[data.id]) {
+      CartV1[data.id]--;
+    }
+    setcart_item_objs_v1(CartV1);
+    localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
+
+  };
+
+  const handlecartSingleDecrement = (data) => {
+    let cartV2={...cart_item_objs_v2}
+    if (cartV2[data.menu_id]) {
+      cartV2[data.menu_id]--;
+    }
+    setcart_item_objs_v2(cartV2);
+    localStorage.setItem('cart_item_objs_v2',JSON.stringify(cartV2))
   };
 
   const [deliveryOption, setdeliveryOption] = useState();
   const handleDeliveryOption = (e) => {
-    console.log("event", e.target.name);
-    localStorage.setItem('delivery_type',e.target.name)
     setdeliveryOption(e.target.name);
+    setalert(false);
+  };
+
+  const handleproceed = () => {
+    if (deliveryOption === undefined) {
+      setalert(true);
+    } else {
+      router.push("/checkout");
+    }
   };
   return (
     <>
@@ -84,34 +181,43 @@ useEffect(() => {
             </div>
             <div className="delivery-option">
               <div className="toggle-section">
-                <div className="toggle-item">
+                <div class="payment-item delivery-item">
                   <input
-                    id="test3"
+                    type="radio"
+                    id="test1"
                     name="delivery"
                     checked={deliveryOption === "delivery" ? true : false}
-                    type="radio"
                     onChange={(e) => handleDeliveryOption(e)}
                   />
-                  <label className="delivery" for="test3">
-                    Delivery
-                    <br />
-                    <span>{Restaurant.delivery_time}</span>
+                  <label for="test1" class="delivery">
+                    Delivery<br></br>
+                    <span>30-40 Mins</span>
                   </label>
+                  <img
+                    src="../../images/new-delivery-icon.svg"
+                    alt="delivery-icon"
+                  />
                 </div>
-                <div className="toggle-item">
+                <div class="payment-item delivery-item">
                   <input
-                    id="test4"
+                    type="radio"
+                    id="test2"
                     name="store-pickup"
                     checked={deliveryOption === "store-pickup" ? true : false}
-                    type="radio"
                     onChange={(e) => handleDeliveryOption(e)}
                   />
-                  <label className="store-pick" for="test4">
-                    Store Pick up
-                    <br />
-                    <span>{Restaurant.store_pickup_time}</span>
+                  <label for="test2" class="store-pick">
+                    Store Pick up<br></br>
+                    <span>15-20 Mins</span>
                   </label>
+                  <img
+                    src="../../images/new-store-pickup.svg"
+                    alt="store-icon"
+                  />
                 </div>
+              </div>
+              <div class="service-not-available">
+                {alert ? <p>Please choose your order type</p> : ""}
               </div>
             </div>
             <div className="added-items">
@@ -119,21 +225,22 @@ useEffect(() => {
                 <h4>{Restaurant.name}</h4>
                 <p>{Restaurant.area}</p>
               </div>
-              {cartArray.length > 0
-                ? cartArray.map((item, i) => (
+              {cartItem.length > 0
+                ? cartItem.map((item, i) => (
                     <div className="added-food-box">
                       <div className={"summery-food-item"}>
                         <div className="food-item-wrap">
-                          <p>{item.name}</p>
-                          <p className="food-item-price">£{item.price}</p>
+                          <p>{menuObject[item.id].name}-{item.name}</p>
+                          <p className="food-item-price">£{"  "}</p>
                         </div>
                       </div>
                       <div className="quantity-change">
+                       {item.variant===false?<>
                         <div className="new-counter quantity-block">
                           <div className="new-up">
                             <button
                               className="quantity-arrow-minus quantity"
-                              onClick={() => decrement(item.id)}
+                              onClick={() => handleDecrement(item)}
                             >
                               -
                             </button>
@@ -146,34 +253,67 @@ useEffect(() => {
                             about="317"
                             className="quantity-num form-control quantity qty"
                             type="number"
-                            value={item.count}
+                            value={cart_item_objs_v1[item.id]}
                             id="quantity-one"
                           />
                           <div className="new-down">
                             <button
                               className="quantity-arrow-plus quantity"
-                              onClick={() => increment(item.id)}
+                              onClick={() => handleIncrement(item)}
                             >
                               +
                             </button>
                           </div>
                         </div>
-                        <p>£{item.price}</p>
+                       </>:<>
+                       <div className="new-counter quantity-block">
+                          <div className="new-up">
+                            <button
+                              className="quantity-arrow-minus quantity"
+                              onClick={() => handleVarientDecrement(item)}
+                            >
+                              -
+                            </button>
+                          </div>
+                          <label
+                            className="restaurant-list-label"
+                            for="quantity-one"
+                          ></label>
+                          <input
+                            about="317"
+                            className="quantity-num form-control quantity qty"
+                            type="number"
+                            value={cart_item_objs_v1[item.id]}
+                            id="quantity-one"
+                          />
+                          <div className="new-down">
+                            <button
+                              className="quantity-arrow-plus quantity"
+                              onClick={() => handleVarientincrement(item)}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                       </>}
+                        <p>£{menuObject[item.id].le_price}</p>
                       </div>
                     </div>
                   ))
                 : ""}
             </div>
             <div className="card-footer">
-              {cartArray.length > 0 &&deliveryOption!==undefined ? (
-                <div className="proceed-btn">
-                  <a href="/checkout">Proceed to Checkout</a>
+              {cartItem.length > 0 ? (
+                <div className="proceed-btn" style={{cursor:"pointer"}}>
+                  <a onClick={handleproceed}>Proceed to Checkout</a>
                 </div>
-              ) : (cartArray.length <1&&
-                <div class="empty-cart-summery">
-                  <img src="/images/empty-bg.svg" alt="empty-cart" />
-                  <p>your cart is currently empty</p>
-                </div>
+              ) : (
+                cartItem.length < 1 && (
+                  <div class="empty-cart-summery">
+                    <img src="/images/empty-bg.svg" alt="empty-cart" />
+                    <p>your cart is currently empty</p>
+                  </div>
+                )
               )}
             </div>
           </div>

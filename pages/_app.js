@@ -10,6 +10,7 @@ import '../styles/css/footer.css';
 import '../styles/css/restaurant-list.css';
 import '../styles/css/restaurant-detail-page.css';
 import '../styles/css/checkout.css'
+
 import Layout from "../components/Layout";
 import {Provider} from "react-redux";
 import store from "../redux/store";
@@ -17,10 +18,7 @@ import {BrowserRouter, Route, Router, useHistory} from 'react-router-dom';
 import {history}   from 'history';
 import LoadingSpinner from '../components/Loader'
 function MyApp({ Component, pageProps }) {
-   const [loader, setloader] = useState(true)
-   setTimeout(() => {
-       setloader(false)
-   }, 2000);
+  
   return (
       <Provider store={store}>
          

@@ -102,18 +102,16 @@ async function getCuratedList(type) {
 
 
 async function getMenuList(type) {
-    
     if(typeof type==="string"){
-    console.log("prakash",typeof type);
     var body={ "url":type};
     try {
         if(typeof type==="string"||undefined){
 
         const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/menu-items/web/restaurants/menu',body);
         //localStorage.setItem('menuItems',JSON.stringify(data.data.data))
+        console.log("details",data);
         return {error: false, data: data}
         }else{
-            debugger
             console.log("cart details",type)
            var menulist=type;
            menulist["error"]=false
