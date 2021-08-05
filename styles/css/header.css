@@ -517,18 +517,20 @@ li.search-li {
     animation: .75s linear infinite spinner-border;
     margin-left: 10px;
 }
-.login-modal .modal-body p.error{
+.login-modal .modal-body p.error {
     text-align: left;
-    font-size: 10px;
-    line-height: 14px;
-    font-family: 'Montserrat-Light', sans-serif;
-    color: #FF7A7A;
-    margin: 10px 0 20px 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-family: 'Montserrat-Regular', sans-serif;
+    color: #FF4D5E;
+    margin: 5px 0 20px 25px;
 }
 .form-group.form-error{
     margin-bottom: 0!important;
 }
-
+.login-modal .modal-body form .form-error .form-control{
+    border-color: #FF4D5E;
+}
 
 
 

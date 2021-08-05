@@ -55,6 +55,7 @@ const Navbar = (props) => {
                 setLogin(true);
                 localStorage.setItem('user',JSON.stringify(res.data))
                 setProfilename(res.data.info.first_name);
+                window.location.reload()
         })
         }
     }
@@ -69,6 +70,7 @@ const Navbar = (props) => {
                 setLogin(true);
                 localStorage.setItem('user',JSON.stringify(res.data))
                 setProfilename(res.data.info.first_name);
+                window.location.reload()
         })
     }
 }
@@ -118,8 +120,8 @@ const Navbar = (props) => {
                 console.log("response otp",res);
                 //setError(true);
                 setVeri(false);
-                setError(true);
-                setErrorMessage("You Have Successfully Logged in!")
+                if(type==='login')
+                window.Location.reload()
                 if(type==='signup'){
                     setpopup('success')
                    setSuccessMessage('Signed up')
@@ -516,7 +518,7 @@ const Navbar = (props) => {
                     <img src="../../images/close.svg" alt="close-icon" onClick={()=>setshow(false)}/>
                 </button>
                 <div className="modal-header">
-                    <h2 onClick={()=>Loginhandler('login')}>Login</h2>
+                    <h2 >Login</h2>
                 </div>
                 <div className="modal-body">
                     <p>Login with your Email Address</p>

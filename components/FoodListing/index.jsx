@@ -14,7 +14,7 @@ const FoodListing = (props) => {
     const router = useRouter()
     const handleroute=(type)=>{
         router.push({pathname:"/restaurants/",query:{Curated_type:type}})
-        props.getRestaurants("curated_list");
+        // props.getRestaurants();
     }
     const options = {
         loop:true,
@@ -58,14 +58,14 @@ const FoodListing = (props) => {
                             <h2 className="header-text" ><span>{props.data.name} </span></h2>
                             
                                 <div className="view-all-btn">
-                                    <a onClick={()=>handleroute(props.data.name)}>View All</a>
+                                <a href={`/restaurants/?curated-list=${props.data.url}`}>View All</a>
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>
                          { props.restaurants.data && props.restaurants.data.map((item)=>(
                              //<RestaurantsList item={elem}/>
                             <div className="food-product hvr-shadow" key={item.id}>
-                                <a onClick={()=>handleroute(item.url)} className="clickable"></a>
+                                <a href={`/restaurant/${item.url}`} >
                                 <div className="food-item" >
                                     <img src={`https://development-cdn.letseat.co.uk/${item.image_url}`} alt="Food Image" className="banner-image"/>
                                         <div className="brand-logo">
@@ -92,7 +92,9 @@ const FoodListing = (props) => {
                                             </div>
                                     </div>
                                 </div>
+                            </a>
                             </div>
+
                          ))}
                         </OwlCarousel>
                     </div>

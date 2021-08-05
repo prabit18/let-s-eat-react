@@ -12,6 +12,8 @@ export const dataService = {
     getLogin,
     ResendOtp,
     socialLogin,
+    Mobileupadte,
+    verifyMobileNumber,
 }
 
 async function getCuisines() {
@@ -169,3 +171,39 @@ async function socialLogin(body) {
         return {error: true, message: e}
     }
  }
+ async function Mobileupadte(Mobile_Number) {
+    console.log(Mobile_Number);
+   var body={
+    "phone_number":"+91"+Mobile_Number
+    }
+    let user=JSON.parse(localStorage.getItem('user'))
+    console.log("token is",user.token)
+    let authorization="Bearer " +user.token.id_token
+    let headers = {
+        "Content-Type": "application/json",
+        "Authorization": authorization,
+    }
+    console.log(headers)
+   try {
+       
+       const data = await axios.post(apiURL+'customers/web/update_mobile_number',body,{headers:headers});
+       console.log("Data comes from mobile update --->>",data)
+       return data.data
+   } catch (e) {
+       return {error: true, message: e}
+   }
+}
+async function verifyMobileNumber(sessiontoken,otp,username) {
+    var body={ 
+              "otp":otp,   
+              "session":sessiontoken,
+              "username":username,
+            }
+    try {
+        const data = await axios.post( apiURL+'customers/web/verify_otp',body);
+        console.log("data----",data)
+        return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}

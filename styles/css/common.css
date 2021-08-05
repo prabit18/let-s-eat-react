@@ -242,7 +242,9 @@ body {
     border-top: 1px solid #C0C6D9;
     padding-top: 10px;
 }
-
+.login-modal .modal-body form .form-control:focus {
+    border-color: #3B4148;
+}
 
 /*@media(max-width: 1199px) {*/
 /*    .page-banner:after {*/
@@ -640,6 +642,7 @@ body {
     min-height: 420px;
     background-attachment: fixed;
 }
+
 
 @media (min-width: 576px) {
     .signup-modal .modal-dialog {
