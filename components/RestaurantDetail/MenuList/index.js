@@ -42,7 +42,7 @@ const MenuItems = (props) => {
       return val;
     }
   };
- var user=true;
+ var user=false;
   useEffect(() => {
     if (user) {
       SetFoodItems(JSON.parse(localStorage.getItem("menuItems")));
@@ -61,6 +61,7 @@ const MenuItems = (props) => {
       setcart_item_objs_v2(JSON.parse(localStorage.getItem('cart_item_objs_v2'))||{})
 
       setmenuObject(menuObject);
+      localStorage.setItem("menuObject",JSON.stringify(menuObject))
     }else{
       SetFoodItems(props.Menulist);
       props.Menulist.forEach((item) => {
@@ -74,6 +75,8 @@ const MenuItems = (props) => {
         });
       });
       setmenuObject(menuObject);
+      localStorage.setItem("menuObject",JSON.stringify(menuObject))
+
       
     }
   }, []);
@@ -132,20 +135,24 @@ const MenuItems = (props) => {
     return elementPos;
   };
 
-  const handleAdd = (id, val, i, name, price,veg) => {
-    if (val === "add") {
-      var le_price = price[0].le_price;
-      let result = [];
-      let food = [...foodItems];
-      let index = findindex(id);
-      let product = food[index];
-      product.count = product.count + 1;
-      result.push({ id: id, name, name, price: le_price,veg:veg });
-      product.cart = result;
-      localStorage.setItem('menuItems',JSON.stringify(food))
-      SetFoodItems(food);
-      props.getcart(food);
-      result = [];
+  const handleCartObje = (cartItemvalue) => {
+    cartItemvalue.forEach(function (item) {
+      if (cart_item_objs_v1[item.id]) {
+        cart_item_objs_v1[item.id]++;
+      } else {
+        cart_item_objs_v1[item.id] = item.quantity;
+      }
+    });
+    setcart_item_objs_v1(cart_item_objs_v1);
+    localStorage.setItem('cart_item_objs_v1',JSON.stringify(cart_item_objs_v1))
+
+  };
+
+  const handleCartinc = (cartItemvalue) => {
+    handlecartV2(cartItemvalue)
+    var CartV1={...cart_item_objs_v1}
+    if (CartV1[cartItemvalue[0].id]) {
+      CartV1[cartItemvalue[0].id]++;
     }
     setcart_item_objs_v1(CartV1);
     localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))

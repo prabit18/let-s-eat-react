@@ -181,7 +181,7 @@ const CartSummary = (props) => {
             </div>
             <div className="delivery-option">
               <div className="toggle-section">
-                <div class="payment-item delivery-item">
+                <div class="payment-item delivery-item active">
                   <input
                     type="radio"
                     id="test1"
@@ -228,10 +228,10 @@ const CartSummary = (props) => {
               {cartItem.length > 0
                 ? cartItem.map((item, i) => (
                     <div className="added-food-box">
-                      <div className={"summery-food-item"}>
+                      <div className={menuObject[item.id].veg?"summery-veg-item":"summery-food-item"}>
                         <div className="food-item-wrap">
                           <p>{menuObject[item.id].name}-{item.name}</p>
-                          <p className="food-item-price">£{"  "}</p>
+                          <p className="food-item-price">£{menuObject[item.id].le_price}</p>
                         </div>
                       </div>
                       <div className="quantity-change">
@@ -296,7 +296,7 @@ const CartSummary = (props) => {
                           </div>
                         </div>
                        </>}
-                        <p>£{menuObject[item.id].le_price}</p>
+                        <p></p>
                       </div>
                     </div>
                   ))
