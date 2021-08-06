@@ -1,94 +1,184 @@
-import { useRouter } from 'next/router';
-import React, { useEffect,useState } from 'react';
-import { connect } from "react-redux";
-import restaurants from '../../pages/restaurants';
+import React, { useState,useEffect } from 'react';
+import OtpInput from 'react-otp-input';
+import { setErrors } from '../../redux/actions/error.action';
+import { dataService } from '../../services';
 import { UserAction } from '../../redux/actions/user.action';
-
-const Checkout=(props)=>{
-    const history=useRouter()
-    const [foodItems, SetFoodItems] = useState([])
-    const [deliveryOption, setdeliveryOption] = useState();
-    const [restaurantdetail, setrestaurantdetail] = useState([])
+import { connect } from 'react-redux';
+const Checkout=()=>{
+    const[show,setShow]=useState(false);
+    const [popup,setpopup]=useState(null);
+    const[session,setSession]=useState('');
+    const[successMessage,setSuccessMessage]=useState('')
+    const[success,setSuccess]=useState('');
+    const [otp, setOtp] = useState('');  
+    const [attempt,setAttempt] = useState(0) 
+    const[loading,setloading]=useState(false)
+    const [Mobile_Number,setmobilenumber]=useState('');
+    const[veri,setVeri]=useState(false);
+    const [Error, setError] = useState(false);
+    const[activatebutton,setActivatebutton]=useState(false);
+    const[ErrorMessage,setErrorMessage]=useState('');
+    const[email,setEmail]=useState('');
+    const[firstname,setfirstname]=useState('');
+    const[lastname,setlastname]=useState('');
+    const[verifynow,setverifynow]=useState(false);
+    const[verify,setverify]=useState(false);
+    const[verified,setverified]=useState(false);
     useEffect(() => {
-        SetFoodItems(JSON.parse(localStorage.getItem('menuItems')))
-        setdeliveryOption(localStorage.getItem('delivery_type'))
-        setrestaurantdetail(JSON.parse(localStorage.getItem('Restaurant-details')))
-    }, [])
-  
-    var cartArray = [];
-  
-    const doEmptyAction = foodItems && foodItems.some((o) => o.count === 0);
-  
-    if (doEmptyAction) {
-      foodItems.filter((val) => {
-        if (val.count !== 0) {
-          cartArray.push({
-            id: val.cart[0].id,
-            name: val.cart[0].name,
-            count: val.count,
-            price: val.cart[0].price,
-            veg:val.veg
-          });
+        const loggedInUser = localStorage.getItem("user");        
+        if (loggedInUser) {
+            const User = JSON.parse(localStorage.getItem("user"));
+            setEmail(User.info.email)
+            setfirstname(User.info.first_name)
+            setlastname(User.info.last_name)
+            if(User.info.phone_number==='0')
+            {   
+                setverify(true);
+            }else{
+                setverified(true);
+                //setverifynow(true);
+            setmobilenumber(User.info.phone_number)
+            }
         }
-      });
-    }
-    const findindex = (id) => {
-      var elementPos = foodItems
-        .map(function (x) {
-          return x.id;
-        })
-        .indexOf(id);
-      return elementPos;
-    };
-    const decrement = (id) => {
-      let food = [...foodItems];
-      let index = findindex(id);
-      let product = food[index];
-      product.count = product.count - 1;
-      if (product.count === 0) {
-        product.cart = [];
-        localStorage.setItem("menuItems", JSON.stringify(food));
-        history.back()
-        SetFoodItems(food);
-      } else {
-        localStorage.setItem("menuItems", JSON.stringify(food));
-        SetFoodItems(food);
+        else console.log("user is not loggedin");
+      }, []);
 
-      }
-    };
-  
-    const increment = (id) => {
-      let food = [...foodItems];
-      let index = findindex(id);
-      let product = food[index];
-  
-      product.count = product.count + 1;
-      localStorage.setItem("menuItems", JSON.stringify(food));
-      SetFoodItems(food);
-    };
-  
-    const handleDeliveryOption = (e) => {
-      console.log("event", e.target.name);
-      localStorage.setItem('delivery_type',e.target.name)
-      setdeliveryOption(e.target.name);
-    };
-    const handleback=()=>{
-        console.log("calling back");
-        history.back()
+    const Otpverification=async()=>{
+        console.log(attempt)
+        let currentAttempt = attempt+1
+        setAttempt(currentAttempt)
+        if(currentAttempt>5){
+            setshow(true);
+            setpopup('mobilenuber');
+            setAttempt(0)
+            handleMobileOtp()
+        }
+        else{
+            const user=JSON.parse(localStorage.getItem('user'))
+            let Email=user.info.email
+        dataService.verifyMobileNumber(session,otp,Email).then((res)=>{
+            console.log(res);
+            setloading(false);
+            if(res.data.data.error_status){
+                if(res.data.data.attempts!=undefined)
+                {
+                    console.log("Incorrect OTP")
+                    console.log(res.data.data.message)
+                    setSession(res.data.data.data.session)
+                    setErrorMessage(res.data.data.message);
+                    setError(true)
+                    setOtp('')
+                   setVeri(false)
+                }
+                else{
+                    console.log("here it is coming")
+                    setShow(true);
+                    setOtp(''); 
+                    setpopup('otp');
+                    setVeri(false)
+                    handleMobileOtp()
+                }
+            }
+            else{
+                console.log("verified!");
+                localStorage.setItem('user',JSON.stringify(res.data.data.data))
+                console.log("response comes from verifymobile----->",res);
+                setverify(false);
+                setverifynow(false);
+                setverified(true);
+                setSuccessMessage("Your Mobile number has successfully verified!")
+               setVeri(false);
+               window.location.reload();
+                }
+        })
     }
-    console.log("restaurantdetail",restaurantdetail["name"])
+    }
+    const handleResendOtp=async()=>{
+        dataService.ResendOtp(Email).then((response)=>{
+            console.log("resend response is",response)
+            setError(true)
+            setErrorMessage(response.data.data.message)
+            setSession(response.data.data.data.session)
+        });
+    }
+    const handleMobileOtp=async()=>{
+        dataService.Mobileupadte(Mobile_Number).then((response)=>{
+            console.log("response",response)
+            setloading(false)
+            if(response.error_status)
+            {   
+                setError(true);
+                setErrorMessage(response.message)
+                console.log(response.message)
+            }
+            else {
+                setError(false)
+                setpopup('otp');
+            setSession(response.data.session)
+            }
+        });
+    }
+
+    const MobileNumberhandler=(type)=>{
+       // setErrorMessage('')
+                setShow(true);
+            if(type==='mobilenumber'){
+            setpopup(type)
+            }
+            if(type==='otp') {
+                if(!validatemobilenumber(Mobile_Number))
+                {
+                    setError(true)
+                    return;
+                }else{
+                setloading(true)
+                handleMobileOtp() 
+                }
+            }else if(type==='resend'){
+                handleResendOtp();
+            }else if(type=='otpverification') {
+                    setloading(true)
+                     Otpverification() 
+                        setActivatebutton(false)     
+                    }           
+        else if(type==='change')
+        {
+            setpopup(type)
+        setActivatebutton(true)
+        }
+}
+const validatemobilenumber=(Mobile_Number)=>{
+   if(!Mobile_Number)
+   {
+       setErrorMessage("Please Put Your Mobile Number")
+       return false
+   }else if(Mobile_Number.length<10 ||Mobile_Number.length>10)
+   {
+       setErrorMessage("Please put a Valid Mobile Number")
+   }
+   return true;
+}
+const takeMobileNumber= (e) => {
+    setErrorMessage('')
+    setmobilenumber(e.target.value);
+}
+const handleotpchange=(otp)=>{
+    setOtp(otp);
+    if(otp.length===6)
+         setVeri(true);
+     else setVeri(false);    
+}
 
 return(
   <>
- <div className="page-banner">
-    <section className="main-section">
+ <section className="main-section">
         <section className="cart-section">
             <div className="container custom-container">
                 <div className="cart-body">
                     <div className="row custom-row custom-scrollbar">
                         <div className="col-lg-6">
-                            <div className="cart-left">
-                                <a className="back-to-restaurant" onClick={()=>handleback()}></a>
+                            {/* <div className="cart-left">
+                                <a className="back-to-restaurant" href="restaurant-detail-page.html"></a>
                                 <h2>Order Summary</h2>
                                 <div className="cart-left-content">
                                     <div className="cart-details">
@@ -97,13 +187,15 @@ return(
                                             <p>{restaurantdetail["address"]}</p>
                                         </div>
                                         <div className="toggle-section">
-                                            <div className="toggle-item">
-                                                <input type="radio" id="test1" name="delivery"  checked={deliveryOption==="delivery"?true:false} onChange={(e)=>handleDeliveryOption(e)}/>
+                                            <div className="payment-item delivery-item">
+                                                <input type="radio" id="test1" name="radio-group" checked=""/>
                                                 <label for="test1" className="delivery">Delivery<br/><span>30-40 Mins</span></label>
+                                                <img src="images/new-delivery-icon.svg" alt="delivery-icon"/>
                                             </div>
-                                            <div className="toggle-item">
-                                                <input type="radio" id="test2" name="store-pickup" checked={deliveryOption==="store-pickup"?true:false} onChange={(e)=>handleDeliveryOption(e)}/>
+                                            <div className="payment-item delivery-item">
+                                                <input type="radio" id="test2" name="radio-group"/>
                                                 <label for="test2" className="store-pick">Store Pick up<br/><span>15-20 Mins</span></label>
+                                                <img src="images/new-store-pickup.svg" alt="store-icon"/>
                                             </div>
                                         </div>
                                         <div className="preferred-time">
@@ -113,7 +205,7 @@ return(
                                                     <ul className="time-list custom-scrollbar">
                                                         <li>
                                                             <div className="time-item">
-                                                                <input type="radio" id="time1" name="time-group"/>
+                                                                <input type="radio" id="time1" name="time-group" checked/>
                                                                 <label for="time1" className="time-item-label">As soon as possible</label>
                                                             </div>
                                                             <div className="time-item">
@@ -164,7 +256,7 @@ return(
                                                     </ul>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> 
                                         <div className="selected-items">
                                             <div className="select-item">
                                                 {cartArray&&cartArray.map((item,i)=>(
@@ -256,112 +348,118 @@ return(
                                                 <p className="text-red">consetetur sadipscing elitr, sed diam noneir teminviduntutlabore</p>
                                             </div>
                                         </div>
-                                        <div className="proceed-button">
-                                            <a href="#" data-toggle="modal" data-target="#loginModal">Proceed to Checkout</a>
-                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="col-lg-6">
-                            <div className="delivery-address">
-                                <div className="address-header">
-                                    <div className="address-left">
-                                        <img src="images/address_icon.svg" alt="Address_Icon"/>
-                                        <div className="address-text">
-                                            <h2>Delivery Address</h2>
-                                            <p>Set your delivery address or add new</p>
-                                        </div>
-                                    </div>
-                                    <div className="add-button">
-                                        <a href="#" data-toggle="modal" data-target="#setDeliveryLocation">Add New</a>
-                                    </div>
-                                </div>
-                                <div className="address-outer custom-scrollbar">
-                                    <div className="address-item">
-                                        <div className="">
-                                            <input type="radio" id="address1" name="address-group" />
-                                            <label for="address1">Unit 223, Sea View Cottages, 82, Wood St<br/> Liverpool, L1 4DQ, UK</label>
-                                        </div>
-                                        <div className="address-actions">
-                                            <a href="#" data-toggle="modal" data-target="#editAddress" className="edit">Edit</a>
-                                            <a href="#" data-toggle="modal" data-target="#deleteAddress" className="delete">Delete</a>
-                                        </div>
-                                    </div>
-                                    <div className="address-item">
-                                        <div className="">
-                                            <input type="radio" id="address2" name="address-group"/>
-                                            <label for="address2">23 Southgyle Crescent, Colquitt Street<br/> Liverpool, L1 4DE</label>
-                                        </div>
-                                        <div className="address-actions">
-                                            <a href="#" data-toggle="modal" data-target="#editAddress" className="edit">Edit</a>
-                                            <a href="#" data-toggle="modal" data-target="#deleteAddress" className="delete">Delete</a>
-                                        </div>
-                                    </div>
-                                    <div className="address-item">
-                                        <div className="">
-                                            <input type="radio" id="address3" name="address-group"/>
-                                            <label for="address3">23 Southgyle Crescent, Colquitt Street<br/> Liverpool, L1 4DE</label>
-                                        </div>
-                                        <div className="address-actions">
-                                            <a href="#" data-toggle="modal" data-target="#editAddress" className="edit">Edit</a>
-                                            <a href="#" data-toggle="modal" data-target="#deleteAddress" className="delete">Delete</a>
-                                        </div>
-                                    </div>
-                                    <div className="address-item">
-                                        <div className="">
-                                            <input type="radio" id="address4" name="address-group"/>
-                                            <label for="address4">23 Southgyle Crescent, Colquitt Street<br/> Liverpool, L1 4DE</label>
-                                        </div>
-                                        <div className="address-actions">
-                                            <a href="#" data-toggle="modal" data-target="#editAddress" className="edit">Edit</a>
-                                            <a href="#" data-toggle="modal" data-target="#deleteAddress" className="delete">Delete</a>
+                            <div className="checkout-header">
+                                <h2>Checkout</h2>
+                            </div>
+                            <div className="cart-details personal-cart-detail">
+                                <div className="delivery-address">
+                                    <div className="address-header">
+                                        <div className="address-left personal-detail">
+                                            <img src="images/Group 6593.svg" alt="Address_Icon"/>
+                                            <div className="address-text">
+                                                <h2>Personal Details</h2>
+                                                <h3>{firstname} {lastname}</h3>
+                                                 {success && <p>Email Address:<span> {email}</span></p>}
+                                                <div className="verify-no">
+                                                   {verified && <p className="verified-no">Phone Number:<span> +{Mobile_Number}</span></p>}
+                                                    {verified && (<p className="verified-content">Verified</p>)}
+                                                    {verifynow&&
+                                                       (<div className="add-button verify-now">
+                                                        <a href="#" data-toggle="modal" data-target="#emailOtpModal" onClick={()=>MobileNumberhandler('otp')}>Verify Now</a>
+                                                    </div>)}
+                                                </div>
+                                                <div className="not-verified">
+                                                   {verifynow &&(<p>your Phone Number is not verified</p>)}
+                                                </div>
+                                                { verify &&
+                                                <div className="verify-btn">
+                                                    <a href="#" data-toggle="modal" data-target="#phoneModal"onClick={()=>MobileNumberhandler('mobilenumber')}>Verify Phone Number</a>
+                                                </div>
+                                                }
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="payment">
-                                <div className="address-header">
-                                    <div className="address-left">
-                                        <img src="images/payment_icon.svg" alt="Payment_Icon"/>
-                                        <div className="address-text">
-                                            <h2>Payment</h2>
-                                            <p>You can select a payment method from your listed options</p>
+                            <div className="apply-offers personal-offer-detail">
+                                <div className="delivery-address">
+                                    <div className="address-header delivery-address-head">
+                                        <div className="address-left">
+                                            <img src="images/address_icon.svg" alt="Address_Icon"/>
+                                            <div className="address-text">
+                                                <h2>Delivery Address</h2>
+                                                <p>Set your delivery address or add new</p>
+                                            </div>
                                         </div>
+                                        <div className="add-button change-btn">
+                                            <a href="#" data-toggle="modal" data-target="#addAddress">Change</a>
+                                        </div>
+                                    </div>
+                                    <div className="address-outer custom-scrollbar">
+                                        <div className="address-item add-new-item">
+                                            <div className="address-element">
+                                                <div className="">
+                                                    <h6>Home</h6>
+                                                    <p>Unit 223, Sea View Cottages, 82, Wood St <br/>Liverpool, L1 4DQ, United Kingdom</p>
+                                                </div>
+                                                <div className="address-actions">
+                                                    <a href="#" className="deliver-here">Deliver Here</a>
+                                                    <a href="#" data-toggle="modal" data-target="#editAddress" className="edit">Edit</a>
+                                                </div>
+                                            </div>
+                                            <div className="address-element">
+                                                <div className="">
+                                                    <h6>Office</h6>
+                                                    <p>Unit 223, Sea View Cottages, 82, Wood St <br/>Liverpool, L1 4DQ, United Kingdom</p>
+                                                </div>
+                                                <div className="address-actions">
+                                                    <a href="#" className="deliver-here">Deliver Here</a>
+                                                    <a href="#" data-toggle="modal" data-target="#editAddress" className="edit">Edit</a>
+                                                </div>
+                                            </div>
+                                            <div className="add-new-address-box">
+                                                <button type="button" data-toggle="modal" data-target="#addAddress">+ Add New Address</button>
+                                            </div>
+                                        </div>
+                                        
                                     </div>
                                 </div>
-                                <div className="payment-options">
-                                    <div className="payment-item">
-                                        <div className="payment-select">
-                                            <input type="radio" id="payment1" name="payment-group" />
-                                            <label for="payment1">Pay with Debit or Credit Card</label>
+                            </div>
+                            <div className="disclaimer-section personal-desclaimer-detail">
+                                <div className="payment">
+                                    <div className="address-header">
+                                        <div className="address-left">
+                                            <img src="images/payment_icon.svg" alt="Payment_Icon"/>
+                                            <div className="address-text">
+                                                <h2>Payment</h2>
+                                                <p>You can select a payment method from your listed options</p>
+                                            </div>
                                         </div>
-                                        <label for="payment1" className="label-img"><img src="images/cc_icon.svg" alt="Card_Payment"/></label>
                                     </div>
-                                    <div className="payment-item">
-                                        <div className="payment-select">
-                                            <input type="radio" id="payment2" name="payment-group"/>
-                                            <label for="payment2">Pay with PayPal</label>
+                                    <div className="payment-options">
+                                        <div className="payment-item">
+                                            <div className="payment-select">
+                                                <input type="radio" id="payment1" name="payment-group" checked/>
+                                                <label for="payment1">Pay with Debit or Credit Card</label>
+                                            </div>
+                                            <label for="payment1" className="label-img"><img src="images/cc_icon.svg" alt="Card_Payment"/></label>
                                         </div>
-                                        <label for="payment2" className="label-img"><img src="images/paypal.svg" alt="Paypal"/></label>
-                                    </div>
-                                    <div className="payment-item">
-                                        <div className="payment-select">
-                                            <input type="radio" id="payment3" name="payment-group"/>
-                                            <label for="payment3">Visa Check Out</label>
+                                        <div className="payment-item">
+                                            <div className="payment-select">
+                                                <input type="radio" id="payment4" name="payment-group"/>
+                                                <label for="payment4">Cash on Delivery</label>
+                                            </div>
+                                            <label for="payment4" className="label-img"><img src="images/cash_icon.svg" alt="Cash_on_delivery"/></label>
                                         </div>
-                                        <label for="payment3" className="label-img"><img src="images/visa_icon.svg" alt="Visa"/></label>
                                     </div>
-                                    <div className="payment-item">
-                                        <div className="payment-select">
-                                            <input type="radio" id="payment4" name="payment-group"/>
-                                            <label for="payment4">Cash on Delivery</label>
-                                        </div>
-                                        <label for="payment4" className="label-img"><img src="images/cash_icon.svg" alt="Cash_on_delivery"/></label>
+                                    <div className="proceed-button">
+                                        <a href="#">Place your Order</a>
                                     </div>
-                                </div>
-                                <div className="proceed-button">
-                                    <a href="#">Place your Order</a>
                                 </div>
                             </div>
                         </div>
@@ -370,6 +468,93 @@ return(
             </div>
         </section>
     </section>
+    
+    <div className={["modal fade login-modal phone-modal", show && (popup==='mobilenumber' || popup==='change')? "show display-popup" : ""].join(" ")} id="phoneModal" tabindex="-1" role="dialog" aria-labelledby="phoneModalLabel" aria-hidden="true">
+    <div className="modal-dialog modal-dialog-centered" role="document">
+        <div className="modal-content" id="phoneModalLabel">
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <img src="images/close.svg" alt="close-icon" onClick={()=>setShow(false)}/>
+            </button>
+            <div className="modal-header">
+            </div>
+            <div className="modal-body">
+                <h2>Enter Your Phone Number</h2>
+                <form autoComplete='off'>
+                    <div className="form-group mobile-no-field">
+                        <input type="text" id="mob-email" name="mob-email" className="form-control" placeholder="Mobile Number" onChange={(e)=>takeMobileNumber(e)}/>
+                        <label for="mob-email" className="input-label"></label>
+                    </div>
+                    {Error &&
+                            (<>
+                            <p className="error">{ErrorMessage}</p> 
+                            </> )
+                          }
+                    <div className="form-group">
+                    {/* {!activatebutton?
+                            (<button type ="button"className="form-control login-buttons" id="otp-fade-btn" value="Send OTP" data-toggle="modal" data-target={activatebutton?"#mobileOtpModal":""} data-dismiss="modal" aria-label="Close" >Send OTP</button>)
+                            : */}
+                            
+                            <button  type="button"className="form-control login-buttons" value="Send OTP" data-toggle="modal" data-target="#mobileOtpModal" data-dismiss="modal" aria-label="Close" onClick={()=>MobileNumberhandler('otp')} disabled={loading}>
+                             Send OTP
+                             {loading && (
+                                       <span className="spinner-border custom-spinner " role="status" aria-hidden="true"></span>
+                             )}
+                             </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div className={["modal fade login-modal",show && (popup==='otp')? "show display-popup" : ""].join(" ")} id="mobileOtpModal" tabIndex="-1" role="dialog" aria-labelledby="mobileOtpModalLabel" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content" id="mobileOtpModalLabel">
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <img src="../../images/close.svg" alt="close-icon" onClick={()=>setShow(false)}/>
+                </button>
+                <div className="modal-header">
+                    <h2>Enter OTP</h2>
+                </div>
+                <div className="modal-body">
+                    <div className="mobile-otp">
+                        <p>6 digit OTP has been sent to your Mobile Number,{Mobile_Number}, please enter to Log in <span>OTP valid for 10 minutes.</span></p>
+                        <a href="#" data-toggle="modal" data-target="#loginModal" data-dismiss="modal" aria-label="Close"onClick={()=>MobileNumberhandler('change')}>Change Mobile Number</a>
+                    </div>
+                    {Error &&
+                            (<>
+                            <p className="error">{ErrorMessage}</p> 
+                            </> )
+                          }
+                    <OtpInput className="otp-input"
+                    value={otp}
+                    onChange={handleotpchange}
+                    numInputs={6}
+                    clearInputs={true}
+                    separator={<span> </span>}
+                /> 
+                  <form autoComplete="off">
+                   <div className="form-group">
+                     {!veri?
+                           (<button type="reset" className="form-control login-buttons" id="otp-fade-btn" value="check OTP" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" >Verify OTP</button>)
+                           :
+                           (<button type="reset" className="form-control login-buttons"  value="check OTP" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" onClick={()=>MobileNumberhandler('otpverification')} disabled={loading} >
+                               Verify OTP
+                               {loading && (
+                                       <span className="spinner-border custom-spinner " role="status" aria-hidden="true"></span>
+                             )}
+                             </button>)
+                     }
+                        </div>
+                        </form>
+                    <div className="remain-timer">
+                        <h2 id="timer"></h2>
+                        <div className="resend-otp">
+                            <p>Did not receive? <a href="#" onClick={()=>MobileNumberhandler('resend')}>Resend</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
   </>
   )

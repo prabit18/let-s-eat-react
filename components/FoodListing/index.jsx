@@ -2,20 +2,22 @@ import React, { useEffect, useState } from 'react';
 import {foodCategoryName} from "../constants";
 import dynamic from "next/dynamic";
 import { connect } from 'react-redux';
-import RestaurantListing from '../RestaurantListing';
 import RestaurantsList from '../RestaurantListing/restaurantslist';
 import router, { useRouter } from 'next/router';
+import { UserAction } from '../../redux/actions/user.action';
+import Restaurant from '../RestaurantListing/1restaurant';
 import BottomSectionLoader from '../Loader/BottomSectionLoader';
 import CategorySectionLoader from '../Loader/CategorySectionLoader';
 // import restaurantdetailpage from '../../pages/restaurantdetail';
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
-//{title}
 const FoodListing = (props) => {
+   // console.log(props)
     const router = useRouter()
-    const handleroute=(url)=>{
-        router.push({pathname:"/restaurant/"+url });
+    const handleroute=(type)=>{
+        router.push({pathname:"/restaurants/",query:{Curated_type:type}})
+        // props.getRestaurants();
     }
     const [loading, setloading] = useState(true)
     useEffect(() => {
@@ -67,15 +69,14 @@ const FoodListing = (props) => {
                             <h2 className="header-text" >{props.restaurants.data&&<span>{props.data.name} </span>}</h2>
                             
                                 <div className="view-all-btn">
-                                    <a onClick={()=>router.push({pathname:"/restaurants/",query:{Curated_type:props.data.name}})}>View All</a>
+                                <a href={`/restaurants/?curated-list=${props.data.url}`}>View All</a>
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>
-                          
-                         {props.restaurants.data.map((item)=>(
+                         { props.restaurants.data && props.restaurants.data.map((item)=>(
                              //<RestaurantsList item={elem}/>
                             <div className="food-product hvr-shadow" key={item.id}>
-                                <a onClick={()=>handleroute(item.url)} className="clickable"></a>
+                                <a href={`/restaurant/${item.url}`} >
                                 <div className="food-item" >
                                     <img src={`https://development-cdn.letseat.co.uk/${item.image_url}`} alt="Food Image" className="banner-image"/>
                                         <div className="brand-logo">
@@ -102,7 +103,9 @@ const FoodListing = (props) => {
                                             </div>
                                     </div>
                                 </div>
+                            </a>
                             </div>
+
                          ))}
                         </OwlCarousel>
                     </div>
@@ -115,6 +118,10 @@ const mapStateToProps = (state) => {
     const {Restaurants, Curatedlist,errors} = state
    return {restaurants: Restaurants,curatedlist:Curatedlist, errors}
 }
+const actionCreator = {
+    getCuratedlist: UserAction.getCuratedlist ,
+       getRestaurants: UserAction.getRestaurants
+  }
 
-export default connect(mapStateToProps)(FoodListing);
+export default connect(mapStateToProps,actionCreator)(FoodListing);
 

@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import HomePage from "../components/HomePage";
 import {UserAction} from "../redux/actions/user.action";
 import { connect } from "react-redux";
-
 const Home = (props) => {
   useEffect(() => {
     props.getCuisines();
   },[]);
 const {Cuisines} = props
+ //console.log(Cuisines);
   return (
     <>
       <div>
@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
   return {Cuisines}
 }
 const actionCreator = {
-  getCuisines: UserAction.getCuisines
+  getCuisines: UserAction.getCuisines,
 }
 
 export default connect(mapStateToProps, actionCreator)(Home);

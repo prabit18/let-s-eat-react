@@ -17,11 +17,13 @@ import store from "../redux/store";
 import {BrowserRouter, Route, Router, useHistory} from 'react-router-dom';
 import {history}   from 'history';
 import LoadingSpinner from '../components/Loader'
+import Favicon from 'react-favicon'
+
 function MyApp({ Component, pageProps }) {
   
   return (
       <Provider store={store}>
-         
+         <Favicon url='/images/favicon.ico'/>
           <Layout>
               
               <Component {...pageProps} />

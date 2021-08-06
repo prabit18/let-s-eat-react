@@ -108,3 +108,4 @@ function getRestaurant(type) {
     return { type: passActions.SET_RESTAURANT, data };
   }
 }
+
