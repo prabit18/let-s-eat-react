@@ -2,6 +2,8 @@ import React, { useState,useEffect } from 'react';
 import OtpInput from 'react-otp-input';
 import { setErrors } from '../../redux/actions/error.action';
 import { dataService } from '../../services';
+import { UserAction } from '../../redux/actions/user.action';
+import { connect } from 'react-redux';
 const Checkout=()=>{
     const[show,setShow]=useState(false);
     const [popup,setpopup]=useState(null);
@@ -175,7 +177,7 @@ return(
                 <div className="cart-body">
                     <div className="row custom-row custom-scrollbar">
                         <div className="col-lg-6">
-                            <div className="cart-left">
+                            {/* <div className="cart-left">
                                 <a className="back-to-restaurant" href="restaurant-detail-page.html"></a>
                                 <h2>Order Summary</h2>
                                 <div className="cart-left-content">
@@ -348,7 +350,7 @@ return(
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="col-lg-6">
                             <div className="checkout-header">
@@ -362,7 +364,7 @@ return(
                                             <div className="address-text">
                                                 <h2>Personal Details</h2>
                                                 <h3>{firstname} {lastname}</h3>
-                                                 <p>Email Address:<span> {email}</span></p>
+                                                 {success && <p>Email Address:<span> {email}</span></p>}
                                                 <div className="verify-no">
                                                    {verified && <p className="verified-no">Phone Number:<span> +{Mobile_Number}</span></p>}
                                                     {verified && (<p className="verified-content">Verified</p>)}

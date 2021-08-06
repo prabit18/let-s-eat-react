@@ -10,11 +10,15 @@ import HomePageLoader from "../Loader/HomePageLoader";
 import Head from 'next/head'
 
 const HomePage = (props) => {
+  const [loading, setloading] = useState(false);
     useEffect(() => {
-    props.getCuratedlist();
-     props.getRestaurants();
+      setloading(true);
+      props.getRestaurants().then(() => {
+        props.getCuratedlist().then(() => setloading(false));
+      });
   },[]);
-  const { Curatedlist, Restaurants } = props;
+
+const {Curatedlist,Restaurants} = props
   return (
     <>
      <Head>
@@ -31,7 +35,7 @@ const HomePage = (props) => {
         <>
           <HomeTopSection />
           {Curatedlist.length > 0 &&
-            Curatedlist.map((item) => <FoodListing data={item} />)}
+            Curatedlist.map((item) => <FoodListing data={item} key={item.id}/>)}
         </>
       ) : (
         <HomePageLoader />
@@ -41,9 +45,11 @@ const HomePage = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { Curatedlist, Restaurants } = state;
-  return { Curatedlist, Restaurants };
-};
+  const {
+    Curatedlist,Restaurants
+  } = state
+  return {Curatedlist,Restaurants}
+}
 const actionCreator = {
   getCuratedlist: UserAction.getCuratedlist,
   getRestaurants: UserAction.getRestaurants,

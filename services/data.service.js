@@ -90,7 +90,7 @@ async function getRestaurantsInfinite(type) {
        }
        
       
-        const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/restaurants/web/list', body);
+        const data = await axios.post(apiURL+'restaurants/web/list', body);
         return data.data
     } catch (e) {
         return {error: true, message: e}

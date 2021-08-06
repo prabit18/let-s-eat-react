@@ -63,7 +63,7 @@ const Navbar = (props) => {
     const GLogin = (response) => {
         if (!response.error) {
             const body = {
-                access_token: response.tokenObj.access_token,
+                access_token:response.tokenObj.access_token,
                 provider: "google",
             }
             dataService.socialLogin(body).then((res)=>{
@@ -211,7 +211,8 @@ const Navbar = (props) => {
                     setdisabled(false)
                     setloading(true); 
                      if(!validateInput())
-                    {
+                    {   
+                        setloading(false);
                         setError(true);
                         return;
                     }
