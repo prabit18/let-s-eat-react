@@ -329,7 +329,7 @@ const Navbar = (props) => {
                                             </label>
                                             <div className="search" onClick={() => setSearchBox(!searchBox)}>
                                                 <span>Search</span>
-                                                <img src="/images/search.svg" alt="search"/>
+                                                <img src="../../images/search.svg" alt="search"/>
                                             </div>
                                         </form>
                                     </div>

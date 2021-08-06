@@ -1177,7 +1177,236 @@ p.food-item-price {
     filter: grayscale(1);
     pointer-events:none;
 }
-
+.delivery-option .toggle-section {
+    margin-bottom: 0;
+}
+.delivery-option .payment-item [type="radio"]:checked + label, .payment-item [type="radio"]:not(:checked) + label {
+    padding: 8px 10px 8px 27px;
+}
+.service-not-available {
+    background-color: #FFF2F2;
+    position: relative;
+    margin-top: 5px;
+}
+.service-not-available p {
+    font-size: 10px;
+    line-height: 14px;
+    color: #FF7A7A;
+    font-family: 'Montserrat-Regular';
+    padding: 7px 20px 7px 40px;
+    margin-top: 3px;
+}
+.service-not-available p::before {
+    position: absolute;
+    top: 5px;
+    left: 15px;
+    content: url(../../public/images/new-exc-icon.svg);
+}
+.white-background.restaurant-img-sec {
+    margin-right: 30px;
+    background: #FFF;
+    max-width: 170px;
+    height: 150px;
+}
+.white-background.restaurant-img-sec .gray-background,
+.white-background.restaurant-detail-sec{
+    height: 150px;
+}
+.gray-background,
+.white-background.restaurant-detail-sec{
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+}
+.restaurant-detail-sec .inter-crop-img,.offer-sec .gray-background.inter-crop-img {
+    width: 25%;
+    height: 25px;
+    margin: 5px 0;
+    border-radius: 10px;
+}
+.gray-background.inter-crop-img.food-type {
+    top: 35px;
+    width: 40%;
+    height: 15px;
+}
+.gray-background.inter-crop-img.restaurant-add {
+    top: 60px;
+    width: 60%;
+    height: 15px;
+}
+.gray-background.inter-crop-img.rating-sec {
+    top: 100px;
+    width: -webkit-fill-available;
+    height: 43px;
+    margin: 5px 0 0;
+    border-radius: 0;
+}
+.white-background.offer-sec {
+    height: 150px;
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    margin-left: 50px;
+}
+.gray-background.inter-crop-img.offers-list{
+    height: 30px;
+    width: 320px;
+}
+.inter-crop-img.restaurant-add.offers-list{
+    top: 90px;
+}
+li.gray-background.inter-crop-img.menu-item {
+    border-radius: 0;
+    height: 20px;
+    margin: 10px 0;
+    width: 85%;
+    left: auto;
+    right: 0;
+}
+.gray-background.inter-crop-img.menu-item.second-item{
+    top: 30px;
+}
+.gray-background.inter-crop-img.menu-item.third-item{
+    top: 60px;
+}
+.gray-background.inter-crop-img.menu-item.fourth-item{
+    top: 90px;
+}
+.gray-background.inter-crop-img.menu-item.fifth-item{
+    top: 120px;
+}
+.gray-background.inter-crop-img.menu-item.sixth-item{
+    top: 150px;
+}
+ul.menu-feild.frame.white-background {
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+}
+.white-background.restaurant-detail-sec.recommended {
+    height: 60px;
+}
+.white-background.restaurant-detail-sec.recommended .gray-background.inter-crop-img{
+    top: 30px;
+    width: 40%;
+}
+.white-background.restaurant-img-sec.menu-image {
+    max-width: 138px;
+    height: 92px;
+}
+.menu-item-description.white-background.restaurant-img-sec {
+    max-width: 377px;
+    height: 92px;
+    margin-right: 0;
+}
+.restaurant-img-sec .gray-background.inter-crop-img.menu-detail{
+    height: 18px;
+    margin: 5px;
+    max-width: 45%;
+    border-radius: 10px;
+}
+.gray-background.inter-crop-img.menu-detail.cost-sec {
+    top: 23px;
+    height: 25px;
+    max-width: 60%;
+}
+.gray-background.inter-crop-img.menu-detail.menu-desc {
+    top: 53px;
+    height: 27px;
+    max-width: -webkit-fill-available;
+}
+.gray-background.inter-crop-img.menu-detail.add-button {
+    top: 18px;
+    left: auto;
+    right: 0;
+    width: 22%;
+    height: 30px;
+}
+.order-summery.card .white-background.restaurant-img-sec {
+    max-width: 335px;
+    height: 400px;
+}
+.order-summery.card .gray-background.inter-crop-img{
+    height: 30px;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 70%;
+    border-radius: 10px;
+}
+.order-summery.card .gray-background.inter-crop-img.cart-body {
+    top: 70px;
+    max-width: 300px;
+    height: 50px;
+}
+.order-summery.card .gray-background.inter-crop-img.cart-body.selected-restaurant{
+    top: 125px;
+}
+.order-summery.card .gray-background.inter-crop-img.cart-menu-name{
+    top: 185px;
+    max-width: 55%;
+    left: 105px;
+    height: 20px;
+}
+.order-summery.card .gray-background.inter-crop-img.cart-cost{
+    top: 210px;
+    left: 65px;
+    width: 30%;
+    height: 20px;
+}
+.order-summery.card .gray-background.inter-crop-img.cart-quantity{
+    top: 185px;
+    width: 30%;
+    height: 27px;
+    right: -30px;
+    left: auto;
+}
+.order-summery.card .gray-background.inter-crop-img.cart-price{
+    top: 220px;
+    left: auto;
+    right: -30px;
+    width: 30%;
+    height: 20px;
+}
+.order-summery.card .gray-background.inter-crop-img.proceed-button{
+    top: 340px;
+    height: 38px;
+    max-width: 90%;
+}
+.white-background.restaurant-img-sec.header-sec {
+    max-width: 800px;
+    height: 60px;
+    border-radius: 10px 10px 0 0;
+}
+.gray-background.inter-crop-img.menu-nav {
+    height: 18px!important;
+    max-width: 70px!important;
+    left: 25px;
+    top: 15px;
+    border-radius: 10px;
+}
+.gray-background.inter-crop-img.overview-nav{
+    height: 18px!important;
+    max-width: 70px!important;
+    left: 115px;
+    top: 15px;
+    border-radius: 10px;
+}
+.gray-background.inter-crop-img.review-nav{
+    height: 18px!important;
+    max-width: 70px!important;
+    left: 210px;
+    top: 15px;
+    border-radius: 10px;
+}
+.gray-background.inter-crop-img.search-sec{
+    height: 35px!important;
+    max-width: 335px!important;
+    top: 10px;
+    left: 450px;
+    border-radius: 20px;
+}
 /*media query*/
 @media (max-width: 1200px) {
     .menu-search {
@@ -1376,6 +1605,9 @@ p.food-item-price {
     .menu-header, .order-summery.card,.header-border {
         top: 0;
         padding-left: 0;
+    }
+    .white-background.offer-sec{
+        margin-left: 0;
     }
 
 }

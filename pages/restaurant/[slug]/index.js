@@ -4,6 +4,7 @@ import Restaurant from '../../../components/RestaurantListing/1restaurant';
 import { UserAction } from '../../../redux/actions/user.action';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
+import RestaurantDetailLoader from '../../../components/Loader/Restaurant-detail-loader';
 const restaurantdetailpage= (props) =>{
   const router = useRouter()
   const { slug } = router.query
@@ -18,7 +19,7 @@ const restaurantdetailpage= (props) =>{
     return(
     <>
              
-             {Object.keys(Menulist).length > 0 &&<RestaurantDetail restaurant={Restaurant}/>}
+             {Object.keys(Menulist).length > 0 ?<RestaurantDetail restaurant={Restaurant}/>:<RestaurantDetailLoader/>}
     </>)
 }
 

@@ -110,7 +110,6 @@ async function getCuratedList(type) {
 
 
 async function getMenuList(type) {
-    
     if(typeof type==="string"){
     var body={ "url":type};
     try {

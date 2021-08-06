@@ -7,8 +7,8 @@ function HomePageLoader() {
     return (
         <div >
             <HomepageTopLoader/>
-            <CategorySectionLoader/>
-           <div style={{marginLeft:"10px"}}><BottomSectionLoader/></div> 
+            <div style={{marginTop:"30px"}}><CategorySectionLoader/></div>
+           <div style={{marginTop:"50px"}}><BottomSectionLoader/></div> 
         </div>
     )
 }

@@ -64,7 +64,6 @@ const RestaurantsList = (props) => {
       setspinner(true);
 
       setTimeout(() => {
-        debugger;
         dataService.getRestaurantsInfinite(1).then((resp) => {
           setRestaurantList({
             ...restaurantList,

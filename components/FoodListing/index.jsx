@@ -24,7 +24,7 @@ const FoodListing = (props) => {
         setTimeout(() => {
             setloading(false)
 
-        }, 100);
+        },10 );
     }, [])
     const options = {
         loop:true,

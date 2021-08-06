@@ -10,6 +10,7 @@ import '../styles/css/footer.css';
 import '../styles/css/restaurant-list.css';
 import '../styles/css/restaurant-detail-page.css';
 import '../styles/css/checkout.css'
+
 import Layout from "../components/Layout";
 import {Provider} from "react-redux";
 import store from "../redux/store";
@@ -19,10 +20,7 @@ import LoadingSpinner from '../components/Loader'
 import Favicon from 'react-favicon'
 
 function MyApp({ Component, pageProps }) {
-   const [loader, setloader] = useState(true)
-   setTimeout(() => {
-       setloader(false)
-   }, 2000);
+  
   return (
       <Provider store={store}>
          <Favicon url='/images/favicon.ico'/>

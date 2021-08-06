@@ -873,6 +873,7 @@ button.quantity-arrow-plus {
 .payment-item.delivery-item:first-child {
     border-right: 1px solid #C6CAD9;
     border-radius: 0;
+    padding: 8px 10px 8px 27px;
 }
 .payment-select {
     width: 100%;
@@ -1278,6 +1279,38 @@ button.quantity-arrow-plus {
 
 
 
+.payment-item.delivery-item {
+    border: none;
+    margin-bottom: 0;
+    padding: 0 10px;
+    position: relative;
+}
+.delivery-option .toggle-section {
+    margin-bottom: 0;
+}
+.payment-item.delivery-item:first-child {
+    border-right: 1px solid #C6CAD9;
+    border-radius: 0;
+}
+.payment-item.delivery-item {
+    border: none;
+    margin-bottom: 0;
+    padding: 0 10px;
+    position: relative;
+}
+.payment-item {
+    background-color: #FFFFFF;
+    margin-bottom: 5px;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    -webkit-align-items: center;
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+    padding: 0 20px 0 25px;
+    border: 1px solid #C0C6D9;
+    border-radius: 10px;
+}
 
 
 

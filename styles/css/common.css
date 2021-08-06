@@ -245,6 +245,52 @@ body {
 .login-modal .modal-body form .form-control:focus {
     border-color: #3B4148;
 }
+/*delivery-section*/
+.toggle-section {
+    border: 1px solid #C6CAD9;
+    display: flex;
+    display: -webkit-flex;
+    margin-bottom: 20px;
+    width: max-content;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.payment-item.delivery-item:first-child {
+    border-right: 1px solid #C6CAD9;
+    border-radius: 0;
+}
+.payment-item.delivery-item {
+    border: none;
+    margin-bottom: 0;
+    padding: 0 10px;
+    position: relative;
+}
+.payment-item {
+    background-color: #FFFFFF;
+    margin-bottom: 5px;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    -webkit-align-items: center;
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+    padding: 0 20px 0 25px;
+    border: 1px solid #C0C6D9;
+    border-radius: 10px;
+}
+.payment-item [type="radio"]:checked + label, .payment-item [type="radio"]:not(:checked) + label {
+    font-size: 12px;
+    color: #3B4148;
+    width: 100%;
+    padding: 8px 10px 8px 30px;
+    font-family: 'Montserrat-Medium', sans-serif;
+}
+.payment-item [type="radio"]:checked + label span, .payment-item [type="radio"]:not(:checked) + label span {
+    font-family: 'Montserrat-Regular', sans-serif;
+    font-size: 11px;
+    line-height: 16px;
+    color: #71778B;
+}
 
 /*@media(max-width: 1199px) {*/
 /*    .page-banner:after {*/
@@ -661,6 +707,17 @@ body {
     background-position-y: bottom;
     min-height: 320px;
 }
+.restaurant-page-banner {
+    background-image: url(../../public/images/header-bg.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+    background-position: bottom;
+    min-height: 420px;
+    background-attachment: fixed;
+}
 
 
 @media (min-width: 576px) {
@@ -718,6 +775,9 @@ body {
     .login-modal .modal-footer p a, .login-modal .modal-footer p {
         font-size: 13px;
         line-height: 16px;
+    }
+    .payment-item [type="radio"]:checked + label, .payment-item [type="radio"]:not(:checked) + label {
+        padding: 10px 10px 10px 30px;
     }
 }
 @media(max-width: 480px) {
@@ -796,4 +856,10 @@ body {
         font-size: 16px;
     }
 
+    .payment-item [type="radio"]:checked + label, .payment-item [type="radio"]:not(:checked) + label {
+        padding: 5px 10px 5px 25px;
+    }
+    .payment-item.delivery-item img {
+        display: none;
+    }
 }
