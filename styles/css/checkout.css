@@ -860,7 +860,7 @@ button.quantity-arrow-plus {
     font-size: 12px;
     color: #3B4148;
     width: 100%;
-    padding: 8px 10px 8px 30px;
+    padding: 8px 10px 8px 26px;
     font-family: 'Montserrat-Medium', sans-serif;
 }
 .payment-item [type="radio"]:checked + label span,
@@ -873,7 +873,7 @@ button.quantity-arrow-plus {
 .payment-item.delivery-item:first-child {
     border-right: 1px solid #C6CAD9;
     border-radius: 0;
-    padding: 8px 10px 8px 27px;
+    padding: 8px 10px 8px 10px;
 }
 .payment-select {
     width: 100%;

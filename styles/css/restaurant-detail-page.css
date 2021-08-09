@@ -1181,7 +1181,7 @@ p.food-item-price {
     margin-bottom: 0;
 }
 .delivery-option .payment-item [type="radio"]:checked + label, .payment-item [type="radio"]:not(:checked) + label {
-    padding: 8px 10px 8px 27px;
+    padding: 8px 10px 8px 26px;
 }
 .service-not-available {
     background-color: #FFF2F2;
@@ -1406,6 +1406,33 @@ ul.menu-feild.frame.white-background {
     top: 10px;
     left: 450px;
     border-radius: 20px;
+}
+.favourite img{
+    width: 20px;
+    height: 16px;
+}
+img.empty-heart {
+    padding-right: 5px;
+}
+#snackbar {
+    visibility: hidden;
+    background-color: #FFEEB3;
+    color: #293250;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px 15px;
+    position: fixed;
+    z-index: 1;
+    left: 19%;
+    top: 235px;
+    font-size: 13px;
+    line-height: 18px;
+    font-family: Montserrat-Mdium, sans-serif;
+}
+#snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 /*media query*/
 @media (max-width: 1200px) {

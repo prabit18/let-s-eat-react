@@ -21,6 +21,7 @@
     "react-facebook-login": "^4.1.1",
     "react-favicon": "0.0.23",
     "react-google-login": "^5.2.2",
+    "react-icons": "^4.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-lottie": "^1.2.3",
     "react-otp-input": "^2.4.0",

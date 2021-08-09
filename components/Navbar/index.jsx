@@ -121,7 +121,7 @@ const Navbar = (props) => {
                 //setError(true);
                 setVeri(false);
                 if(type==='login')
-                window.Location.reload()
+                window.location.reload()
                 if(type==='signup'){
                     setpopup('success')
                    setSuccessMessage('Signed up')
@@ -552,7 +552,7 @@ const Navbar = (props) => {
                         clientId={googleClientID}
                         autoLoad={false}
                         render={renderProps => (
-                        <a href="#" onClick={renderProps.onClick} disabled={renderProps.disabled}><img src="images/g-icon.svg" alt="Google"/>with Google</a>
+                        <a href="#" onClick={renderProps.onClick} disabled={renderProps.disabled}><img src="../../images/g-icon.svg" alt="Google"/>with Google</a>
                         )}
                         buttonText="Login"
                         onSuccess={GLogin}
@@ -625,9 +625,7 @@ const Navbar = (props) => {
             </div>
         </div>
     </div>
-    <div className={["modal fade login-modal signup-modal", show && popup==='signup'? "show display-popup" : ""].join(
-              " "
-            )}id="signupModal" tabIndex="-1" role="dialog" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div className={["modal fade login-modal signup-modal", show && popup==='signup'? "show display-popup" : ""].join(" " )}id="signupModal" tabIndex="-1" role="dialog" aria-labelledby="signupModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content" id="signupModalLabel">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -703,9 +701,7 @@ const Navbar = (props) => {
             </div>
         </div>
     </div>
-    <div className={["modal fade login-modal signup-modal", show && (popup==='otpsignup')? "show display-popup" : ""].join(
-              " "
-            )} id="emailOtpModal" tabIndex="-1" role="dialog" aria-labelledby="emailOtpModalLabel" aria-hidden="true">
+    <div className={["modal fade login-modal signup-modal", show && (popup==='otpsignup')? "show display-popup" : ""].join(" ")} id="emailOtpModal" tabIndex="-1" role="dialog" aria-labelledby="emailOtpModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content" id="emailOtpModalLabel">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">

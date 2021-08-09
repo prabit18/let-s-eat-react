@@ -14,7 +14,10 @@ export const dataService = {
     socialLogin,
     Mobileupadte,
     verifyMobileNumber,
-    getRestaurantsInfinite
+    getRestaurantsInfinite,
+    AddFavouriteRestaurant,
+    RemoveFavouriteRestaurant,
+    FavouriteList,
 }
 
 async function getCuisines() {
@@ -163,7 +166,7 @@ async function verifyOtp(sessiontoken,otp,username) {
              }
      try {
          const data = await axios.post( apiURL+'customers/web/verify_otp',body);
-         console.log("data----",data)
+         console.log("data---->",data)
          return {error: false, data: data}
      } catch (e) {
          return {error: true, message: e}
@@ -238,4 +241,53 @@ async function verifyMobileNumber(sessiontoken,otp,username) {
     } catch (e) {
         return {error: true, message: e}
     }
+}
+async function AddFavouriteRestaurant(RestaurantID) {
+    var body={ 
+            "restaurant_id":RestaurantID,
+            }
+            let user=JSON.parse(localStorage.getItem('user'))
+       let authorization="Bearer " +user.token.id_token
+    let headers = {
+        "Content-Type": "application/json",
+        "Authorization": authorization,
+    }
+    try {
+        const data = await axios.post( apiURL+'customers/web/add_favourite',body,{headers:headers});
+        return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+async function RemoveFavouriteRestaurant(RestaurantID) {
+      var body={ 
+        "restaurant_id":RestaurantID,
+        }
+       let user=JSON.parse(localStorage.getItem('user'))
+       let authorization="Bearer " +user.token.id_token
+    let headers = {
+        "Content-Type": "application/json",
+        "Authorization": authorization,
+    }
+    try {
+        const data = await axios.post( apiURL+'customers/web/remove_favorite',body,{headers:headers});
+        return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+async function FavouriteList() {
+    var body={}
+     let user=JSON.parse(localStorage.getItem('user'))
+     let authorization="Bearer " +user.token.id_token
+  let headers = {
+      "Content-Type": "application/json",
+      "Authorization": authorization,
+  }
+  try {
+      const data = await axios.post( apiURL+'customers/web/list_favourite',body,{headers:headers});
+      return {error: false, data: data}
+  } catch (e) {
+      return {error: true, message: e}
+  }
 }

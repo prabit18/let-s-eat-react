@@ -16,7 +16,6 @@ const Checkout=()=>{
     const [Mobile_Number,setmobilenumber]=useState('');
     const[veri,setVeri]=useState(false);
     const [Error, setError] = useState(false);
-    const[activatebutton,setActivatebutton]=useState(false);
     const[ErrorMessage,setErrorMessage]=useState('');
     const[email,setEmail]=useState('');
     const[firstname,setfirstname]=useState('');
@@ -28,6 +27,7 @@ const Checkout=()=>{
         const loggedInUser = localStorage.getItem("user");        
         if (loggedInUser) {
             const User = JSON.parse(localStorage.getItem("user"));
+            setSuccess(true);
             setEmail(User.info.email)
             setfirstname(User.info.first_name)
             setlastname(User.info.last_name)
@@ -393,7 +393,7 @@ return(
                                             <img src="images/address_icon.svg" alt="Address_Icon"/>
                                             <div className="address-text">
                                                 <h2>Delivery Address</h2>
-                                                <p>Set your delivery address or add new</p>
+                                               {verified && <p>Set your delivery address or add new</p>}
                                             </div>
                                         </div>
                                         <div className="add-button change-btn">
@@ -422,9 +422,9 @@ return(
                                                     <a href="#" data-toggle="modal" data-target="#editAddress" className="edit">Edit</a>
                                                 </div>
                                             </div>
-                                            <div className="add-new-address-box">
+                                            {verified&&<div className="add-new-address-box">
                                                 <button type="button" data-toggle="modal" data-target="#addAddress">+ Add New Address</button>
-                                            </div>
+                                            </div>}
                                         </div>
                                         
                                     </div>

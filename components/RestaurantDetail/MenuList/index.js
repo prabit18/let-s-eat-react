@@ -6,6 +6,8 @@ import MenulistContext from "../../Context/MenulistContext";
 import MenulistContetx from "../../Context/MenulistContext";
 import Customizable from "../Customizable";
 import Menu from "./menu";
+import { dataService } from "../../../services";
+// import {IoIosHeart} from 'react-icons'
 const MenuItems = (props) => {
   const {
     foodItems,
@@ -25,7 +27,6 @@ const MenuItems = (props) => {
 
   const [foodtype, setFoodType] = useState("Menu");
   const [Name, setName] = useState("");
-
   const [show, setShow] = useState(false);
   const [variant, setVariant] = useState(props.Menulist[0].variants);
   const allfoodtypes = [
@@ -43,7 +44,26 @@ const MenuItems = (props) => {
     }
   };
  var user=false;
+ const[display,setdisplay]=useState(false);
+const[favourite,setFavourite]=useState(false);
   useEffect(() => {
+    
+    let User=JSON.parse(localStorage.getItem('user'))
+    if(User){
+      console.log(User,"---->",props.Menulist[0].restaurant_id);
+      // dataService.FavouriteList().then((response)=>{
+      //   console.log("favourite list",response)
+      //   response.data.data.data.map((item)=>{
+      //     console.log(item);
+      //   })
+      // })
+      // User.info.favourites.push(props.Menulist[0].restaurant_id);
+       if(User.info.favourites.includes(props.Menulist[0].restaurant_id))
+       {
+         console.log("coming inside");
+         setFavourite(true);
+       }else setFavourite(false);
+    }
     if (user) {
       SetFoodItems(JSON.parse(localStorage.getItem("menuItems")));
       JSON.parse(localStorage.getItem("menuItems")).forEach((item) => {
@@ -75,9 +95,7 @@ const MenuItems = (props) => {
         });
       });
       setmenuObject(menuObject);
-      localStorage.setItem("menuObject",JSON.stringify(menuObject))
-
-      
+      localStorage.setItem("menuObject",JSON.stringify(menuObject)) 
     }
   }, []);
   // useEffect(() => {
@@ -395,15 +413,59 @@ const MenuItems = (props) => {
 
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
-  };
+  };  
+  const Addfavourite=()=>{
+    const loggedInUser=localStorage.getItem('user');
+    if(loggedInUser)
+    {
+      dataService.AddFavouriteRestaurant(props.Menulist[0].restaurant_id).then((response)=>{
+        console.log("response is coming from add favourite---->",response)
+        if(response.data.data.error_status)
+        {
+          console.log(response.data.data.message)
+        }else{
+          let user=JSON.parse(localStorage.getItem('user'));
+          user.info.favourites.push(props.Menulist[0].restaurant_id);
+          localStorage.setItem('user',JSON.stringify(user))
+          setFavourite(true);
+          setdisplay(true);
+          setTimeout(()=>{setdisplay(false)},5000)
+          // window.location.reload();
+        }
+    });
+    }else {
+      console.log("please login and then you can add into favourites")
+    }
+  }
+  const RemoveFavourite=()=>{
+    const loggedInUser=localStorage.getItem('user');
+    if(loggedInUser)
+    {
+      dataService.RemoveFavouriteRestaurant(props.Menulist[0].restaurant_id).then((response)=>{
+        console.log("response is coming from Remove favourite---->",response)
+        if(response.data.data.error_status)
+        {
+          console.log(response.data.data.message)
+        }else{
+          let user=JSON.parse(localStorage.getItem('user'));
+          user.info.favourites.splice(user.info.favourites.indexOf(props.Menulist[0].restaurant_id),1);
+          localStorage.setItem('user',JSON.stringify(user))
+          console.log(user);
+          setFavourite(false);
+          setdisplay(false);
+        }
+    });
+  }
+}
   return (
     <>
-      <div className="header-border">
+    <div className="header-border">
+     {display && <div id="snackbar" className="show">Restaurant added to AccountFavourites</div>}
         <div className="menu-header">
           <div className="mobile-search-bar">
             <label
               className="restaurant-list-label"
-              htmlfor="search-dish"
+              htmlFor="search-dish"
             ></label>
             <input
               name="search-dish"
@@ -432,13 +494,21 @@ const MenuItems = (props) => {
               <li>
                 <a href="#">Reviews</a>
               </li>
+              <li className="favourite">
+                  <a href="#">
+                     {favourite? (<img className="filled-heart" src="/images/Fav-Filled.svg" alt="filled-heart-icon"  onClick={RemoveFavourite}/>):
+                      (<img className="empty-heart" src="/images/Fav-Outline.svg" alt="heart-icon" onClick={Addfavourite}/>)
+                    }
+                      Favourite
+                  </a>
+             </li> 
             </ul>
           </div>
           <div className="menu-search">
             <form>
               <label
                 className="restaurant-list-label"
-                for="search-your-dish"
+                htmlFor="search-your-dish"
               ></label>
               <input
                 name="Search"
@@ -545,7 +615,7 @@ const MenuItems = (props) => {
                                 </div>
                                 <label
                                   className="restaurant-list-label"
-                                  for="quantity-number"
+                                  htmlFor="quantity-number"
                                 ></label>
                                 <input
                                   about="317"
@@ -599,7 +669,7 @@ const MenuItems = (props) => {
                                 </div>
                                 <label
                                   className="restaurant-list-label"
-                                  for="quantity-number"
+                                  htmlFor="quantity-number"
                                 ></label>
                                 <input
                                   about="317"
@@ -715,7 +785,7 @@ const MenuItems = (props) => {
                             </div>
                             <label
                               className="restaurant-list-label"
-                              for="quantity-number"
+                              htmlFor="quantity-number"
                             ></label>
                             <input
                               about="317"
