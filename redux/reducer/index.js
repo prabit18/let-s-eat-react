@@ -4,6 +4,7 @@ import {Restaurants} from "./restaurantList.reducer";
 import { Curatedlist } from './curatedList.reducer';
 import {Menulist} from './menulist.reducer';
 import { Restaurant } from './restaurant.reducer';
+import { Favourites } from './favouritelist.reducer';
 import errors from "./error.reducer";
 const rootReducer = combineReducers({
     Cuisines,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
     Curatedlist,
     Menulist,
     Restaurant,
+    Favourites,
     errors
 })
 

@@ -8,7 +8,7 @@ const Layout = ({children}) => {
             <Navbar/>
             <div className="main-section restaurant-main">
                 {children}
-            </div>
+             </div>
             <Footer/>
         </>
     );

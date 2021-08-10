@@ -8,6 +8,7 @@ export const UserAction = {
   getMenulist,
   getRestaurant,
   getcart,
+  FavouriteList,
 };
 
 function getCuisines() {
@@ -108,4 +109,16 @@ function getRestaurant(type) {
     return { type: passActions.SET_RESTAURANT, data };
   }
 }
-
+function FavouriteList() {
+  return async (dispatch) => {
+    const data = await dataService.FavouriteList();
+    if ((await data).error) {
+      dispatch(setErrors(data.error));
+    } else {
+      dispatch(setFavouriteList(data.data.data.data));
+    }
+  };
+  function setFavouriteList(data) {
+    return { type: passActions.SET_FAVOURITE, data };
+  }
+}

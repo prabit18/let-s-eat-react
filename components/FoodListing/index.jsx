@@ -13,7 +13,7 @@ const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
 const FoodListing = (props) => {
-   // console.log(props)
+   //console.log("data is-->",props.restaurants.data)
     const router = useRouter()
     const handleroute=(type)=>{
         router.push({pathname:"/restaurants/",query:{Curated_type:type}})

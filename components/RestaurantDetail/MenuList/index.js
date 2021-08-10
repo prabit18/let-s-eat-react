@@ -7,6 +7,7 @@ import MenulistContetx from "../../Context/MenulistContext";
 import Customizable from "../Customizable";
 import Menu from "./menu";
 import { dataService } from "../../../services";
+import Login from "../../login";
 // import {IoIosHeart} from 'react-icons'
 const MenuItems = (props) => {
   const {
@@ -50,6 +51,22 @@ const[favourite,setFavourite]=useState(false);
     
     let User=JSON.parse(localStorage.getItem('user'))
     if(User){
+      if(!User.info.favourites.includes(props.Menulist[0].restaurant_id)){
+        dataService.AddFavouriteRestaurant(props.Menulist[0].restaurant_id).then((response)=>{
+          console.log("response is coming from add favourite---->",response)
+          if(response.data.data.error_status)
+          {
+            console.log(response.data.data.message)
+          }else{
+            let user=JSON.parse(localStorage.getItem('user'));
+            user.info.favourites.push(props.Menulist[0].restaurant_id);
+            localStorage.setItem('user',JSON.stringify(user))
+            setFavourite(true);
+            setdisplay(true);
+            setTimeout(()=>{setdisplay(false)},5000)
+          }
+      });
+      }
       console.log(User,"---->",props.Menulist[0].restaurant_id);
       // dataService.FavouriteList().then((response)=>{
       //   console.log("favourite list",response)
@@ -414,6 +431,7 @@ const[favourite,setFavourite]=useState(false);
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
   };  
+  const[dis,setdis]=useState(false);
   const Addfavourite=()=>{
     const loggedInUser=localStorage.getItem('user');
     if(loggedInUser)
@@ -434,6 +452,7 @@ const[favourite,setFavourite]=useState(false);
         }
     });
     }else {
+      setdis(true);
       console.log("please login and then you can add into favourites")
     }
   }
@@ -499,6 +518,7 @@ const[favourite,setFavourite]=useState(false);
                      {favourite? (<img className="filled-heart" src="/images/Fav-Filled.svg" alt="filled-heart-icon"  onClick={RemoveFavourite}/>):
                       (<img className="empty-heart" src="/images/Fav-Outline.svg" alt="heart-icon" onClick={Addfavourite}/>)
                     }
+                    {dis&&<Login/>}
                       Favourite
                   </a>
              </li> 

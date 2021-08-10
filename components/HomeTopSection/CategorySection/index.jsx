@@ -53,7 +53,7 @@ const CategorySection = (props) => {
                             <div className="removable"></div>
                             <img src="images/Inspiration.svg" alt="Inspiration For Your Order"/>
                                 <div className="view-all-btn white-btn">
-                                {/* <a href="/view-all-cuisines">View All</a> */}
+                                <a href="/view-all-cuisines">View All</a>
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation" id="mainCategory" {...options}>

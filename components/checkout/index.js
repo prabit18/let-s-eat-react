@@ -4,6 +4,8 @@ import { setErrors } from '../../redux/actions/error.action';
 import { dataService } from '../../services';
 import { UserAction } from '../../redux/actions/user.action';
 import { connect } from 'react-redux';
+import { ProgressPlugin } from 'webpack';
+import Login from '../login';
 const Checkout=()=>{
     const[show,setShow]=useState(false);
     const [popup,setpopup]=useState(null);
@@ -168,7 +170,6 @@ const handleotpchange=(otp)=>{
          setVeri(true);
      else setVeri(false);    
 }
-
 return(
   <>
  <section className="main-section">
@@ -361,6 +362,7 @@ return(
                                     <div className="address-header">
                                         <div className="address-left personal-detail">
                                             <img src="images/Group 6593.svg" alt="Address_Icon"/>
+                                            
                                             <div className="address-text">
                                                 <h2>Personal Details</h2>
                                                 <h3>{firstname} {lastname}</h3>
@@ -469,7 +471,7 @@ return(
         </section>
     </section>
     
-    <div className={["modal fade login-modal phone-modal", show && (popup==='mobilenumber' || popup==='change')? "show display-popup" : ""].join(" ")} id="phoneModal" tabindex="-1" role="dialog" aria-labelledby="phoneModalLabel" aria-hidden="true">
+    <div className={["modal fade login-modal phone-modal", show && (popup==='mobilenumber' || popup==='change')? "show display-popup" : ""].join(" ")} id="phoneModal" tabIndex="-1" role="dialog" aria-labelledby="phoneModalLabel" aria-hidden="true">
     <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content" id="phoneModalLabel">
             <button type="button" className="close" data-dismiss="modal" aria-label="Close">

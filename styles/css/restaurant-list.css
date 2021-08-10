@@ -321,6 +321,10 @@ p.rating-content {
     width: 90%!important;
     height: 20px!important;
 }
+/* .infinite-scroll-component::-webkit-scrollbar {
+    appearance: none;
+} */
+
 
 /*media queries*/
 @media (max-width: 991px) {

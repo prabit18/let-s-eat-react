@@ -286,6 +286,7 @@ async function FavouriteList() {
   }
   try {
       const data = await axios.post( apiURL+'customers/web/list_favourite',body,{headers:headers});
+      console.log("data is coming",data)
       return {error: false, data: data}
   } catch (e) {
       return {error: true, message: e}
