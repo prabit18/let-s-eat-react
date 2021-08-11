@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect,useContext} from 'react';
 import validator from 'validator';
 import OtpInput from 'react-otp-input';
 import { UserAction } from '../../redux/actions/user.action';
@@ -10,6 +10,8 @@ import {GoogleLogin} from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { googleClientID, facebookAppID } from '../../config/env';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+import LoginContext from '../Context/LoginContext';
+
 const Login=(props)=>{
     const[show,setshow]=useState(true);
     const [popup,setpopup]=useState('login');
@@ -29,6 +31,7 @@ const Login=(props)=>{
     const [attempt,setAttempt] = useState(0) 
     const[loading,setloading]=useState(false)
     const[Disabled,setdisabled]=useState(false)
+    const {dis,setdis} =useContext(LoginContext)
     useEffect(() => {
         const loggedInUser = localStorage.getItem("user");        
         if (loggedInUser) {
@@ -37,7 +40,6 @@ const Login=(props)=>{
             setLogin(true);
             setProfilename(User.info.first_name);
         }
-        else console.log("user is not loggedin");
       }, []);
 
 
@@ -100,7 +102,6 @@ const Login=(props)=>{
                 else{
                     setshow(true);
                     setOtp('');
-                    //  setTimeout(()=>{setdisabled(false)},30000)
                     if(type==='signup')
                     {
                         setpopup('otpsignup')
@@ -154,6 +155,7 @@ const Login=(props)=>{
                 setError(false)
                 setpopup('otp');
             setSession(response.data.session)
+            setTimeout(()=>{setdisabled(false)},30000)
             }
         });
     }
@@ -171,6 +173,7 @@ const Login=(props)=>{
                 setError(false)
                 setpopup('otpsignup');
                 setSession(response.data.data.data.session)
+                setTimeout(()=>{setdisabled(false)},30000)
             }
             
         });
@@ -184,9 +187,10 @@ const Login=(props)=>{
              if(type==='otp') {
                  setloading(true)
                      handleLoginOtp() 
-                    //  setdisabled(false)
+                     setdisabled(true)
             }else if(type==='resend'){
                 handleResendOtp();
+                setdisabled(true);
             }else if(type=='otpverification') {
                        setloading(true)
                        Otpverification('login') 
@@ -194,7 +198,8 @@ const Login=(props)=>{
                         
                     }           
         else if(type==='change')
-        {
+        {  
+            setError(false);
             setpopup(type)
            setActivatebutton(true)
         }
@@ -216,7 +221,7 @@ const Login=(props)=>{
                         return;
                     }
                     handleSignupOtp()
-                     
+                    setdisabled(true);
                 }else if(type==='resend')
                 {
                     handleResendOtp();
@@ -264,6 +269,10 @@ const Login=(props)=>{
                  setVeri(true);
              else setVeri(false);    
         }
+        const closepopup=()=>{
+            setshow(false);
+           setdis(false);
+        }
     return(
         <>
    
@@ -272,7 +281,7 @@ const Login=(props)=>{
            <div className="modal-dialog modal-dialog-centered" role="document">
               <div className="modal-content" id="loginModalLabel">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <img src="../../images/close.svg" alt="close-icon" onClick={()=>setshow(false)}/>
+                    <img src="../../images/close.svg" alt="close-icon" onClick={closepopup}/>
                 </button>
                 <div className="modal-header">
                     <h2 >Login</h2>
@@ -334,7 +343,7 @@ const Login=(props)=>{
         <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content" id="mobileOtpModalLabel">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <img src="../../images/close.svg" alt="close-icon" onClick={()=>setshow(false)}/>
+                    <img src="../../images/close.svg" alt="close-icon" onClick={closepopup}/>
                 </button>
                 <div className="modal-header">
                     <h2>Enter OTP</h2>
@@ -387,7 +396,7 @@ const Login=(props)=>{
         <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content" id="signupModalLabel">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <img src="../../images/close.svg" alt="close-icon"onClick={()=>setshow(false)}/>
+                    <img src="../../images/close.svg" alt="close-icon"onClick={closepopup}/>
                 </button>
                 <div className="modal-header">
                     <h2>Sign up</h2>
@@ -457,7 +466,7 @@ const Login=(props)=>{
         <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content" id="emailOtpModalLabel">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <img src="../../images/close.svg" alt="close-icon" onClick={()=>setshow(false)}/>
+                    <img src="../../images/close.svg" alt="close-icon" onClick={closepopup}/>
                 </button>
                 <div className="modal-header">
                     <h2>Enter OTP</h2>

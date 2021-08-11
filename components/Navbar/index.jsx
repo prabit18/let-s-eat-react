@@ -9,6 +9,7 @@ import { setErrors } from '../../redux/actions/error.action';
 import {GoogleLogin} from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { googleClientID, facebookAppID } from '../../config/env';
+import LoginContext from '../Context/LoginContext';
 import Login from '../login';
 const Navbar = (props) => {
     const [searchBox, setSearchBox] = useState(false);
@@ -120,7 +121,7 @@ const Navbar = (props) => {
                              (<li className="dropdown">
                             <a href="#" data-toggle="modal" data-target="#loginModal">
                                 <img src="../../images/login.svg" alt="login"/>
-                                <span onClick={()=>setdis(true)}>Login/Sign Up</span>
+                                <span onClick={()=>setdis(!dis)}>Login/Sign Up</span>
                             </a>
                             </li>):
                             (     <>
@@ -129,7 +130,9 @@ const Navbar = (props) => {
                                    </>
                             )
                             }
-                            {dis&&<Login/>}
+                             <LoginContext.Provider value={{dis,setdis}}>
+                             {dis&& <Login />}
+                          </LoginContext.Provider>
                             </ul>
                         </div>
                     </nav>

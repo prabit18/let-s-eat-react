@@ -4,6 +4,7 @@ import { UserAction } from "../../../redux/actions/user.action";
 import { Menulist } from "../../../redux/reducer/menulist.reducer";
 import MenulistContext from "../../Context/MenulistContext";
 import MenulistContetx from "../../Context/MenulistContext";
+import LoginContext from "../../Context/LoginContext";
 import Customizable from "../Customizable";
 import Menu from "./menu";
 import { dataService } from "../../../services";
@@ -68,12 +69,17 @@ const[favourite,setFavourite]=useState(false);
       });
       }
       console.log(User,"---->",props.Menulist[0].restaurant_id);
-      // dataService.FavouriteList().then((response)=>{
-      //   console.log("favourite list",response)
-      //   response.data.data.data.map((item)=>{
-      //     console.log(item);
-      //   })
-      // })
+      dataService.FavouriteList().then((response)=>{ 
+        let user=JSON.parse(localStorage.getItem('user'));
+        console.log("favourite list",response)
+        response.data.data.data.map((item)=>{
+          if(!user.info.favourites.includes(item.id)){
+           
+            user.info.favourites.push(item.id);
+            localStorage.setItem('user',JSON.stringify(user))
+          }
+        })
+      })
       // User.info.favourites.push(props.Menulist[0].restaurant_id);
        if(User.info.favourites.includes(props.Menulist[0].restaurant_id))
        {
@@ -452,7 +458,8 @@ const[favourite,setFavourite]=useState(false);
         }
     });
     }else {
-      setdis(true);
+      console.log(dis)
+      setdis(!dis);
       console.log("please login and then you can add into favourites")
     }
   }
@@ -479,7 +486,7 @@ const[favourite,setFavourite]=useState(false);
   return (
     <>
     <div className="header-border">
-     {display && <div id="snackbar" className="show">Restaurant added to AccountFavourites</div>}
+     {display && <div id="snackbar" className="show">Restaurant added to Favourite list</div>}
         <div className="menu-header">
           <div className="mobile-search-bar">
             <label
@@ -514,13 +521,18 @@ const[favourite,setFavourite]=useState(false);
                 <a href="#">Reviews</a>
               </li>
               <li className="favourite">
-                  <a href="#">
-                     {favourite? (<img className="filled-heart" src="/images/Fav-Filled.svg" alt="filled-heart-icon"  onClick={RemoveFavourite}/>):
-                      (<img className="empty-heart" src="/images/Fav-Outline.svg" alt="heart-icon" onClick={Addfavourite}/>)
-                    }
-                    {dis&&<Login/>}
+              {!favourite?
+              (<a href="#" onClick={Addfavourite}>
+              <img className="empty-heart" src="/images/Fav-Outline.svg" alt="heart-icon" onClick={Addfavourite}/>Favourite
+                </a>):
+                  (<a href="#" onClick={RemoveFavourite}>
+                      <img className="filled-heart" src="/images/Fav-Filled.svg" alt="filled-heart-icon"  onClick={RemoveFavourite}/>
                       Favourite
-                  </a>
+                  </a>)
+                  }
+                   <LoginContext.Provider value={{dis,setdis}}>
+                    {dis&& <Login />}
+                    </LoginContext.Provider>
              </li> 
             </ul>
           </div>
