@@ -18,7 +18,6 @@ const RestaurantListingPage = (props) => {
   
 	return (
 		<>
-         <Metadata/>
         <section className="restaurant-list">
                 <div className="container custom-container">
                     <div className="row">

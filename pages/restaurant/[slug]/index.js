@@ -5,6 +5,8 @@ import { UserAction } from '../../../redux/actions/user.action';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
 import RestaurantDetailLoader from '../../../components/Loader/Restaurant-detail-loader';
+import { Restaurants } from '../../../redux/reducer/restaurantList.reducer';
+import Metadata from '../../../components/Metadata';
 const restaurantdetailpage= (props) =>{
   const router = useRouter()
   const { slug } = router.query
@@ -15,10 +17,12 @@ const restaurantdetailpage= (props) =>{
         props.getMenulist(type);
         props.getRestaurant(type);
          },[router.query]);
-     const {Menulist,Restaurant} = props
+     const {Menulist,Restaurant} = props 
+     console.log("Restaurant is",Restaurant)
+     const metacontent={title: `Order Food From ${Restaurant.name} | Let's Eat`,description:Restaurant.description}
     return(
     <>
-             
+             <Metadata metacontent={metacontent}/>
              {Object.keys(Menulist).length > 0 ?<RestaurantDetail restaurant={Restaurant}/>:<RestaurantDetailLoader/>}
     </>)
 }

@@ -12,8 +12,8 @@ import { dataService } from "../../services";
 
 const HomePage = (props) => {
   const [loading, setloading] = useState(false);
-  
-    useEffect(() => {
+   const metacontent={title:"Order Food Online from Best Restaurants Around You | Let's Eat",description:"Order food online from restaurants and get it delivered."}
+   useEffect(() => {
       setloading(true);
         props.getCuratedlist().then((response) => setloading(false));
   },[]);
@@ -21,7 +21,7 @@ const HomePage = (props) => {
 const {Curatedlist} = props
   return (
     <>
-      <Metadata/>
+      <Metadata metacontent={metacontent}/>
       {!loading ? (
         <>
           <HomeTopSection />

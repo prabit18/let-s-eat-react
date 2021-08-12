@@ -28,7 +28,6 @@ const RestaurantDetail = (props) => {
   const { query } = useRouter();
   return (
     <>
-     <Metadata/>
       {
         <section className="main-section restaurant-main">
           <div className="page-banner restaurant-page-banner">

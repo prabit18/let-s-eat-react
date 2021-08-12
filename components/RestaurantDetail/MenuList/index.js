@@ -134,13 +134,23 @@ const[favourite,setFavourite]=useState(false);
     });
     item_count[allfoodtypes[i]] = c;
   }
+ //var a={};
   const filterhandler = (type) => {
     const updatedmenu = props.Menulist.filter((item) => {
       return item.food_type_name === type;
     });
+   // a[type]=updatedmenu;
     SetFoodItems(updatedmenu);
   };
-
+  // useEffect(()=>{
+  //   allfoodtypes.map((e)=>{
+  //     console.log(e);
+  //     filterhandler(e);
+  //     // console.log("new food items are",a[e])
+  //     // a[e].map((item)=>console.log("rtttrtrt",item))
+  // })
+  // },[])
+ 
   const clickhandler = (type) => {
     setFoodType(type);
     if (type === "Menu") {
@@ -583,7 +593,7 @@ const[favourite,setFavourite]=useState(false);
           <h2>
             {foodtype}({item_count[foodtype]})
           </h2>
-          {foodItems &&
+         { foodItems &&
             foodItems
               .filter((val) => searchFood(val))
               .map((item, i) => (
