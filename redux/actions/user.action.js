@@ -43,10 +43,12 @@ function getRestaurants(type) {
 function getCuratedlist() {
   return async (dispatch) => {
     const data = await dataService.getCuratedList();
+    //debugger
     if ((await data).error) {
       dispatch(setErrors(data.error));
     } else {
-      dispatch(setCuratedlist(data.data.data.data));
+      console.log("useractions",data.data.data)
+      dispatch(setCuratedlist(data.data.data));
     }
   };
   function setCuratedlist(data) {

@@ -3,7 +3,7 @@ import { UserAction } from '../../redux/actions/user.action';
 import { connect } from 'react-redux';
 import { useRouter} from 'next/router'
 const FavouriteList=(props)=>{
-console.log("props data",props.data);
+    console.log("comses",props.data)
 const router = useRouter()
     const handleroute=(url)=>{
         
@@ -34,11 +34,11 @@ const router = useRouter()
                                             <div className="resto-count favourite-menu-header">
                                                 <h2>Favourites</h2>
                                             </div>
-                                        </div>
-                                        <div className="food-list row frame">
+                                        </div>    
+                                     <div className="food-list row frame">
                                         { props.data && props.data.map((item)=>(
                                         <div className="col-xl-4 col-lg-4 col-sm-6" key={item.id}>
-                                                <div className="food-product hvr-shadow" onClick={()=>handleroute(item.url)}>
+                                                <div className={["food-product hvr-shadow",!item.restaurant_status?"deleted-product":""].join('')} onClick={()=>handleroute(item.url)}>
                                                     <a className="clickable" href="#"></a>
                                                     <div className="food-item">
                                                         <img alt="food-item" src={`https://development-cdn.letseat.co.uk/${item.image_url}`}/>
@@ -71,7 +71,6 @@ const router = useRouter()
                                          ))}   
                                           </div>
                                         </div>
-                                        
                                     </div>
                                 </div>
                             </div>
@@ -81,15 +80,5 @@ const router = useRouter()
     </div> 
         </>
     )
-}
-// const mapStateToProps = (state) => {
-//     const {
-//       Favourites,Restaurant,
-//     } = state
-//     return {Favourites,Restaurant}
-//   }
-//   const actionCreator = {
-//     FavouriteList: UserAction.FavouriteList
-//   }
-  
+}  
   export default (FavouriteList);

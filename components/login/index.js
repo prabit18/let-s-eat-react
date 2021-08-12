@@ -136,8 +136,8 @@ const Login=(props)=>{
     const handleResendOtp=async()=>{
         dataService.ResendOtp(Email).then((response)=>{
             console.log("resend response is",response)
-            setError(true)
-            setErrorMessage(response.data.data.message)
+            setSuccess(true)
+            setSuccessMessage(response.data.data.message)
             setSession(response.data.data.data.session)
         });
     }
@@ -179,8 +179,10 @@ const Login=(props)=>{
         });
     }
     const Loginhandler=(type)=>{
+             setSuccess(false);
                 setErrorMessage('')
                 setshow(true);
+                setError(false);
             if(type==='login'){
             setpopup(type)
             }
@@ -207,6 +209,8 @@ const Login=(props)=>{
     
     const Signuphandler=(type)=>{
              setErrorMessage('')
+             setError(false);
+             setSuccess(false);
              setshow(true);
                 if(type==='signup'){
                     setpopup(type);
@@ -248,6 +252,7 @@ const Login=(props)=>{
 }
     const validateEmail = (e) => {
         setErrorMessage('')
+        setError(false)
         setEmail(e.target.value);
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if(re.test(String(Email).toLowerCase())) {
@@ -265,6 +270,10 @@ const Login=(props)=>{
         }
         const handleotpchange=(otp)=>{
             setOtp(otp);
+            setError(false)
+            setSuccess(false);
+            setSuccessMessage('')
+            setErrorMessage('')
             if(otp.length===6)
                  setVeri(true);
              else setVeri(false);    
@@ -350,21 +359,23 @@ const Login=(props)=>{
                 </div>
                 <div className="modal-body">
                     <div className="mobile-otp">
-                        <p>6 digit OTP has been sent to your Email Address,{Email}, please enter to Log in <span>OTP valid for 10 minutes.</span></p>
+                        <p>Please enter the 6 Digit OTP shared with you via Email,{Email}<br/><span>OTP valid for 10 minutes.</span></p>
                         <a href="#" data-toggle="modal" data-target="#loginModal" data-dismiss="modal" aria-label="Close"onClick={()=>Loginhandler('change')}>Change Email Address</a>
                     </div>
-                    {Error &&
-                            (<>
-                            <p className="error">{ErrorMessage}</p> 
-                            </> )
-                          }
-                    <OtpInput className="otp-input"
+                        
+                    <OtpInput className={["otp-input",Error?" error-otp-input":""].join('')}
                     value={otp}
                     onChange={handleotpchange}
                     numInputs={6}
                     clearInputs={true}
                     separator={<span> </span>}
                 /> 
+                 {Error &&
+                            (<>
+                            <p className="error otp-error">{ErrorMessage}</p> 
+                            </> )
+                          }
+                     {success&&<p className="error otp-error success-error">{successMessage}</p>}
                   <form autoComplete="off">
                    <div className="form-group">
                      {!veri?
@@ -384,7 +395,7 @@ const Login=(props)=>{
                         <div className="resend-otp">
                             {
                             Disabled ?<p>Did not receive? Resend</p> :
-                            <p>Did not receive? <a href="#" onClick={()=>Loginhandler('resend')}disabled={Disabled}>Resend</a></p>
+                            <p>Did not receive? <a onClick={()=>Loginhandler('resend')}disabled={Disabled}>Resend</a></p>
                             }
                         </div>
                     </div>
@@ -404,7 +415,7 @@ const Login=(props)=>{
                 <div className="modal-body">
                        {Error &&
                             (<>
-                            <p className="error">{ErrorMessage}</p> 
+                            <p className="error sign-up-error">{ErrorMessage}</p> 
                             </> )
                           }
                     <form autoComplete="off">
@@ -473,18 +484,19 @@ const Login=(props)=>{
                 </div>
                 <div className="modal-body">
                     <div className="mobile-otp">
-                        <p>6 digit OTP has been sent to your Email Address, {Email}, please enter to Signup <span>OTP valid for 10 minutes.</span></p>
+                    <p>Please enter the 6 Digit OTP shared with you via Email,{Email}<br/><span>OTP valid for 10 minutes.</span></p>
                     </div>
-                    {Error &&
-                            (<>
-                            <p className="error">{ErrorMessage}</p> 
-                            </> )
-                          }
-                     <OtpInput className="otp-input"
+                     <OtpInput className={["otp-input",Error?" error-otp-input":""].join('')}
                     value={otp}
                     onChange={handleotpchange}
                     numInputs={6}
                     separator={<span> </span>}/> 
+                    {Error &&
+                            (<>
+                            <p className="error otp-error">{ErrorMessage}</p> 
+                            </> )
+                          }
+                          {success&&<p className="error otp-error success-error">{successMessage}</p>} 
                   <form>
                    <div className="form-group">
                      {!veri?
@@ -502,7 +514,10 @@ const Login=(props)=>{
                     <div className="remain-timer">
                         <h2 id="newtimer"></h2>
                         <div className="resend-otp">
-                            <p>Did not receive? <a href="#" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('resend')} disabled={Disabled}>Resend</a></p>
+                        {
+                            Disabled ?<p>Did not receive? Resend</p> :
+                            <p>Did not receive? <a data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('resend')} >Resend</a></p>
+                        }
                         </div>
                     </div>
                 </div>

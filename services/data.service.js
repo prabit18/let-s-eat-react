@@ -103,15 +103,13 @@ async function getRestaurantsInfinite(type) {
 
 async function getCuratedList(type) {
     try {
-        const data = await axios.post( apiURL+'curatedlist/web/featured_curated_list', {});
+        const data = await axios.post('https://staging-apis.letseat.co.uk/staging/api/v1/restaurants/web/list_by_curated_list', {});
+        console.log("new data",data)
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
     }
 }
-
-
-
 async function getMenuList(type) {
     if(typeof type==="string"){
     var body={ "url":type};

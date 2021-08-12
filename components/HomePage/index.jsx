@@ -8,17 +8,17 @@ import CategorySectionLoader from "../Loader/CategorySectionLoader";
 import BottomSectionLoader from "../Loader/BottomSectionLoader";
 import HomePageLoader from "../Loader/HomePageLoader";
 import Metadata from "../Metadata";
+import { dataService } from "../../services";
 
 const HomePage = (props) => {
   const [loading, setloading] = useState(false);
+  
     useEffect(() => {
       setloading(true);
-      props.getRestaurants().then(() => {
-        props.getCuratedlist().then(() => setloading(false));
-      });
+        props.getCuratedlist().then((response) => setloading(false));
   },[]);
 
-const {Curatedlist,Restaurants} = props
+const {Curatedlist} = props
   return (
     <>
       <Metadata/>
@@ -26,7 +26,7 @@ const {Curatedlist,Restaurants} = props
         <>
           <HomeTopSection />
           {Curatedlist.length > 0 &&
-            Curatedlist.map((item) => <FoodListing data={item} key={item.id}/>)}
+             Curatedlist.map((item) => <FoodListing data={item} key={item.id}/>)}
         </>
       ) : (
         <HomePageLoader />
@@ -36,14 +36,14 @@ const {Curatedlist,Restaurants} = props
 };
 
 const mapStateToProps = (state) => {
+  // debugger
   const {
-    Curatedlist,Restaurants
+    Curatedlist
   } = state
-  return {Curatedlist,Restaurants}
+  return {Curatedlist}
 }
 const actionCreator = {
   getCuratedlist: UserAction.getCuratedlist,
-  getRestaurants: UserAction.getRestaurants,
 };
 
 export default connect(mapStateToProps, actionCreator)(HomePage);

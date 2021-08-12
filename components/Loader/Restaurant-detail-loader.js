@@ -3,212 +3,212 @@ import React from 'react'
 function RestaurantDetailLoader() {
     return (
         <div>
-            {/* <section class="main-section restaurant-main">
-        <div class="page-banner restaurant-page-banner"> */}
-        <div class="offer-section-outer">
-            <div class="container custom-container">
-                <div class="restaurant-offer-detail">
-                    <div class="row restaurant-row" style={{width:"100%"}}>
-                        <div class="col-md-8 restaurant-col">
-                            <div class="restaurant-detail-outer">
-                                <div class="white-background restaurant-img-sec">
-                                    <div class="gray-background inter-crop-img"></div>
+            {/* <section className="main-section restaurant-main">
+        <div className="page-banner restaurant-page-banner"> */}
+        <div className="offer-section-outer">
+            <div className="container custom-container">
+                <div className="restaurant-offer-detail">
+                    <div className="row restaurant-row" style={{width:"100%"}}>
+                        <div className="col-md-8 restaurant-col">
+                            <div className="restaurant-detail-outer">
+                                <div className="white-background restaurant-img-sec">
+                                    <div className="gray-background inter-crop-img"></div>
                                 </div>
-                                <div class="white-background restaurant-detail-sec">
-                                    <div class="gray-background inter-crop-img"></div>
-                                    <div class="gray-background inter-crop-img food-type"></div>
-                                    <div class="gray-background inter-crop-img restaurant-add"></div>
-                                    <div class="gray-background inter-crop-img rating-sec"></div>
+                                <div className="white-background restaurant-detail-sec">
+                                    <div className="gray-background inter-crop-img"></div>
+                                    <div className="gray-background inter-crop-img food-type"></div>
+                                    <div className="gray-background inter-crop-img restaurant-add"></div>
+                                    <div className="gray-background inter-crop-img rating-sec"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 restaurant-col">
-                            <div class="white-background offer-sec">
-                                <div class="gray-background inter-crop-img"></div>
-                                <div class="gray-background inter-crop-img food-type offers-list"></div>
-                                <div class="gray-background inter-crop-img restaurant-add offers-list"></div>
+                        <div className="col-md-4 restaurant-col">
+                            <div className="white-background offer-sec">
+                                <div className="gray-background inter-crop-img"></div>
+                                <div className="gray-background inter-crop-img food-type offers-list"></div>
+                                <div className="gray-background inter-crop-img restaurant-add offers-list"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <section class="restaurant-list">
-            <div class="container custom-container restaurant-container">
-                <div class="row restaurant-row">
-                    <div class="col-md-8 restaurant-list-col">
-                        <div class="menu-section">
-                            <div class="header-border">
-                                <div class="white-background restaurant-img-sec header-sec">
-                                    <div class="gray-background inter-crop-img menu-nav"></div>
-                                    <div class="gray-background inter-crop-img overview-nav"></div>
-                                    <div class="gray-background inter-crop-img review-nav"></div>
-                                    <div class="gray-background inter-crop-img search-sec"></div>
+        <section className="restaurant-list">
+            <div className="container custom-container restaurant-container">
+                <div className="row restaurant-row">
+                    <div className="col-md-8 restaurant-list-col">
+                        <div className="menu-section">
+                            <div className="header-border">
+                                <div className="white-background restaurant-img-sec header-sec">
+                                    <div className="gray-background inter-crop-img menu-nav"></div>
+                                    <div className="gray-background inter-crop-img overview-nav"></div>
+                                    <div className="gray-background inter-crop-img review-nav"></div>
+                                    <div className="gray-background inter-crop-img search-sec"></div>
                                 </div>
                             </div>
-                            <div class="menu-body">
-                                <div class="side-menu-list" id="sideFilter">
-                                    <ul class="menu-feild frame white-background">
-                                        <li class="gray-background inter-crop-img menu-item"></li>
-                                        <li class="gray-background inter-crop-img menu-item first-item"></li>
-                                        <li class="gray-background inter-crop-img menu-item second-item"></li>
-                                        <li class="gray-background inter-crop-img menu-item third-item"></li>
-                                        <li class="gray-background inter-crop-img menu-item fourth-item"></li>
-                                        <li class="gray-background inter-crop-img menu-item fifth-item"></li>
-                                        <li class="gray-background inter-crop-img menu-item sixth-item"></li>
+                            <div className="menu-body">
+                                <div className="side-menu-list" id="sideFilter">
+                                    <ul className="menu-feild frame white-background">
+                                        <li className="gray-background inter-crop-img menu-item"></li>
+                                        <li className="gray-background inter-crop-img menu-item first-item"></li>
+                                        <li className="gray-background inter-crop-img menu-item second-item"></li>
+                                        <li className="gray-background inter-crop-img menu-item third-item"></li>
+                                        <li className="gray-background inter-crop-img menu-item fourth-item"></li>
+                                        <li className="gray-background inter-crop-img menu-item fifth-item"></li>
+                                        <li className="gray-background inter-crop-img menu-item sixth-item"></li>
                                     </ul>
                                 </div>
-                                <div class="menu-item-list">
-                                    <div class="white-background restaurant-detail-sec recommended">
-                                        <div class="gray-background inter-crop-img"></div>
+                                <div className="menu-item-list">
+                                    <div className="white-background restaurant-detail-sec recommended">
+                                        <div className="gray-background inter-crop-img"></div>
                                     </div>
 
-                                    <div class="menu-items">
-                                        <div class="white-background restaurant-img-sec menu-image">
-                                            <div class="gray-background inter-crop-img"></div>
+                                    <div className="menu-items">
+                                        <div className="white-background restaurant-img-sec menu-image">
+                                            <div className="gray-background inter-crop-img"></div>
                                         </div>
-                                        <div class="menu-item-description white-background restaurant-img-sec">
-                                            <div class="gray-background inter-crop-img menu-detail"></div>
-                                            <div class="gray-background inter-crop-img menu-detail cost-sec"></div>
-                                            <div class="gray-background inter-crop-img menu-detail add-button"></div>
-                                            <div class="gray-background inter-crop-img menu-detail menu-desc"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="menu-items">
-                                        <div class="white-background restaurant-img-sec menu-image">
-                                            <div class="gray-background inter-crop-img"></div>
-                                        </div>
-                                        <div class="menu-item-description white-background restaurant-img-sec">
-                                            <div class="gray-background inter-crop-img menu-detail"></div>
-                                            <div class="gray-background inter-crop-img menu-detail cost-sec"></div>
-                                            <div class="gray-background inter-crop-img menu-detail add-button"></div>
-                                            <div class="gray-background inter-crop-img menu-detail menu-desc"></div>
+                                        <div className="menu-item-description white-background restaurant-img-sec">
+                                            <div className="gray-background inter-crop-img menu-detail"></div>
+                                            <div className="gray-background inter-crop-img menu-detail cost-sec"></div>
+                                            <div className="gray-background inter-crop-img menu-detail add-button"></div>
+                                            <div className="gray-background inter-crop-img menu-detail menu-desc"></div>
                                         </div>
                                     </div>
 
-                                    <div class="menu-items">
-                                        <div class="white-background restaurant-img-sec menu-image">
-                                            <div class="gray-background inter-crop-img"></div>
+                                    <div className="menu-items">
+                                        <div className="white-background restaurant-img-sec menu-image">
+                                            <div className="gray-background inter-crop-img"></div>
                                         </div>
-                                        <div class="menu-item-description white-background restaurant-img-sec">
-                                            <div class="gray-background inter-crop-img menu-detail"></div>
-                                            <div class="gray-background inter-crop-img menu-detail cost-sec"></div>
-                                            <div class="gray-background inter-crop-img menu-detail add-button"></div>
-                                            <div class="gray-background inter-crop-img menu-detail menu-desc"></div>
-                                        </div>
-                                    </div>
-                                    <div class="menu-items">
-                                        <div class="white-background restaurant-img-sec menu-image">
-                                            <div class="gray-background inter-crop-img"></div>
-                                        </div>
-                                        <div class="menu-item-description white-background restaurant-img-sec">
-                                            <div class="gray-background inter-crop-img menu-detail"></div>
-                                            <div class="gray-background inter-crop-img menu-detail cost-sec"></div>
-                                            <div class="gray-background inter-crop-img menu-detail add-button"></div>
-                                            <div class="gray-background inter-crop-img menu-detail menu-desc"></div>
-                                        </div>
-                                    </div>
-                                    <div class="menu-items">
-                                        <div class="white-background restaurant-img-sec menu-image">
-                                            <div class="gray-background inter-crop-img"></div>
-                                        </div>
-                                        <div class="menu-item-description white-background restaurant-img-sec">
-                                            <div class="gray-background inter-crop-img menu-detail"></div>
-                                            <div class="gray-background inter-crop-img menu-detail cost-sec"></div>
-                                            <div class="gray-background inter-crop-img menu-detail add-button"></div>
-                                            <div class="gray-background inter-crop-img menu-detail menu-desc"></div>
+                                        <div className="menu-item-description white-background restaurant-img-sec">
+                                            <div className="gray-background inter-crop-img menu-detail"></div>
+                                            <div className="gray-background inter-crop-img menu-detail cost-sec"></div>
+                                            <div className="gray-background inter-crop-img menu-detail add-button"></div>
+                                            <div className="gray-background inter-crop-img menu-detail menu-desc"></div>
                                         </div>
                                     </div>
 
-                                    <div class="menu-items">
-                                        <div class="white-background restaurant-img-sec menu-image">
-                                            <div class="gray-background inter-crop-img"></div>
+                                    <div className="menu-items">
+                                        <div className="white-background restaurant-img-sec menu-image">
+                                            <div className="gray-background inter-crop-img"></div>
                                         </div>
-                                        <div class="menu-item-description white-background restaurant-img-sec">
-                                            <div class="gray-background inter-crop-img menu-detail"></div>
-                                            <div class="gray-background inter-crop-img menu-detail cost-sec"></div>
-                                            <div class="gray-background inter-crop-img menu-detail add-button"></div>
-                                            <div class="gray-background inter-crop-img menu-detail menu-desc"></div>
-                                        </div>
-                                    </div>
-                                    <div class="menu-items">
-                                        <div class="white-background restaurant-img-sec menu-image">
-                                            <div class="gray-background inter-crop-img"></div>
-                                        </div>
-                                        <div class="menu-item-description white-background restaurant-img-sec">
-                                            <div class="gray-background inter-crop-img menu-detail"></div>
-                                            <div class="gray-background inter-crop-img menu-detail cost-sec"></div>
-                                            <div class="gray-background inter-crop-img menu-detail add-button"></div>
-                                            <div class="gray-background inter-crop-img menu-detail menu-desc"></div>
+                                        <div className="menu-item-description white-background restaurant-img-sec">
+                                            <div className="gray-background inter-crop-img menu-detail"></div>
+                                            <div className="gray-background inter-crop-img menu-detail cost-sec"></div>
+                                            <div className="gray-background inter-crop-img menu-detail add-button"></div>
+                                            <div className="gray-background inter-crop-img menu-detail menu-desc"></div>
                                         </div>
                                     </div>
-                                    <div class="menu-items">
-                                        <div class="white-background restaurant-img-sec menu-image">
-                                            <div class="gray-background inter-crop-img"></div>
+                                    <div className="menu-items">
+                                        <div className="white-background restaurant-img-sec menu-image">
+                                            <div className="gray-background inter-crop-img"></div>
                                         </div>
-                                        <div class="menu-item-description white-background restaurant-img-sec">
-                                            <div class="gray-background inter-crop-img menu-detail"></div>
-                                            <div class="gray-background inter-crop-img menu-detail cost-sec"></div>
-                                            <div class="gray-background inter-crop-img menu-detail add-button"></div>
-                                            <div class="gray-background inter-crop-img menu-detail menu-desc"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="menu-items">
-                                        <div class="white-background restaurant-img-sec menu-image">
-                                            <div class="gray-background inter-crop-img"></div>
-                                        </div>
-                                        <div class="menu-item-description white-background restaurant-img-sec">
-                                            <div class="gray-background inter-crop-img menu-detail"></div>
-                                            <div class="gray-background inter-crop-img menu-detail cost-sec"></div>
-                                            <div class="gray-background inter-crop-img menu-detail add-button"></div>
-                                            <div class="gray-background inter-crop-img menu-detail menu-desc"></div>
+                                        <div className="menu-item-description white-background restaurant-img-sec">
+                                            <div className="gray-background inter-crop-img menu-detail"></div>
+                                            <div className="gray-background inter-crop-img menu-detail cost-sec"></div>
+                                            <div className="gray-background inter-crop-img menu-detail add-button"></div>
+                                            <div className="gray-background inter-crop-img menu-detail menu-desc"></div>
                                         </div>
                                     </div>
-                                    <div class="menu-items">
-                                        <div class="white-background restaurant-img-sec menu-image">
-                                            <div class="gray-background inter-crop-img"></div>
+                                    <div className="menu-items">
+                                        <div className="white-background restaurant-img-sec menu-image">
+                                            <div className="gray-background inter-crop-img"></div>
                                         </div>
-                                        <div class="menu-item-description white-background restaurant-img-sec">
-                                            <div class="gray-background inter-crop-img menu-detail"></div>
-                                            <div class="gray-background inter-crop-img menu-detail cost-sec"></div>
-                                            <div class="gray-background inter-crop-img menu-detail add-button"></div>
-                                            <div class="gray-background inter-crop-img menu-detail menu-desc"></div>
-                                        </div>
-                                    </div>
-                                    <div class="menu-items">
-                                        <div class="white-background restaurant-img-sec menu-image">
-                                            <div class="gray-background inter-crop-img"></div>
-                                        </div>
-                                        <div class="menu-item-description white-background restaurant-img-sec">
-                                            <div class="gray-background inter-crop-img menu-detail"></div>
-                                            <div class="gray-background inter-crop-img menu-detail cost-sec"></div>
-                                            <div class="gray-background inter-crop-img menu-detail add-button"></div>
-                                            <div class="gray-background inter-crop-img menu-detail menu-desc"></div>
+                                        <div className="menu-item-description white-background restaurant-img-sec">
+                                            <div className="gray-background inter-crop-img menu-detail"></div>
+                                            <div className="gray-background inter-crop-img menu-detail cost-sec"></div>
+                                            <div className="gray-background inter-crop-img menu-detail add-button"></div>
+                                            <div className="gray-background inter-crop-img menu-detail menu-desc"></div>
                                         </div>
                                     </div>
 
-                                    <div class="menu-items">
+                                    <div className="menu-items">
+                                        <div className="white-background restaurant-img-sec menu-image">
+                                            <div className="gray-background inter-crop-img"></div>
+                                        </div>
+                                        <div className="menu-item-description white-background restaurant-img-sec">
+                                            <div className="gray-background inter-crop-img menu-detail"></div>
+                                            <div className="gray-background inter-crop-img menu-detail cost-sec"></div>
+                                            <div className="gray-background inter-crop-img menu-detail add-button"></div>
+                                            <div className="gray-background inter-crop-img menu-detail menu-desc"></div>
+                                        </div>
+                                    </div>
+                                    <div className="menu-items">
+                                        <div className="white-background restaurant-img-sec menu-image">
+                                            <div className="gray-background inter-crop-img"></div>
+                                        </div>
+                                        <div className="menu-item-description white-background restaurant-img-sec">
+                                            <div className="gray-background inter-crop-img menu-detail"></div>
+                                            <div className="gray-background inter-crop-img menu-detail cost-sec"></div>
+                                            <div className="gray-background inter-crop-img menu-detail add-button"></div>
+                                            <div className="gray-background inter-crop-img menu-detail menu-desc"></div>
+                                        </div>
+                                    </div>
+                                    <div className="menu-items">
+                                        <div className="white-background restaurant-img-sec menu-image">
+                                            <div className="gray-background inter-crop-img"></div>
+                                        </div>
+                                        <div className="menu-item-description white-background restaurant-img-sec">
+                                            <div className="gray-background inter-crop-img menu-detail"></div>
+                                            <div className="gray-background inter-crop-img menu-detail cost-sec"></div>
+                                            <div className="gray-background inter-crop-img menu-detail add-button"></div>
+                                            <div className="gray-background inter-crop-img menu-detail menu-desc"></div>
+                                        </div>
+                                    </div>
+
+                                    <div className="menu-items">
+                                        <div className="white-background restaurant-img-sec menu-image">
+                                            <div className="gray-background inter-crop-img"></div>
+                                        </div>
+                                        <div className="menu-item-description white-background restaurant-img-sec">
+                                            <div className="gray-background inter-crop-img menu-detail"></div>
+                                            <div className="gray-background inter-crop-img menu-detail cost-sec"></div>
+                                            <div className="gray-background inter-crop-img menu-detail add-button"></div>
+                                            <div className="gray-background inter-crop-img menu-detail menu-desc"></div>
+                                        </div>
+                                    </div>
+                                    <div className="menu-items">
+                                        <div className="white-background restaurant-img-sec menu-image">
+                                            <div className="gray-background inter-crop-img"></div>
+                                        </div>
+                                        <div className="menu-item-description white-background restaurant-img-sec">
+                                            <div className="gray-background inter-crop-img menu-detail"></div>
+                                            <div className="gray-background inter-crop-img menu-detail cost-sec"></div>
+                                            <div className="gray-background inter-crop-img menu-detail add-button"></div>
+                                            <div className="gray-background inter-crop-img menu-detail menu-desc"></div>
+                                        </div>
+                                    </div>
+                                    <div className="menu-items">
+                                        <div className="white-background restaurant-img-sec menu-image">
+                                            <div className="gray-background inter-crop-img"></div>
+                                        </div>
+                                        <div className="menu-item-description white-background restaurant-img-sec">
+                                            <div className="gray-background inter-crop-img menu-detail"></div>
+                                            <div className="gray-background inter-crop-img menu-detail cost-sec"></div>
+                                            <div className="gray-background inter-crop-img menu-detail add-button"></div>
+                                            <div className="gray-background inter-crop-img menu-detail menu-desc"></div>
+                                        </div>
+                                    </div>
+
+                                    <div className="menu-items">
                                         <img alt="food-item" src="images/image_res002.jpg"/>
-                                        <div class="menu-item-description">
-                                            <div class="menu-name">
-                                                <div class="menu-wrap">
+                                        <div className="menu-item-description">
+                                            <div className="menu-name">
+                                                <div className="menu-wrap">
                                                     <h4>Dream Team Bucket</h4>
-                                                    <div class="customize-list">
-                                                        <span class="veg-item">£5.00</span>
+                                                    <div className="customize-list">
+                                                        <span className="veg-item">£5.00</span>
                                                     </div>
 
                                                 </div>
-                                                <div class="menu-add-btn">
+                                                <div className="menu-add-btn">
                                                     <a href="#">Add</a>
                                                 </div>
                                             </div>
-                                            <div class="menu-description">
+                                            <div className="menu-description">
                                                 <p>Lorem ipsum dolor sit amet, consetetur eirmod tempor invidunt ut
                                                     labore et dolore magna.</p>
                                             </div>
-                                            <div class="menu-add-btn-small proceed-add">
+                                            <div className="menu-add-btn-small proceed-add">
                                                 <a href="#">Add</a>
                                             </div>
                                         </div>
@@ -216,20 +216,20 @@ function RestaurantDetailLoader() {
                                     
                                 </div>
                             </div>
-                            <div class="filter-overlay sidemenu-overlay" onclick="closeNav()"></div>
+                            <div className="filter-overlay sidemenu-overlay" onclick="closeNav()"></div>
                         </div>
                     </div>
-                    <div class="col-md-4 cart-summery-col">
-                        <div class="order-summery card">
-                            <div class="white-background restaurant-img-sec">
-                                <div class="gray-background inter-crop-img"></div>
-                                <div class="gray-background inter-crop-img cart-body"></div>
-                                <div class="gray-background inter-crop-img cart-body selected-restaurant"></div>
-                                <div class="gray-background inter-crop-img cart-menu-name"></div>
-                                <div class="gray-background inter-crop-img cart-cost"></div>
-                                <div class="gray-background inter-crop-img cart-quantity"></div>
-                                <div class="gray-background inter-crop-img cart-price"></div>
-                                <div class="gray-background inter-crop-img proceed-button"></div>
+                    <div className="col-md-4 cart-summery-col">
+                        <div className="order-summery card">
+                            <div className="white-background restaurant-img-sec">
+                                <div className="gray-background inter-crop-img"></div>
+                                <div className="gray-background inter-crop-img cart-body"></div>
+                                <div className="gray-background inter-crop-img cart-body selected-restaurant"></div>
+                                <div className="gray-background inter-crop-img cart-menu-name"></div>
+                                <div className="gray-background inter-crop-img cart-cost"></div>
+                                <div className="gray-background inter-crop-img cart-quantity"></div>
+                                <div className="gray-background inter-crop-img cart-price"></div>
+                                <div className="gray-background inter-crop-img proceed-button"></div>
                             </div>
                         </div>
                     </div>

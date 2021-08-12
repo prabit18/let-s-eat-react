@@ -2,7 +2,8 @@ import {React,useEffect} from 'react'
 import FavouriteList from '../../components/favouritelist'
 import {UserAction} from "../../redux/actions/user.action";
 import { connect } from "react-redux";
-import { dataService } from '../../services';
+import RestaurantListLoader from '../../components/Loader/RestaurantListLoader';
+import Emptypage from '../../components/Emptypage';
 const Favourite=(props)=>{
   
     useEffect(()=>{
@@ -13,7 +14,7 @@ const Favourite=(props)=>{
     console.log("check",Favourites);
     return(
     <>
-    {Favourites.length>0 && <FavouriteList data={Favourites}/>}
+    {Favourites.length>0 ?<FavouriteList data={Favourites}/>:<Emptypage/>}
     </>
     )
 }

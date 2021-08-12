@@ -9,8 +9,8 @@ import Customizable from "../Customizable";
 import Menu from "./menu";
 import { dataService } from "../../../services";
 import Login from "../../login";
-// import {IoIosHeart} from 'react-icons'
 const MenuItems = (props) => {
+  // console.log("prpprprpp",props.Favourites)
   const {
     foodItems,
     SetFoodItems,
@@ -68,18 +68,18 @@ const[favourite,setFavourite]=useState(false);
           }
       });
       }
-      console.log(User,"---->",props.Menulist[0].restaurant_id);
-      dataService.FavouriteList().then((response)=>{ 
-        let user=JSON.parse(localStorage.getItem('user'));
-        console.log("favourite list",response)
-        response.data.data.data.map((item)=>{
-          if(!user.info.favourites.includes(item.id)){
+      //console.log(User,"---->",props.Menulist[0].restaurant_id);
+      // dataService.FavouriteList().then((response)=>{ 
+      //   let user=JSON.parse(localStorage.getItem('user'));
+      //   console.log("favourite list",response)
+      //   response.data.data.data.map((item)=>{
+      //     if(!user.info.favourites.includes(item.id)){
            
-            user.info.favourites.push(item.id);
-            localStorage.setItem('user',JSON.stringify(user))
-          }
-        })
-      })
+      //       user.info.favourites.push(item.id);
+      //       localStorage.setItem('user',JSON.stringify(user))
+      //     }
+      //   })
+      // })
       // User.info.favourites.push(props.Menulist[0].restaurant_id);
        if(User.info.favourites.includes(props.Menulist[0].restaurant_id))
        {
@@ -447,6 +447,7 @@ const[favourite,setFavourite]=useState(false);
         if(response.data.data.error_status)
         {
           console.log(response.data.data.message)
+          //  RemoveFavourite();
         }else{
           let user=JSON.parse(localStorage.getItem('user'));
           user.info.favourites.push(props.Menulist[0].restaurant_id);
@@ -852,11 +853,12 @@ const[favourite,setFavourite]=useState(false);
   );
 };
 const mapStateToProps = (state) => {
-  const { Menulist } = state;
-  return { Menulist };
+  const { Menulist,Favourites } = state;
+  return { Menulist,Favourites };
 };
 const actionCreator = {
   getMenulist: UserAction.getMenulist,
   getcart: UserAction.getcart,
+  FavouriteList:UserAction.FavouriteList,
 };
 export default connect(mapStateToProps, actionCreator)(MenuItems);
