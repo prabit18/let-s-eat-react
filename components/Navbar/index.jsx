@@ -9,7 +9,9 @@ import { setErrors } from '../../redux/actions/error.action';
 import {GoogleLogin} from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { googleClientID, facebookAppID } from '../../config/env';
+import { useRouter } from 'next/router';
 const Navbar = (props) => {
+    const router=useRouter()
     const [searchBox, setSearchBox] = useState(false);
     const [searchBoxSmall, setSearchBoxSmall] = useState(false);
     const [locationSearch, setLocationSearch] = useState(false);
@@ -43,7 +45,30 @@ const Navbar = (props) => {
         else console.log("user is not loggedin");
       }, []);
 
+const handlecart=(data)=>{
+    if(data){
+        if(JSON.parse(localStorage.getItem('cartItem'))!==null){
+            let localCart=JSON.parse(localStorage.getItem('cartItem'));
+            let cartV1=JSON.parse(localStorage.getItem('cart_item_objs_v1'))
+            var resultdata=[];
+            localCart.map((value)=>{
+              resultdata.push({
+                "rest_id": value.restaurant_id,
+                "item_id": value.item_id,
+                "quantity": String(cartV1[value.variant_id]),
+                "variant_id":value.variant_id
+              })
+            })
+            dataService.bulkUpdate(resultdata).then((response)=>{
+                if(response.data){
+                    console.log("success",response.data);
+                    return {error: false, data: response.data}
+                }  
+            })
 
+          }
+    }
+}
       const FBLogin = (response) => {
         if (response.status !== 'unknown' && response.status !== 'not_authorized') {
             console.log(response)
@@ -117,11 +142,17 @@ const Navbar = (props) => {
             else{
                 setLogin(true);
                 localStorage.setItem('user',JSON.stringify(res.data.data.data))
+                handlecart(res.data.data.data)
                 console.log("response otp",res);
                 //setError(true);
                 setVeri(false);
                 if(type==='login')
-                window.Location.reload()
+                setshow(false)
+                // window.location.reload()
+                setTimeout(() => {
+                    router.reload(window.location.pathname)
+                }, 1000);
+                
                 if(type==='signup'){
                     setpopup('success')
                    setSuccessMessage('Signed up')
@@ -343,7 +374,7 @@ const Navbar = (props) => {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/checkout">
                                         <div className="cart">
                                             <img src="/images/cart.svg" alt="cart"/>
                                                 <div className="cart-qty">

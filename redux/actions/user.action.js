@@ -8,6 +8,9 @@ export const UserAction = {
   getMenulist,
   getRestaurant,
   getcart,
+  getcartV1,
+  getcartV2,
+  getMenuObject
 };
 
 function getCuisines() {
@@ -57,9 +60,9 @@ const handleFoodItems = (foodItems) => {
     if(foodItems){
         const FoodData = [...foodItems];
         var localdata = JSON.parse(localStorage.getItem("menuItems"));
-            // if (localdata.length>0&&localdata[0].restaurant_id != FoodData[0].restaurant_id) {
-            //   localStorage.setItem("menuItems", JSON.stringify(FoodData));
-            // } else 
+            if (localdata&&localdata[0].restaurant_id != FoodData[0].restaurant_id) {
+              localStorage.setItem("menuItems", JSON.stringify(FoodData));
+            } else 
         if (!localStorage.getItem("menuItems")) {
           localStorage.setItem("menuItems", JSON.stringify(FoodData));
         }
@@ -70,6 +73,13 @@ const handleFoodItems = (foodItems) => {
 function getMenulist(type) {
   // debugger
   return (dispatch) => {
+    //   const data = await dataService.getMenuList(type).then((res)=>);
+    //   if((await data &&data).error){
+    //       dispatch(setErrors(data.error))
+    //   }else{
+    //       dispatch(setMenulist(data.data.data.data))
+    //   }
+    //   return data
       dataService.getMenuList(type).then((data) => 
       data.error? dispatch(setErrors(data.error))
           : dispatch(setMenulist(data.data.data.data))
@@ -108,4 +118,28 @@ function getRestaurant(type) {
     return { type: passActions.SET_RESTAURANT, data };
   }
 }
-
+function getcartV1(body) {
+    return (dispatch) => {
+      dispatch(cartV1(body));
+    };
+    function cartV1(data) {
+      return { type: passActions.SET_CART_V1, data };
+    }
+  }
+  
+  function getcartV2(body) {
+    return (dispatch) => {
+      dispatch(cartV2(body));
+    };
+    function cartV2(data) {
+      return { type: passActions.SET_CART_V2, data };
+    }
+  }
+  function getMenuObject(body) {
+    return (dispatch) => {
+      dispatch(menuObject(body));
+    };
+    function menuObject(data) {
+      return { type: passActions.SET_MENU_OBJECT, data };
+    }
+  }

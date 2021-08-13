@@ -9,6 +9,9 @@ export const passActions = {
     SET_LOAD_MENULIST: 'SET_LOAD_MENULIST',
     SET_RESTAURANT: 'SET_RESTAURANT',
     SET_LOAD_RESTAURANT: 'SET_LOAD_RESTAURANT',
+    SET_CART_V1:'SET_CART_V1',
+    SET_CART_V2:'SET_CART_V2',
+    SET_MENU_OBJECT:'SET_MENU_OBJECT'
 
 }
 export const errorActions = {

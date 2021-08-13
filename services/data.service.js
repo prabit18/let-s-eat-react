@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
 import { apiURL } from "../config/env";
+import { authHeader } from "../redux/helper/authHeader";
+
 export const dataService = {
     getCuisines,
     getRestaurants,
@@ -14,7 +16,12 @@ export const dataService = {
     socialLogin,
     Mobileupadte,
     verifyMobileNumber,
-    getRestaurantsInfinite
+    getRestaurantsInfinite,
+    AddTocart,
+    RemoveItemFromcart,
+    cartItems,
+    bulkUpdate,
+    clearCart
 }
 
 async function getCuisines() {
@@ -110,6 +117,7 @@ async function getCuratedList(type) {
 
 
 async function getMenuList(type) {
+    
     if(typeof type==="string"){
     var body={ "url":type};
     try {
@@ -156,6 +164,8 @@ async function getSignup(Email,first_name,last_name) {
     }
 }
 async function verifyOtp(sessiontoken,otp,username) {
+
+      
      var body={ 
                "otp":otp,   
                "session":sessiontoken,
@@ -165,6 +175,7 @@ async function verifyOtp(sessiontoken,otp,username) {
          const data = await axios.post( apiURL+'customers/web/verify_otp',body);
          console.log("data----",data)
          return {error: false, data: data}
+        
      } catch (e) {
          return {error: true, message: e}
      }
@@ -176,6 +187,7 @@ async function verifyOtp(sessiontoken,otp,username) {
     try {
         const data = await axios.post( apiURL+'customers/web/resend_otp',body);
         return {error: false, data: data}
+
     } catch (e) {
         return {error: true, message: e}
     }
@@ -237,5 +249,76 @@ async function verifyMobileNumber(sessiontoken,otp,username) {
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
+    }
+}
+
+//cart
+
+async function AddTocart(body){
+    var payload=JSON.stringify(body)
+    try{
+        const data = await axios.post(apiURL+'carts/web/update',payload,{headers: authHeader()});
+        return {error:false,data:data.data.data}
+    }catch(e){
+        return {error: true, message: e}
+
+
+    }
+}
+//cart item remove
+async function RemoveItemFromcart(body){
+    var payload=JSON.stringify(body)
+    try{
+        const data = await axios.post(apiURL+'carts/web/delete',payload,{headers: authHeader()});
+        return {error:false,data:data.data.data}
+    }catch(e){
+        return {error: true, message: e}
+
+
+    }
+}
+
+//checkout
+async function cartItems(){
+    try{
+    var data= await axios.post(apiURL+'carts/web/checkout',{},{headers: authHeader()})
+return {error:false,data:data.data.data.data}
+
+    }
+    catch(e){
+        console.log(e);
+        return {error: true, message: e}
+
+    }
+}
+
+async function bulkUpdate(body){
+    try{
+    let data= await axios.post(apiURL+'carts/web/bulk_update',body,{headers: authHeader()})
+    console.log("data",data);
+    if(data){
+        localStorage.setItem('cartItem',JSON.stringify([]))
+    localStorage.setItem('cart_item_objs_v1',JSON.stringify([]))
+    localStorage.setItem('cart_item_objs_v2',JSON.stringify([]))
+    return {error:false,data:data.data}
+    }
+
+    }
+    catch(e){
+        console.log(e);
+        return {error: true, message: e}
+
+    }
+}
+async function clearCart(){
+    try{
+    var data= await axios.post(apiURL+'carts/web/reset',{},{headers: authHeader()})
+return {error:false,data:data.data.data}
+
+    }
+    catch(e){
+        console.log(e);
+        return {error: true, message: e}
+
     }
 }
