@@ -4,8 +4,10 @@ import { dataService } from '../../services';
 import {GoogleLogin} from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { googleClientID, facebookAppID } from '../../config/env';
-import LoginContext from '../Context/LoginContext';
+import SignupContext from '../Context/SignupContext';
+import { useRouter } from 'next/router';
 const Signup=(props)=>{
+    const router=useRouter()
     const[show,setshow]=useState(true);
     const [popup,setpopup]=useState('signup');
     const [firstname,setFirstname]=useState('');
@@ -24,7 +26,7 @@ const Signup=(props)=>{
     const [attempt,setAttempt] = useState(0) 
     const[loading,setloading]=useState(false)
     const[Disabled,setdisabled]=useState(false)
-    const {dis,setdis} =useContext(LoginContext)
+    const {dis1,setdis1} =useContext(SignupContext)
     useEffect(() => {
         const loggedInUser = localStorage.getItem("user");        
         if (loggedInUser) {
@@ -113,12 +115,16 @@ const Signup=(props)=>{
                 //setError(true);
                 setVeri(false);
                 if(type==='login')
-                window.location.reload()
+                setTimeout(() => {
+                    router.reload(window.location.pathname)
+                }, 1000);
                 if(type==='signup'){
                     setshow(true)
                     setpopup('success')
                    setSuccessMessage('Signed up')
-                  setTimeout(()=>{window.location.reload()},5000)
+                   setTimeout(() => {
+                    router.reload(window.location.pathname)
+                }, 1000);
                 }
                 setProfilename(res.data.data.data.info.first_name);
                 console.log(res.data.data.data.info.first_name);
@@ -273,7 +279,30 @@ const Signup=(props)=>{
         }
         const closepopup=()=>{
             setshow(false);
-           setdis(false);
+           setdis1(false);
+        }
+        const handlecart=(data)=>{
+            if(data){
+                if(JSON.parse(localStorage.getItem('cartItem'))!==null){
+                    let localCart=JSON.parse(localStorage.getItem('cartItem'));
+                    let cartV1=JSON.parse(localStorage.getItem('cart_item_objs_v1'))
+                    var resultdata=[];
+                    localCart.map((value)=>{
+                      resultdata.push({
+                        "rest_id": value.restaurant_id,
+                        "item_id": value.item_id,
+                        "quantity": String(cartV1[value.variant_id]),
+                        "variant_id":value.variant_id
+                      })
+                    })
+                    dataService.bulkUpdate(resultdata).then((response)=>{
+                        if(response.data){
+                            console.log("success",response.data);
+                            return {error: false, data: response.data}
+                        }
+                    })
+                  }
+            }
         }
     return(
         <>

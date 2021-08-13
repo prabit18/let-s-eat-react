@@ -3,14 +3,20 @@ import React, { useEffect, useState, useContext } from "react";
 import OtpInput from "react-otp-input";
 import { connect } from "react-redux";
 import restaurants from "../../pages/restaurants";
+import LoginContext from '../Context/LoginContext';
+import SignupContext from "../Context/SignupContext";
 import { UserAction } from "../../redux/actions/user.action";
 import { cartV1 } from "../../redux/reducer/cartV1.reducer";
 import { menuObject } from "../../redux/reducer/menuObject.reducer";
 import { dataService } from "../../services";
 import MenulistContext from "../Context/MenulistContext";
+import Login from "../login";
 import MenuList from "../RestaurantDetail/MenuList";
+import Signup from "../signup";
 const Checkout = (props) => {
   // const {menuObject}=props
+  const[dis,setdis]=useState(false);
+  const[dis1,setdis1]=useState(false);
   const [cartItem, setCartItem] = useState([]);
   const [loadingState, setloadingState] = useState(false)
   const history = useRouter();
@@ -1162,8 +1168,14 @@ const RemoveDisabledItem=(data)=>{
                                                 <h2>Account</h2>
                                                 <p>Log in to your existing account or sign up.</p>
                                                 <div class="authorization-btn">
-                                                    <button type="button" class="login-botton" data-toggle="modal" data-target="#loginModal">Log in</button>
-                                                    <button type="button" class="signup-botton"  data-toggle="modal" data-target="#signupModal">Sign up</button>
+                                                    <button type="button" class="login-botton" data-toggle="modal" data-target="#loginModal" onClick={()=>setdis(!dis)}>Log in</button>
+                                                    <LoginContext.Provider value={{dis,setdis}}>
+                                                      {dis&& <Login />}
+                                                    </LoginContext.Provider>
+                                                    <button type="button" class="signup-botton"  data-toggle="modal" data-target="#signupModal" onClick={()=>setdis1(!dis1)}>Sign up</button>
+                                                    <SignupContext.Provider value={{dis1,setdis1}}>
+                                                      {dis1&& <Signup />}
+                                                    </SignupContext.Provider>
                                                 </div>
                                             </div>
                                         </div>}

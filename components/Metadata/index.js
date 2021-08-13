@@ -14,7 +14,7 @@ const Metadata=(props)=>{
               <meta  property="og:title" content={props.metacontent.title}/>
               <meta  property="og:description" content={props.metacontent.description}/>
               <meta  property="og:image" content="/images/le-logo.svg"/>
-              <meta  property="og:url" content="http://localhost:3000"/>
+              <meta  property="og:url" content="https://letseat.co.uk"/>
             </Head>
     </>)
 }

@@ -1,16 +1,8 @@
 import React, {useState,useEffect} from 'react';
-import validator from 'validator';
-import OtpInput from 'react-otp-input';
-import { UserAction } from '../../redux/actions/user.action';
-import { connect } from 'react-redux';
-import { dataService } from '../../services';
 import ProfileDropdown from '../dropdown';
-import { setErrors } from '../../redux/actions/error.action';
-import {GoogleLogin} from 'react-google-login';
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
-import { googleClientID, facebookAppID } from '../../config/env';
 import LoginContext from '../Context/LoginContext';
 import Login from '../login';
+import { useRouter } from 'next/router';
 const Navbar = (props) => {
     const router=useRouter()
     const [searchBox, setSearchBox] = useState(false);

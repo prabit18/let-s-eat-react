@@ -5,7 +5,9 @@ import {GoogleLogin} from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { googleClientID, facebookAppID } from '../../config/env';
 import LoginContext from '../Context/LoginContext';
+import { useRouter } from 'next/router';
 const Login=(props)=>{
+    const router=useRouter()
     const[show,setshow]=useState(true);
     const [popup,setpopup]=useState('login');
     const [firstname,setFirstname]=useState('');
@@ -110,15 +112,20 @@ const Login=(props)=>{
                 setLogin(true);
                 localStorage.setItem('user',JSON.stringify(res.data.data.data))
                 console.log("response otp",res);
+                handlecart(res.data.data.data)
                 //setError(true);
                 setVeri(false);
                 if(type==='login')
-                window.location.reload()
+                setTimeout(() => {
+                    router.reload(window.location.pathname)
+                }, 1000);
                 if(type==='signup'){
                     setshow(true)
                     setpopup('success')
                    setSuccessMessage('Signed up')
-                  setTimeout(()=>{window.location.reload()},5000)
+                   setTimeout(() => {
+                    router.reload(window.location.pathname)
+                }, 1000);
                 }
                 setProfilename(res.data.data.data.info.first_name);
                 console.log(res.data.data.data.info.first_name);
@@ -274,6 +281,29 @@ const Login=(props)=>{
         const closepopup=()=>{
             setshow(false);
            setdis(false);
+        }
+        const handlecart=(data)=>{
+            if(data){
+                if(JSON.parse(localStorage.getItem('cartItem'))!==null){
+                    let localCart=JSON.parse(localStorage.getItem('cartItem'));
+                    let cartV1=JSON.parse(localStorage.getItem('cart_item_objs_v1'))
+                    var resultdata=[];
+                    localCart.map((value)=>{
+                      resultdata.push({
+                        "rest_id": value.restaurant_id,
+                        "item_id": value.item_id,
+                        "quantity": String(cartV1[value.variant_id]),
+                        "variant_id":value.variant_id
+                      })
+                    })
+                    dataService.bulkUpdate(resultdata).then((response)=>{
+                        if(response.data){
+                            console.log("success",response.data);
+                            return {error: false, data: response.data}
+                        }
+                    })
+                  }
+            }
         }
     return(
         <>

@@ -10,9 +10,7 @@ import MenulistContetx from "../../Context/MenulistContext";
 import LoginContext from "../../Context/LoginContext";
 import Customizable from "../Customizable";
 import Menu from "./menu";
-import { dataService } from "../../../services";
 import Login from "../../login";
-const MenuItems = (props) => {
   // console.log("prpprprpp",props.Favourites)
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
@@ -146,6 +144,23 @@ SetFoodItems(props.Menulist)
 
     }
   }
+  const handleClearCart=()=>{
+    if(JSON.parse(localStorage.getItem('user'))){
+      dataService.clearCart().then((res)=>{
+        if(res.data){
+          setOpen(false)
+        setcartItems([])
+        props.getcartV1({})
+        props.getcartV2({})
+        localStorage.removeItem('delivery_type')
+        window.location.reload()
+            }
+      })
+    }else{
+      localStorage.clear()
+      window.location.reload()
+    }
+  }
     // const handleMainvariant = () => {
     //   return useMemo(() => {
     //     return handleMainvariant1();
@@ -209,22 +224,12 @@ SetFoodItems(props.Menulist)
     });
     item_count[allfoodtypes[i]] = c;
   }
- var a={};
   const filterhandler = (type) => {
     const updatedmenu = props.Menulist.filter((item) => {
       return item.food_type_name === type;
     });
-    a[type]=updatedmenu;
     SetFoodItems(updatedmenu);
   };
-  useEffect(()=>{
-    allfoodtypes.map((e)=>{
-      console.log(e);
-      filterhandler(e);
-       console.log("new food items are",a[e])
-      // a[e].map((item)=>console.log("rtttrtrt",item))
-  })
-  },[])
  
   const clickhandler = (type) => {
     setFoodType(type);
@@ -1295,7 +1300,7 @@ const ModalPopup=()=>{
     </>
   );
 };
-}
+
 const mapStateToProps = (state) => {
   const { Menulist,Favourites,menuObject } = state;
   return { Menulist,Favourites,menuObject };

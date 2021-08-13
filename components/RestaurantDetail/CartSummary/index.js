@@ -424,7 +424,7 @@ var newdelivery="new-delivery"
                     <div className="added-food-box">
                       <div className={item.veg?"summery-veg-item":"summery-food-item"}>
                         <div className="food-item-wrap">
-                          <p>{item.name}-{(item.variant_id).split("#")[1]}</p>
+                          <p>{item.name}</p>
                           <p className="food-item-price">£{item.le_price}</p>
                         </div>
                       </div>
