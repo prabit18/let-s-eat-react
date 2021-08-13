@@ -65,7 +65,7 @@ const RestaurantDetail = (props) => {
                   <div className="row restaurant-row">
                     <div className="col-md-8 restaurant-list-col">
                       <div className="menu-section">
-                        <MenuItems />
+                        <MenuItems data={props.restaurant.name}/>
                       </div>
                     </div>
                     <CartSummary />

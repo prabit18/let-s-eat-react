@@ -52,40 +52,26 @@ const[favourite,setFavourite]=useState(false);
     
     let User=JSON.parse(localStorage.getItem('user'))
     if(User){
-      if(!User.info.favourites.includes(props.Menulist[0].restaurant_id)){
-        dataService.AddFavouriteRestaurant(props.Menulist[0].restaurant_id).then((response)=>{
-          console.log("response is coming from add favourite---->",response)
-          if(response.data.data.error_status)
+      dataService.FavouriteList().then((res)=>{
+        console.log("res is",res);
+        res.data.data.data.map((item)=>{
+          if(item.id===props.Menulist[0].restaurant_id)
           {
-            console.log(response.data.data.message)
-          }else{
-            let user=JSON.parse(localStorage.getItem('user'));
-            user.info.favourites.push(props.Menulist[0].restaurant_id);
-            localStorage.setItem('user',JSON.stringify(user))
+            if(!User.info.favourites.includes(props.Menulist[0].restaurant_id)){
+              User.info.favourites.push(props.Menulist[0].restaurant_id);
+              localStorage.setItem('user',JSON.stringify(user))
+              }else console.log('');
             setFavourite(true);
-            setdisplay(true);
-            setTimeout(()=>{setdisplay(false)},5000)
           }
-      });
+        })
+      })
+     if(User.info.favourites.includes(props.Menulist[0].restaurant_id))
+    {
+      console.log("coming inside");
+      setFavourite(true);
+    }else {
+      setFavourite(false);
       }
-      //console.log(User,"---->",props.Menulist[0].restaurant_id);
-      // dataService.FavouriteList().then((response)=>{ 
-      //   let user=JSON.parse(localStorage.getItem('user'));
-      //   console.log("favourite list",response)
-      //   response.data.data.data.map((item)=>{
-      //     if(!user.info.favourites.includes(item.id)){
-           
-      //       user.info.favourites.push(item.id);
-      //       localStorage.setItem('user',JSON.stringify(user))
-      //     }
-      //   })
-      // })
-      // User.info.favourites.push(props.Menulist[0].restaurant_id);
-       if(User.info.favourites.includes(props.Menulist[0].restaurant_id))
-       {
-         console.log("coming inside");
-         setFavourite(true);
-       }else setFavourite(false);
     }
     if (user) {
       SetFoodItems(JSON.parse(localStorage.getItem("menuItems")));
@@ -134,22 +120,22 @@ const[favourite,setFavourite]=useState(false);
     });
     item_count[allfoodtypes[i]] = c;
   }
- //var a={};
+ var a={};
   const filterhandler = (type) => {
     const updatedmenu = props.Menulist.filter((item) => {
       return item.food_type_name === type;
     });
-   // a[type]=updatedmenu;
+    a[type]=updatedmenu;
     SetFoodItems(updatedmenu);
   };
-  // useEffect(()=>{
-  //   allfoodtypes.map((e)=>{
-  //     console.log(e);
-  //     filterhandler(e);
-  //     // console.log("new food items are",a[e])
-  //     // a[e].map((item)=>console.log("rtttrtrt",item))
-  // })
-  // },[])
+  useEffect(()=>{
+    allfoodtypes.map((e)=>{
+      console.log(e);
+      filterhandler(e);
+       console.log("new food items are",a[e])
+      // a[e].map((item)=>console.log("rtttrtrt",item))
+  })
+  },[])
  
   const clickhandler = (type) => {
     setFoodType(type);
@@ -457,11 +443,14 @@ const[favourite,setFavourite]=useState(false);
         if(response.data.data.error_status)
         {
           console.log(response.data.data.message)
+          setFavourite(true)
           //  RemoveFavourite();
         }else{
           let user=JSON.parse(localStorage.getItem('user'));
+          if(!user.info.favourites.includes(props.Menulist[0].restaurant_id)){
           user.info.favourites.push(props.Menulist[0].restaurant_id);
           localStorage.setItem('user',JSON.stringify(user))
+          }else console.log('');
           setFavourite(true);
           setdisplay(true);
           setTimeout(()=>{setdisplay(false)},5000)
@@ -471,6 +460,7 @@ const[favourite,setFavourite]=useState(false);
     }else {
       console.log(dis)
       setdis(!dis);
+      localStorage.setItem('restaurantID',props.Menulist[0].restaurant_id);
       console.log("please login and then you can add into favourites")
     }
   }
@@ -497,7 +487,7 @@ const[favourite,setFavourite]=useState(false);
   return (
     <>
     <div className="header-border">
-     {display && <div id="snackbar" className="show">Restaurant added to Favourite list</div>}
+     {display && <div id="snackbar" className="show">{props.data} added to Favourites</div>}
         <div className="menu-header">
           <div className="mobile-search-bar">
             <label

@@ -5,9 +5,9 @@ import {GoogleLogin} from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { googleClientID, facebookAppID } from '../../config/env';
 import LoginContext from '../Context/LoginContext';
-const Login=(props)=>{
+const Signup=(props)=>{
     const[show,setshow]=useState(true);
-    const [popup,setpopup]=useState('login');
+    const [popup,setpopup]=useState('signup');
     const [firstname,setFirstname]=useState('');
     const [lastname,setLastname]=useState('');
     const[success,setSuccess]=useState(false);
@@ -535,4 +535,4 @@ const Login=(props)=>{
         </>
     )
 }
-export default Login;
+export default Signup;
