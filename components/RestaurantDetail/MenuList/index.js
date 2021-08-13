@@ -1,7 +1,10 @@
-import React, { useEffect, useState, useContext } from "react";
+import { map } from "jquery";
+import router from "next/router";
+import React, { useEffect, useState, useContext,useMemo } from "react";
 import { connect, useSelector } from "react-redux";
 import { UserAction } from "../../../redux/actions/user.action";
 import { Menulist } from "../../../redux/reducer/menulist.reducer";
+import { dataService } from "../../../services";
 import MenulistContext from "../../Context/MenulistContext";
 import MenulistContetx from "../../Context/MenulistContext";
 import LoginContext from "../../Context/LoginContext";
@@ -11,6 +14,14 @@ import { dataService } from "../../../services";
 import Login from "../../login";
 const MenuItems = (props) => {
   // console.log("prpprprpp",props.Favourites)
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
+
+const MenuItems = (props) => {
+  // @refresh reset
+  var pathname=window.location.pathname
+  localStorage.setItem('pathname',pathname)
+
   const {
     foodItems,
     SetFoodItems,
@@ -24,9 +35,8 @@ const MenuItems = (props) => {
     cartItem,
     setCartItem,
   } = useContext(MenulistContext);
-
+  var user=JSON.parse(localStorage.getItem('user'))
   const [cart_items, setcartItems] = useState([]);
-
   const [foodtype, setFoodType] = useState("Menu");
   const [Name, setName] = useState("");
   const [show, setShow] = useState(false);
@@ -48,68 +58,147 @@ const MenuItems = (props) => {
  var user=false;
  const[display,setdisplay]=useState(false);
 const[favourite,setFavourite]=useState(false);
-  useEffect(() => {
+  const [open, setOpen] = useState(false);
+
+  const onOpenModal = () => setOpen(true);
+  const onCloseModal = () => setOpen(false);
+
+  useEffect(async() => {
     
-    let User=JSON.parse(localStorage.getItem('user'))
-    if(User){
-      dataService.FavouriteList().then((res)=>{
-        console.log("res is",res);
-        res.data.data.data.map((item)=>{
-          if(item.id===props.Menulist[0].restaurant_id)
-          {
-            if(!User.info.favourites.includes(props.Menulist[0].restaurant_id)){
-              User.info.favourites.push(props.Menulist[0].restaurant_id);
-              localStorage.setItem('user',JSON.stringify(user))
-              }else console.log('');
-            setFavourite(true);
-          }
-        })
-      })
-     if(User.info.favourites.includes(props.Menulist[0].restaurant_id))
-    {
-      console.log("coming inside");
-      setFavourite(true);
-    }else {
-      setFavourite(false);
-      }
-    }
-    if (user) {
-      SetFoodItems(JSON.parse(localStorage.getItem("menuItems")));
-      JSON.parse(localStorage.getItem("menuItems")).forEach((item) => {
-        item.variants.forEach((child_item) => {
-          menuObject[child_item.id] = child_item;
-          menuObject[child_item.id].image_url = item.image_url;
-          menuObject[child_item.id].name = item.name;
-          menuObject[child_item.id].veg = item.veg;
-          menuObject[child_item.id].description = item.description;
-          menuObject[child_item.id].menu_id = item.id;
-        });
-      });
-      setCartItem(JSON.parse(localStorage.getItem('cartItem')))
+    if (!JSON.parse(localStorage.getItem('user'))) {
+      SetFoodItems(JSON.parse(localStorage.getItem('menuItems')));
+      ConstructMenuObject(JSON.parse(localStorage.getItem('menuItems')),JSON.parse(localStorage.getItem('cartItem'))||[])
+      setCartItem(JSON.parse(localStorage.getItem('cartItem'))||[])
       setcart_item_objs_v1(JSON.parse(localStorage.getItem('cart_item_objs_v1'))||{})
       setcart_item_objs_v2(JSON.parse(localStorage.getItem('cart_item_objs_v2'))||{})
-
-      setmenuObject(menuObject);
-      localStorage.setItem("menuObject",JSON.stringify(menuObject))
-    }else{
-      SetFoodItems(props.Menulist);
-      props.Menulist.forEach((item) => {
-        item.variants.forEach((child_item) => {
-          menuObject[child_item.id] = child_item;
-          menuObject[child_item.id].image_url = item.image_url;
-          menuObject[child_item.id].name = item.name;
-          menuObject[child_item.id].veg = item.veg;
-          menuObject[child_item.id].description = item.description;
-          menuObject[child_item.id].menu_id = item.id;
-        });
-      });
-      setmenuObject(menuObject);
-      localStorage.setItem("menuObject",JSON.stringify(menuObject)) 
+      setFavourite(false)
+    }
+    else{
+        SetFoodItems(props.Menulist);
+        dataService.cartItems().then((response)=>{
+          
+          console.log("cart data--->",response.data);
+          if(response.data){  
+            response.data.forEach((value)=>{
+              var list=props.Menulist.filter((val)=>val.id===value.item_id)
+              console.log("list",list);
+              value["le_price"]=value["price"]
+              delete value["price"]
+            })
+            setCartItem(response.data)
+            ConstructMenuObject(props.Menulist,response.data)
+            
+            handlesinglevariant(response.data)
+            let User=JSON.parse(localStorage.getItem('user')) 
+            dataService.FavouriteList().then((res)=>{
+              console.log("res is",res);
+              res.data.data.data.map((item)=>{
+                if(item.id===props.Menulist[0].restaurant_id)
+                {
+                  if(!User.info.favourites.includes(props.Menulist[0].restaurant_id)){
+                    User.info.favourites.push(props.Menulist[0].restaurant_id);
+                    localStorage.setItem('user',JSON.stringify(user))
+                    }else console.log('');
+                  setFavourite(true);
+                }
+              })
+            })
+              if(User.info.favourites.includes(props.Menulist[0].restaurant_id))
+              {
+                console.log("coming inside");
+                setFavourite(true);
+              }
+          }
+      })
     }
   }, []);
+  useEffect(() => {
+SetFoodItems(props.Menulist)
+  }, [props.Menulist])
+
+  const ConstructMenuObject=(list,cart)=>{
+    let Menu={...menuObject}
+    list&&list.forEach((item) => {
+      item.variants.forEach((child_item) => {
+        Menu[child_item.id] = child_item;
+        Menu[child_item.id].image_url = item.image_url;
+        Menu[child_item.id].name = item.name;
+        Menu[child_item.id].veg = item.veg;
+        Menu[child_item.id].description = item.description;
+        Menu[child_item.id].menu_id = item.id;
+        Menu[child_item.id].isVariant=item.variants.length>1?true:false;
+        Menu[child_item.id].status = item.status;
+        Menu[child_item.id].restaurant_id=item.restaurant_id
+        
+      });
+    });
+    setmenuObject(Menu)
+    localStorage.setItem('menuObject',JSON.stringify(Menu))
+    props.getMenuObject(Menu)
+    
+    let rest_id=window.localStorage.pathname.split("/")[2].split("-")[pathname.split("/")[2].split("-").length-1]
+    rest_id=rest_id.toLocaleLowerCase()
+    let datarest_id=cart.length>0?cart[0].rest_id||cart[0].restaurant_id:''
+    datarest_id=datarest_id.toLocaleLowerCase()
+    
+    if(JSON.parse(localStorage.getItem('user'))&&rest_id===datarest_id){
+      handleMainvariant(cart,Menu)
+
+    }
+  }
+    // const handleMainvariant = () => {
+    //   return useMemo(() => {
+    //     return handleMainvariant1();
+    //   }, [menuObject]);
+    // };
+    // // const handleMainvariant=useMemo(
+    // //   (value,menu)=>{
+    // //     handleMainvariant1(value,menu)
+    // //   },
+    // // [menuObject])
+
+   const handleMainvariant=(value,menu)=>{
+     
+    if(Object.keys(menu).length>0){
+      
+      var cartV2={...cart_item_objs_v2}
+      value.forEach((item,i)=>{
+        console.log("menu",menu[item.variant_id].isVariant)
+  if(cartV2[item.item_id]&& menu[item.variant_id].isVariant===true){
+    cartV2[item.item_id]+=parseInt(item.quantity)
+  
+  }else{
+    cartV2[item.item_id]=parseInt(item.quantity)
+
+  }
+})
+      console.log("cartV2--->",cartV2);
+      props.getcartV2(cartV2)
+      setcart_item_objs_v2(cartV2)
+    }
+   
+  }
+  const handlesinglevariant=(cart)=>{
+    let cartV1={...cart_item_objs_v1}
+    cart.forEach((value)=>{
+      console.log("checkout response",cart);
+      if(cartV1[value.variant_id]){
+        cartV1[value.variant_id]++
+      }else{
+        cartV1[value.variant_id]=value.quantity
+      }
+      
+    })
+    props.getcartV1(cartV1)
+    setcart_item_objs_v1(cartV1)
+    
+  }
   // useEffect(() => {
-  //   debugger
+  //   
   // }, [cartItem])
+    
+    
+
   const [count, setcount] = useState([]);
 
   item_count["Menu"] = props.Menulist.length;
@@ -156,251 +245,551 @@ const[favourite,setFavourite]=useState(false);
   const [restaurantId, setrestaurantId] = useState();
   const [indiviadualFood, setindiviadualFood] = useState([]);
   const handlecustom = (data) => {
+    let rest_id=window.localStorage.pathname.split("/")[2].split("-")[pathname.split("/")[2].split("-").length-1]
+    let datarest_id=''
+    
+    if(JSON.parse(localStorage.getItem('user'))){
+      datarest_id=cartItem.length>0?cartItem[0].rest_id||cartItem[0].restaurant_id:''
+    }else{
+
+      var local=JSON.parse(localStorage.getItem('cartItem'))?JSON.parse(localStorage.getItem('cartItem')):[]
+
+      if(local.length>0){
+        datarest_id=local[0].restaurant_id
+      }else{
+        datarest_id=""
+      }
+    }    
+    if(datarest_id.toLocaleLowerCase()===rest_id.toLocaleLowerCase()||datarest_id===''){
+    console.log("data is",data);
     setShow(true);
     setName(data.name);
     handleVarient(data.variants, data.id);
     setItemId(data.id);
     setindiviadualFood(data);
     setrestaurantId(data.restaurant_id);
+    }else{
+      setOpen(true)
+    }
   };
 
   const findindex = (id) => {
+
     var elementPos = cartItem.map(function (x) {
-        return x.id;
+        return x.variant_id;
       })
       .indexOf(id);
     return elementPos;
   };
 
   const handleCartObje = (cartItemvalue) => {
-    cartItemvalue.forEach(function (item) {
-      if (cart_item_objs_v1[item.id]) {
-        cart_item_objs_v1[item.id]++;
-      } else {
-        cart_item_objs_v1[item.id] = item.quantity;
-      }
-    });
-    setcart_item_objs_v1(cart_item_objs_v1);
-    localStorage.setItem('cart_item_objs_v1',JSON.stringify(cart_item_objs_v1))
+          let cartV1={...cart_item_objs_v1}
 
+    if(!JSON.parse(localStorage.getItem('user'))){
+        if (cartV1[cartItemvalue[0].variant_id]) {
+          cartV1[cartItemvalue[0].variant_id]++;
+        } else {
+          cartV1[cartItemvalue[0].variant_id] = cartItemvalue[0].quantity;
+        }
+      props.getcartV1(cartV1)
+      setcart_item_objs_v1(cartV1);
+      localStorage.setItem('cart_item_objs_v1',JSON.stringify(cartV1))
+
+    }
+    else{
+      if (cartV1[cartItemvalue[0].variant_id]) {
+          cartV1[cartItemvalue[0].variant_id]++;
+        } else {
+          cartV1[cartItemvalue[0].variant_id] = cartItemvalue[0].quantity;
+        }
+    }
+    props.getcartV1(cartV1)
+    setcart_item_objs_v1(cartV1);
   };
 
   const handleCartinc = (cartItemvalue) => {
-    handlecartV2(cartItemvalue)
-    var CartV1={...cart_item_objs_v1}
-    if (CartV1[cartItemvalue[0].id]) {
-      CartV1[cartItemvalue[0].id]++;
-    }
-    setcart_item_objs_v1(CartV1);
-    localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
-    setcount((prevValue) => [...prevValue, count + 1]);
-  };
+    let CartV1={...cart_item_objs_v1}
 
-  // const handleCartIncrement = (data) => {
-  //   console.log("new");
-  //   let final = [
-  //     {
-  //       id: data[0].id,
-  //       quantity: 1,
-  //       menu_id: data.id,
-  //       restaurant_id: data.restaurant_id,
-  //     },
-  //   ];
-  //   handleCartinc(final);
-  // };
+    if(!JSON.parse(localStorage.getItem('user'))){
+      // handlecartV2(cartItemvalue)
+      if (CartV1[cartItemvalue[0].variant_id]) {
+        CartV1[cartItemvalue[0].variant_id]++;
+      }
+      props.getcartV1(CartV1)
+      setcart_item_objs_v1(CartV1);
+      localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
+
+    }else{
+      if (CartV1[cartItemvalue[0].variant_id]) {
+        CartV1[cartItemvalue[0].variant_id]++;
+      }
+      props.getcartV1(CartV1)
+      setcart_item_objs_v1(CartV1);
+
+    }
+   
+  };
 
   //VARIENT CART MANGAGING
   const handlevariantCart = (cartItemvalue) => {
-    handlecartV2(cartItemvalue);
-    cartItemvalue.forEach(function (item) {
-      if (cart_item_objs_v1[item.id]) {
-        cart_item_objs_v1[item.id]++;
+    var cartV1={...cart_item_objs_v1}
+    if(!JSON.parse(localStorage.getItem('user'))){
+      handlecartV2(cartItemvalue);
+      if (cartV1[cartItemvalue[0].variant_id]) {
+        cartV1[cartItemvalue[0].variant_id]++;
       } else {
-        cart_item_objs_v1[item.id] = item.quantity;
+        cartV1[cartItemvalue[0].variant_id] = cartItemvalue[0].quantity;
       }
-    });
-    setcart_item_objs_v1(cart_item_objs_v1);
-    setcount((prevValue) => [...prevValue, count + 1]);
+      setcart_item_objs_v1(cartV1);
+      props.getcartV1(cartV1)
+      localStorage.setItem('cart_item_objs_v1',JSON.stringify(cartV1))
+    }else{
+      var cartV1={...cart_item_objs_v1}
+      handlecartV2(cartItemvalue);
+      if (cartV1[cartItemvalue[0].variant_id]) {
+        cartV1[cartItemvalue[0].variant_id]++;
+      } else {
+        cartV1[cartItemvalue[0].variant_id] = parseInt(cartItemvalue[0].quantity);
+      }
+    // });
+    }
+    props.getcartV1(cartV1)
+    setcart_item_objs_v1(cartV1 );
   };
 
   const handlecartV2 = (cartItemvalue) => {   
     let CartV2={...cart_item_objs_v2}
-    cartItemvalue.forEach(function (item) {
-      if (CartV2[item.menu_id]) {
-        CartV2[item.menu_id]++;
-      } 
-      else {
-        CartV2[item.menu_id] = item.quantity;
-      }
-    });
-    setcart_item_objs_v2(CartV2);
-    localStorage.setItem('cart_item_objs_v2',JSON.stringify(CartV2))
-
-    setcount((prevValue) => [...prevValue, count + 1]);
-    console.log("afterV2", cart_item_objs_v2);
+    if(!JSON.parse(localStorage.getItem('user'))){
+        if (CartV2[cartItemvalue[0].item_id]) {
+          CartV2[cartItemvalue[0].item_id]++;
+        } 
+        else {
+          CartV2[cartItemvalue[0].item_id] = cartItemvalue[0].quantity;
+        }
+      // props.getcartV2(CartV2)
+      setcart_item_objs_v2(CartV2);
+      localStorage.setItem('cart_item_objs_v2',JSON.stringify(CartV2))
+    }else{
+      cartItemvalue.forEach(function (item) {
+        if (CartV2[item.item_id]) {
+          CartV2[item.item_id]++;
+        } 
+        else {
+          CartV2[item.item_id] = item.quantity;
+        }
+      });
+      props.getcartV2(CartV2)
+      setcart_item_objs_v2(CartV2);
+    }
   };
 
   //SINGLE ITEM CART
   const handleAddCart = (data) => {
-    if (data.variants.length > 1) {
-      setShow(true);
-      handlecustom(data);
-    } else {
-      var cart = [];
-      cart.push({
-        id: data.variants[0].id,
-        name:data.variants[0].name,
-        quantity: 1,
-        menu_id: data.id,
-        variant:false,
-        restaurant_id: data.restaurant_id,
-      });
-
-      setCartItem((oldarray) => [
-        ...oldarray,
-        {
-          id: data.variants[0].id,
+    
+    let rest_id=window.localStorage.pathname.split("/")[2].split("-")[pathname.split("/")[2].split("-").length-1]
+      let datarest_id=''
+      if(JSON.parse(localStorage.getItem('user'))){
+        datarest_id=cartItem.length>0?cartItem[0].rest_id||cartItem[0].restaurant_id:''
+      }else{
+        var local=JSON.parse(localStorage.getItem('cartItem'))?JSON.parse(localStorage.getItem('cartItem')):[]
+        if(local.length>0){
+          datarest_id=local[0].restaurant_id
+        }else{
+          datarest_id=""
+        }
+      }
+    
+    console.log("datarest_id",datarest_id)
+    if(datarest_id.toLocaleLowerCase()===rest_id.toLocaleLowerCase()||datarest_id===''){                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+   console.log("id data",data);
+      if (data.variants.length > 1) {
+        setShow(true);
+        handlecustom(data);
+      } else if(!JSON.parse(localStorage.getItem('user'))) {
+        let cart = [];
+        cart.push({
+          variant_id: data.variants[0].id,
+          name:data.name,
           quantity: 1,
-          name:data.variants[0].name,
-          menu_id: data.id,
-          variant:false,
+          item_id: data.id,
+          isVariant:false,
           restaurant_id: data.restaurant_id,
-        },
-      ]);
-      let localItem=[...cartItem,{
-        id: data.variants[0].id,
-        quantity: 1,
-        name:data.variants[0].name,
-        menu_id: data.id,
-        variant:false,
-        restaurant_id: data.restaurant_id,
-      }]
-      let final = [
-        {
-          id: data.variants[0].id,
+          veg:data.veg,
+          le_price:data.variants[0].le_price
+        });
+  
+        setCartItem((oldarray) => [...oldarray,
+          {
+            variant_id: data.variants[0].id,
+            name:data.name,
+            quantity: 1,
+            item_id: data.id,
+            isVariant:false,
+            restaurant_id: data.restaurant_id,
+            veg:data.veg,
+            le_price:data.variants[0].le_price
+          },
+        ]);
+        let localItem=[]
+        if(cartItem!==null){
+          console.log("cart...",cartItem);
+          localItem=cart
+        }else{
+          localItem=[{
+            variant_id: data.variants[0].id,
+            name:data.name,
+            quantity: 1,
+            item_id: data.id,
+            isVariant:false,
+            restaurant_id: data.restaurant_id,
+            veg:data.veg,
+            le_price:data.variants[0].le_price
+          }]
+        }
+        let final = [
+          {
+            variant_id: data.variants[0].id,
+            name:data.name,
+            quantity: 1,
+            item_id: data.id,
+            isVariant:false,
+            restaurant_id: data.restaurant_id,
+            veg:data.veg,
+            le_price:data.variants[0].le_price
+          },
+        ];
+        var cartArray=[...cartItem,{
+          variant_id: data.variants[0].id,
+          name:data.name,
           quantity: 1,
-          name:data.variants[0].name,
-          menu_id: data.id,
-          variant:false,
+          item_id: data.id,
+          isVariant:false,
           restaurant_id: data.restaurant_id,
-        },
-      ];
-      localStorage.setItem('cartItem',JSON.stringify(localItem))
-
-      handleCartObje(final);
+          veg:data.veg,
+          le_price:data.variants[0].le_price
+        }]
+        localStorage.setItem('cartItem',JSON.stringify(cartArray))
+  
+        handleCartObje(final);
+      }else{
+  
+        var data_body={
+          "rest_id": data.restaurant_id,
+          "item_id": data.id,
+          "quantity":"1",
+          "variant_id":data.variants[0].id,
+          
+      }
+        dataService.AddTocart(data_body).then((resp)=>{
+                    console.log(resp.data)
+  
+          if(resp.data!==null){
+            
+             console.log("resp.data[0]",resp.data["variant_id"])
+            var response=resp.data
+            setCartItem((oldarray) => [
+              ...oldarray,
+              {
+                variant_id: resp.data["variant_id"],  
+                quantity: cart_item_objs_v1[response["variant_id"]],
+                name: menuObject[response.variant_id].name,
+                item_id: response["item_id"],
+                isVariant:false,
+                restaurant_id: response["rest_id"],
+                veg:menuObject[response.variant_id].veg,
+                le_price:menuObject[response.variant_id].le_price
+              },
+            ]);
+            console.log("response-->",resp.data)
+            var result=[resp.data]
+            handleCartObje(result);
+          }
+         
+  
+        })
+  
+      }
+    }else{
+      setOpen(true)
     }
+ 
   };
 
   //SINGLE ITEM INCREMENT
   const handleIncrement = (data) => {
-    let final = [
-      {
-        id: data.variants[0].id,
-        quantity: 1,
-        name:data.variants[0].name,
-        menu_id: data.id,
-        restaurant_id: data.restaurant_id,
-        
-      },
-    ];
+    
+    if(!JSON.parse(localStorage.getItem('user'))){
+      let final = [
+        {
+          variant_id: data.variants[0].id,
+          name:data.name,
+          quantity: 1,
+          item_id: data.id,
+          isVariant:false,
+          restaurant_id: data.restaurant_id,
+        },
+      ];
+  
+      handleCartinc(final);
+    }else{
+      var data_body={
+        "rest_id": data.restaurant_id,
+        "item_id": data.id,
+        "quantity":"1",
+        "variant_id":data.variants[0].id
+    }
+      dataService.AddTocart(data_body).then((resp)=>{
+        if(resp){
+          var response=resp.data
+          console.log("resp",response);
+          handleCartinc([response]);
 
-    handleCartinc(final);
+        }
+       
+      })
+    }
+    
   };
 
   const handleCartRemove = (cartItemvalue) => {
     var CartV1={...cart_item_objs_v1}
-    if (CartV1[cartItemvalue[0].id]) {
-      CartV1[cartItemvalue[0].id]--;
+    if(!JSON.parse(localStorage.getItem('user'))){
+      if (CartV1[cartItemvalue[0].variant_id]) {
+        CartV1[cartItemvalue[0].variant_id]--;
+        props.getcartV1(CartV1)
+        setcart_item_objs_v1(CartV1);
+        localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
+
+      }
+    }else{
+      if (CartV1[cartItemvalue.variant_id]) {
+        CartV1[cartItemvalue.variant_id]--;
+      }
+      props.getcartV1(CartV1)
+      setcart_item_objs_v1(CartV1);
     }
-    setcart_item_objs_v1(CartV1);
-    localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
-    setcount((prevValue) => [...prevValue, count + 1]);
   };
 
   const handleDecrement = (data) => {
+if(!JSON.parse(localStorage.getItem('user'))){
+  let final = [
+    {
+      variant_id: data.variants[0].id,
+      name:data.name,
+      quantity: 1,
+      item_id: data.id,
+      isVariant:false,
+      restaurant_id: data.restaurant_id,
+    },
+  ];
 
-    let final = [
-      {
-        id: data.variants[0].id,
-        quantity: 1,
-        name:data.variants[0].name,
-        menu_id: data.id,
-        restaurant_id: data.restaurant_id,
-      },
-    ];
+  if (parseInt(cart_item_objs_v1[data.variants[0].id]) === 1) {
+    let index = findindex(data.variants[0].id);
+    if (index > -1) {
+      let originlArray=[...cartItem]
+      originlArray.filter((val)=>val!==originlArray[index])
+      originlArray.splice(index, 1);
+      setCartItem(originlArray);
+      localStorage.setItem('cartItem',JSON.stringify(originlArray))
+    }   
+  }
+  handleCartRemove(final);
 
-    if (cart_item_objs_v1[data.variants[0].id] === 1) {
+}else{
+  let data_body ={
+    "rest_id":data.restaurant_id,
+    "item_id": data.id,
+    "variant_id":data.variants[0].id,
+    "quantity":"-1"
+
+}
+
+dataService.AddTocart(data_body).then((resp)=>{
+  if(resp){
+    if (cart_item_objs_v1[data.variants[0].id] == 1) {
       let index = findindex(data.variants[0].id);
       if (index > -1) {
         let originlArray=[...cartItem]
         originlArray.filter((val)=>val!==originlArray[index])
         originlArray.splice(index, 1);
         setCartItem(originlArray);
-        localStorage.setItem('cartItem',JSON.stringify(originlArray))
-        setcount((prevValue) => [...prevValue, count + 1]);
       }   
     }
-    handleCartRemove(final);
+    handleCartRemove(data_body)
+  }
+
+}) 
+}
+    
   };
 
   const handlecustomAdd = (data) => {
-    setCartItem((oldarray) => [
-      ...oldarray,
-      {
-        id: data.id,
-        name:data.name,
-        quantity: 1,
-        menu_id: itemId,
-        variant:true,
-        restaurant_id: restaurantId,
-      },
-    ]);
-    let local=[...cartItem,{
-      id: data.id,
-      name:data.name,
-      quantity: 1,
-      menu_id: itemId,
-      variant:true,
-      restaurant_id: restaurantId,
-    }]
-    localStorage.setItem('cartItem',JSON.stringify(local))
-    let final = [
-      {
-        id: data.id,
-        name:data.name,
-        quantity: 1,
-        menu_id: itemId,
-        variant:true,
-        restaurant_id: restaurantId,
-      },
-    ];
-    handlevariantCart(final);
+    
+    let rest_id=window.localStorage.pathname.split("/")[2].split("-")[pathname.split("/")[2].split("-").length-1]
+      let datarest_id=''
+      if(JSON.parse(localStorage.getItem('user'))){
+        datarest_id=cartItem.length>0?cartItem[0].rest_id||cartItem[0].restaurant_id:''
+      }else{
+        
+        var local=JSON.parse(localStorage.getItem('cartItem'))?JSON.parse(localStorage.getItem('cartItem')):[]
+        if(local.length>0){
+          datarest_id=local[0].restaurant_id
+        }else{
+          datarest_id=''
+        }
+      }
+    
+    if(datarest_id.toLocaleLowerCase()===rest_id.toLocaleLowerCase()||datarest_id===''){
+    if(!JSON.parse(localStorage.getItem('user'))){
+      var cart = [];
+      cart.push(
+        {
+          variant_id: data.id,
+          name:menuObject[data.id].name,
+          quantity: 1,
+          item_id: itemId,
+          isVariant:true,
+          restaurant_id: restaurantId,
+          veg:menuObject[data.id].veg,
+          le_price:data.le_price
+        },
+      );
+      setCartItem((oldarray) => [
+        ...oldarray,
+        {
+          variant_id: data.id,
+          name:menuObject[data.id].name,
+          quantity: 1,
+          item_id: itemId,
+          isVariant:true,
+          restaurant_id: restaurantId,
+          veg:menuObject[data.id].veg,
+          le_price:data.le_price
+        }
+        ,
+      ]);
+      let localItem=[]
+      if(cartItem===null){
+        localItem=cart
+      }else{
+        localItem=[...cartItem,{
+          variant_id: data.id,
+          name:menuObject[data.id].name,
+          quantity: 1,
+          item_id: itemId,
+          isVariant:true,
+          restaurant_id: restaurantId,
+          veg:menuObject[data.id].veg,
+          le_price:data.le_price
+        }]
+      } 
+      localStorage.setItem('cartItem',JSON.stringify(localItem))
+      let final = [
+        {
+          variant_id: data.id,
+          name:menuObject[data.id].name,
+          quantity: 1,
+          item_id: itemId,
+          isVariant:true,
+          restaurant_id: restaurantId,
+          veg:menuObject[data.id].veg,
+          le_price:data.le_price
+        },
+      ];
+      handlevariantCart(final);
+
+    }else{
+      let data_body ={
+        "rest_id":restaurantId,
+        "item_id": data.menu_id,
+        "variant_id":data.id,
+        "quantity":"1"
+    }
+      dataService.AddTocart(data_body).then((resp)=>{
+        if(resp){
+          var response=resp.data
+          
+          setCartItem((oldarray) => [
+            ...oldarray,
+            {
+              variant_id: resp.data["variant_id"],
+              quantity: cart_item_objs_v1[response["variant_id"]],
+              name: menuObject[response["variant_id"]].name,
+              item_id: response["item_id"],
+              isVariant:true,
+              restaurant_id: response["rest_id"],
+              veg:menuObject[response.variant_id].veg,
+              le_price:menuObject[response.variant_id].le_price
+
+            },
+          ]);
+          var result=[resp.data]
+          handlevariantCart(result);
+        }
+      })
+    } 
+  }else{
+    setOpen(true)
+  }
   };
 
   const handleVarientincrement = (data) => {
-    handlecartSingleIncrement(data);
+    let CartV1={...cart_item_objs_v1}
+    if(!localStorage.getItem('user')){
+      handlecartSingleIncrement(data);
     let CartV1={...cart_item_objs_v1}
     if (CartV1[data.id]) {
       CartV1[data.id]++;
     }
+    props.getcartV1(CartV1)
     setcart_item_objs_v1(CartV1);
     localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
 
-    setcount((prv) => [...prv, count + 1]);
+    }else{
+      let data_body ={
+        "rest_id":restaurantId,
+        "item_id": data.menu_id,
+        "variant_id":data.id,
+        "quantity":"1"
+    
+    }
+      dataService.AddTocart(data_body).then((resp)=>{
+        if(resp){
+          handlecartSingleIncrement(resp.data);    
+        if (CartV1[resp.data.variant_id]) {
+        CartV1[resp.data.variant_id]++;
+        }
+        }
+        props.getcartV1(CartV1)
+        setcart_item_objs_v1(CartV1);
+        })
+  
+      }
   };
   const handlecartSingleIncrement = (data) => {
     let CartV2={...cart_item_objs_v2}
-    if (CartV2[data.menu_id]) {
-      CartV2[data.menu_id]++ ;
+    if(!JSON.parse(localStorage.getItem('user'))){
+      if (CartV2[data.menu_id]) {
+        CartV2[data.menu_id]++ ;
+      }
+      props.getcartV2(CartV2)
+      setcart_item_objs_v2(CartV2);
+      localStorage.setItem('cart_item_objs_v2',JSON.stringify(CartV2))
+    }else{
+      if (CartV2[data.item_id]) {
+        CartV2[data.item_id]++ ;
+      }
+      props.getcartV2(CartV2)
+      setcart_item_objs_v2(CartV2);
+      localStorage.setItem('cart_item_objs_v2',JSON.stringify(CartV2))
     }
-    setcart_item_objs_v2(CartV2);
-    localStorage.setItem('cart_item_objs_v2',JSON.stringify(CartV2))
-    setcount((prv) => [...prv, count+1]);
+    
   };
 
   const handleVarientDecrement = (data) => {
-    handlecartSingleDecrement(data);
-    if (cart_item_objs_v1[data.id] === 1) {
+    if(!JSON.parse(localStorage.getItem('user'))){
+      handlecartSingleDecrement(data);
+    if (parseInt(cart_item_objs_v1[data.id]) === 1) {
       let index = findindex(data.id);
       if (index > -1) {
         let originlArray=[...cartItem]
@@ -415,8 +804,40 @@ const[favourite,setFavourite]=useState(false);
     if (CartV1[data.id]) {
       CartV1[data.id]--;
     }
+    props.getcartV1(CartV1)
     setcart_item_objs_v1(CartV1);
     localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
+    }
+    else{
+      let data_body ={
+        "rest_id":restaurantId,
+        "item_id": data.menu_id,
+        "variant_id":data.id,
+        "quantity":"-1"
+    }
+      dataService.AddTocart(data_body).then((resp)=>{
+        console.log("response--->",resp.data);
+        if(resp){
+          handlecartSingleDecrement(data);
+            if (parseInt(cart_item_objs_v1[data.id]) === 1) {
+      let index = findindex(data.id);
+              if (index > -1) {
+                let originlArray=[...cartItem]
+                originlArray.filter((val)=>val!==originlArray[index])
+                originlArray.splice(index, 1);
+                localStorage.setItem('cartItem',JSON.stringify(originlArray))
+                setCartItem(originlArray);
+              }
+    }
+        let CartV1={...cart_item_objs_v1}
+        if (CartV1[data.id]) {
+          CartV1[data.id]--;
+        }
+        props.getcartV1(CartV1)
+        setcart_item_objs_v1(CartV1);
+        }
+      })
+    }
 
   };
 
@@ -425,6 +846,7 @@ const[favourite,setFavourite]=useState(false);
     if (cartV2[data.menu_id]) {
       cartV2[data.menu_id]--;
     }
+    props.getcartV2(cartV2)
     setcart_item_objs_v2(cartV2);
     localStorage.setItem('cart_item_objs_v2',JSON.stringify(cartV2))
 
@@ -484,6 +906,25 @@ const[favourite,setFavourite]=useState(false);
     });
   }
 }
+const ModalPopup=()=>{
+  return (
+    <div>
+  <Modal open={open} onClose={onCloseModal} center>
+  <div class="exist-item-popup">
+                      <div class="exist-cart-inner">
+                          <h3>Items already in cart</h3>
+                          <p>Your cart contains items from other restaurant.<br/>
+                          Would you like to reset your cart for adding items<br/> from this restaurant?</p>
+                          <div class="exist-cart-btn">
+                              <button type="button" onClick={()=>setOpen(false)}>No</button>
+                              <button type="button" class="start-fresh" onClick={()=>handleClearCart()}>Yes, Start afresh</button>
+                          </div>
+                      </div>
+  </div>
+  </Modal>
+</div>
+)
+}
   return (
     <>
     <div className="header-border">
@@ -504,6 +945,8 @@ const[favourite,setFavourite]=useState(false);
               className="mobile-close"
               src="../../images/close_icon.svg"
             />
+                <ModalPopup/>
+
           </div>
           <div className="menu-header-inner">
             <div className="menu-hand">
@@ -661,7 +1104,7 @@ const[favourite,setFavourite]=useState(false);
                                   {item.variants.length > 1 ? (
                                     <button
                                       className="quantity-arrow-plus quantity"
-                                      onClick={() => setShow(true)}
+                                      onClick={() => handleAddCart(item)}
                                     >
                                       +
                                     </button>
@@ -852,13 +1295,17 @@ const[favourite,setFavourite]=useState(false);
     </>
   );
 };
+}
 const mapStateToProps = (state) => {
-  const { Menulist,Favourites } = state;
-  return { Menulist,Favourites };
+  const { Menulist,Favourites,menuObject } = state;
+  return { Menulist,Favourites,menuObject };
 };
 const actionCreator = {
   getMenulist: UserAction.getMenulist,
   getcart: UserAction.getcart,
   FavouriteList:UserAction.FavouriteList,
+  getcartV1:UserAction.getcartV1,
+  getcartV2:UserAction.getcartV2,
+  getMenuObject:UserAction.getMenuObject
 };
 export default connect(mapStateToProps, actionCreator)(MenuItems);

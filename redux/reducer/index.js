@@ -6,6 +6,10 @@ import {Menulist} from './menulist.reducer';
 import { Restaurant } from './restaurant.reducer';
 import { Favourites } from './favouritelist.reducer';
 import errors from "./error.reducer";
+import { cartV1 } from './cartV1.reducer';
+import { cartV2 } from './cartV2.reducer';
+import { menuObject } from './menuObject.reducer';
+
 const rootReducer = combineReducers({
     Cuisines,
     Restaurants,
@@ -13,7 +17,10 @@ const rootReducer = combineReducers({
     Menulist,
     Restaurant,
     Favourites,
-    errors
+    errors,
+    cartV1,
+    cartV2,
+    menuObject
 })
 
 export default rootReducer;

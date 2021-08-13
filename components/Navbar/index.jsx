@@ -12,6 +12,7 @@ import { googleClientID, facebookAppID } from '../../config/env';
 import LoginContext from '../Context/LoginContext';
 import Login from '../login';
 const Navbar = (props) => {
+    const router=useRouter()
     const [searchBox, setSearchBox] = useState(false);
     const [searchBoxSmall, setSearchBoxSmall] = useState(false);
     const [locationSearch, setLocationSearch] = useState(false);
@@ -107,7 +108,7 @@ const Navbar = (props) => {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/checkout">
                                         <div className="cart">
                                             <img src="/images/cart.svg" alt="cart"/>
                                                 <div className="cart-qty">

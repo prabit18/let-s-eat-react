@@ -661,7 +661,14 @@ button.quantity-arrow-plus {
     left: 0;
 }
 
-.summery-food-item {
+.summery-veg-item:before {
+    content: url(../../public/images/icon_veg.svg);
+    position: absolute;
+    top: 2px;
+    left: 0;
+}
+
+.summery-food-item,.summery-veg-item {
     position: relative;
 }
 
@@ -708,6 +715,7 @@ p.food-item-price {
 
 .added-food-box .quantity-change .new-counter.quantity-block {
     margin-bottom: 5px;
+    margin-right: 0;
 }
 
 .order-summery .card-footer {
@@ -1434,6 +1442,60 @@ img.empty-heart {
     -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
+.payment-item.delivery-item.active {
+    background-color: #457CD6;
+}
+.payment-item.delivery-item input[type="radio"]:checked + label,
+.payment-item.delivery-item input[type="radio"]:checked + label span{
+    color: #FFFFFF;
+}
+.payment-item.delivery-item input[type="radio"]:checked + label:before {
+    border: 1px solid #FFFFFF;
+    background: #457CD6;
+}    
+.payment-item.delivery-item input[type="radio"]:checked + label:after {
+    background: #FFFFFF;
+}
+
+/* exist-popup */
+.exist-cart-inner h3 {
+    font-size: 20px;
+    line-height: 18px;
+    color: #293250;
+    text-transform: capitalize;
+    font-family: 'Montserrat-SemiBold';
+    text-align: center;
+}
+.exist-cart-inner p {
+    padding: 20px 0;
+    font-size: 16px;
+    line-height: 22px;
+    color: #3B4148;
+    font-family: 'Montserrat-Regular';
+    text-align: center;
+}
+.exist-cart-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px 0 10px 0;
+}
+.exist-cart-btn button {
+    border: none;
+    border-radius: 20px;
+    min-width: 160px;
+    height: 40px;
+    background-color: #DCDFE8;
+    font-size: 15px;
+    line-height: 18px;
+    color: #283350;
+    font-family: 'Montserrat-Medium';
+    margin-right: 20px;
+}
+.start-fresh {
+    background-color: #FFD438!important;
+    margin: 0;
+}
 /*media query*/
 @media (max-width: 1200px) {
     .menu-search {
@@ -1737,6 +1799,9 @@ img.empty-heart {
     .menu-list li {
         border-top: none;
         border-bottom: 3px solid transparent;
+    }
+    .white-background.offer-sec{
+        margin-top: 30px;
     }
 
 }
@@ -2177,4 +2242,38 @@ img.empty-heart {
     .menu-search input {
         padding: 0;
     }
+    /* exist-popup */
+    @media (max-width: 400px){
+        .exist-cart-btn button {
+            margin-right: 0;
+            min-width: 100%;
+            margin-bottom: 15px;
+        }
+        .exist-cart-btn {
+            flex-direction: column;
+        }
+        .exist-item-popup .modal-body {
+            padding: 0;
+        }
+        }
+        
+        @media (max-width: 575px){
+        .exist-cart-btn button {
+            font-size: 14px;
+            line-height: 16px;
+            margin-right: 15px;
+        }
+        .exist-cart-btn {
+            padding: 20px 0 5px 0;
+        }
+        .exist-cart-inner p {
+            padding: 15px 0;
+            font-size: 14px;
+            line-height: 20px;
+        }
+        .exist-cart-inner h3 {
+            font-size: 16px;
+            line-height: 14px;
+        }
+        }
 }
