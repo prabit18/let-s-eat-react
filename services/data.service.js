@@ -38,21 +38,43 @@ async function getCuisines() {
  
 
 async function getRestaurants(type) {
-    console.log("type is",type);
+    
     try {
-         
-           var body={};
-           
-       if(type==="pure_veg")
-         {
-             body={
-                  "Filter":{
+        var body={};
+        if(!type)
+        {
+            body={};
+        }
+    //     if(typeof type === 'object'){
+            
+    //         //type=[...new Set(type)];
+    //         console.log("type is",type)
+    //         let filters=[];
+    //         let sortby={};
+    //         for(var key in type){
+    //            if(key==='pure_veg'){
+    //                filters.push({  "key":key,"value":type[key]})
+    //          console.log("fjfff",)
+    //         }else{
+    //             sortby[key]=type[key];
+    //         } 
+    //     }
+    //     body={};
+    //     if(filters){
+    //      body["filters"]=filters
+    //     }else if(sortby){
+    //         body["sort_by"]=sortby
+    //     }
+    //     }
+    //    else {
+        if(type==="pure_veg"){
+     body={
+      "filters":{
         "key":type,
         "value":"true"
-    }
-             }
          }
-       else if (type==="ratings") {
+     }
+    }else if (type==="ratings") {
             body={
                 
        "sort_by":{
@@ -68,7 +90,7 @@ async function getRestaurants(type) {
                      }
                  }
        }
-       else if (type) {
+       else if (type==='delivery_time') {
             body={      
        "sort_by":{
         "key":type,
@@ -76,7 +98,16 @@ async function getRestaurants(type) {
              }
             }      
        }
-      
+       else {
+        body={
+             "filters":[{
+        "key":"curated_list",
+        "value":[type]
+    }]
+      }
+       }
+   // }
+    //    debugger
         const data = await axios.post( apiURL+'restaurants/web/list', body);
         return {error: false, data: data}
     } catch (e) {

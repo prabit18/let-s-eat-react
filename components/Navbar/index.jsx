@@ -94,7 +94,7 @@ const Navbar = (props) => {
                             </ul>
                             <ul className="header-right">
                                 <li>
-                                    <a href="#">
+                                    <a href="javascript:void(0);">
                                         <img src="/images/help.svg" alt="help"/>
                                             <span>Help</span>
                                     </a>
@@ -112,7 +112,7 @@ const Navbar = (props) => {
                                 </li>
                             { !login ?
                              (<li className="dropdown">
-                            <a href="#" data-toggle="modal" data-target="#loginModal">
+                            <a href="javascript:void(0);" data-toggle="modal" data-target="#loginModal">
                                 <img src="../../images/login.svg" alt="login"/>
                                 <span onClick={()=>setdis(!dis)}>Login/Sign Up</span>
                             </a>

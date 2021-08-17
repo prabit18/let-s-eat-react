@@ -32,7 +32,7 @@ const Emptypage=()=>{
                                                         <div className="col-md-12">
                                                             <div className="empty-cart">
                                                                 <img src="../../images/empty_cart.svg" alt="Empty_cart"/>
-                                                                <p>No Favourites restaurant</p>
+                                                                <p>No Favourite Restaurants</p>
                                                                 <div className="back-button">
                                                                     <a href="/restaurants" className="hvr-icon-back"><img src="../../images/back_arrow.svg" alt="Back_Arrow" class="hvr-icon"/>Back to Restaurant</a>
                                                                 </div>

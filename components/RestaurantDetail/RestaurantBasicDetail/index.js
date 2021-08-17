@@ -9,7 +9,11 @@ const BasicDetail=(props)=>{
          <div className="restaurant-detail-outer">
                                 <div className="restaurant-image">
                                     <img alt={props.alt_text} src={`https://development-cdn.letseat.co.uk/resize-image/170/${props.data.restaurant.image_url}`}/>
+                                    {/* <div className="diamond-pro">
+                                      <img src={`https://development-cdn.letseat.co.uk/${props.data.restaurant.promotion_tier.icon_url}`} alt="Promoted"/>
+                                    </div> */}
                                 </div>
+                                  
                                 <div className="restaurant-header-info">
                                     <div className="restaurant-detail">
                                         <h3>{props.data.restaurant.name}</h3>

@@ -971,10 +971,10 @@ const ModalPopup=()=>{
               </li>
               <li className="favourite">
               {!favourite?
-              (<a href="#" onClick={Addfavourite}>
+              (<a href="javascript:void(0);" onClick={Addfavourite}>
               <img className="empty-heart" src="/images/Fav-Outline.svg" alt="heart-icon" onClick={Addfavourite}/>Favourite
                 </a>):
-                  (<a href="#" onClick={RemoveFavourite}>
+                  (<a href="javascript:void(0);" onClick={RemoveFavourite}>
                       <img className="filled-heart" src="/images/Fav-Filled.svg" alt="filled-heart-icon"  onClick={RemoveFavourite}/>
                       Favourite
                   </a>)

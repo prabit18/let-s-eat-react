@@ -69,7 +69,7 @@ const FoodListing = (props) => {
                             <h2 className="header-text" >{props.data&&<span>{props.data.name} </span>}</h2>
                             
                                 <div className="view-all-btn">
-                                <a href={`/restaurants/?curated-list=${props.data.url}`}>View All</a>
+                                <a onClick={()=>handleroute(props.data.url)}>View All</a>
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>
@@ -82,9 +82,11 @@ const FoodListing = (props) => {
                                         <div className="brand-logo">
                                             <img src={`https://development-cdn.letseat.co.uk/${item.logo}`} alt="Brand Logo"/>
                                         </div>
+                                        { item.promotion_tier_icon_url.length>1 &&
                                         <div className="diamond-pro">
-                                            <img src="images/diamond-pro.svg" alt="Promoted"/>
+                                           <img src={`https://development-cdn.letseat.co.uk/resize-image/109/${item.promotion_tier_icon_url}`} alt="Promoted"/>
                                         </div>
+                                       }
                                 </div>
                                 <div className="food-desc">
                                     <h4>{item.name}</h4>

@@ -451,6 +451,7 @@ li.search-li {
     font-family: Montserrat-Regular, sans-serif;
     color: #FFFFFF;
     margin-right: 15px;
+    text-transform: capitalize;
 }
 .dropdown-sec button.dropdown-toggle:not(:disabled):not(.disabled).active,
 .dropdown-sec button.dropdown-toggle:not(:disabled):not(.disabled):active, .show>.dropdown-sec button.dropdown-toggle,
@@ -484,7 +485,7 @@ li.search-li {
     min-width: 230px;
     border-radius: 10px;
     box-shadow: 3px 3px 6px #909ab926;
-    padding: 20px 0 10px 0;
+    padding: 20px 0 0 0;
     transform: unset!important;
 }
 .dropdown-item:focus, .dropdown-item:hover {
@@ -504,6 +505,8 @@ li.search-li {
     border-top: 1px solid #C0C6D9;
     font-family: 'Montserrat-Medium', sans-serif;
     padding-top: 10px;
+    margin-bottom: 0;
+    padding-bottom: 10px;
 }
 .custom-spinner.spinner-border {
     display: inline-block;

@@ -7,13 +7,15 @@ import RestaurantsList from './restaurantslist';
 import { useRouter } from 'next/router';
 import Metadata from '../Metadata';
 const RestaurantListingPage = (props) => {
-    const[filtertype,setFiltertype]=useState("");
+    const[filtertype,setFiltertype]=useState({});
     const router=useRouter();
     console.log(router.query.Curated_type);  
     //props.getRestaurants(router.query.curated_type);
-  const  handleFilter = (type) => {
-      props.getRestaurants(type)
-      setFiltertype(type);
+  const  handleFilter = (type,value) => {
+    filtertype[type]=value;  
+      setFiltertype(filtertype);
+      props.getRestaurants(filtertype)
+    //   setFiltertype(type);
   }
   
 	return (
@@ -29,10 +31,10 @@ const RestaurantListingPage = (props) => {
                                     </div>
                                     <div className="filter-box custom-scroll">
                                         <ul>
-                                            <li value="rating" className={filtertype==='ratings'?"active":""} ><a href="#"onClick={()=> handleFilter('ratings')}>Rating</a></li>
-                                            <li value="deliverytime"className={filtertype==='delivery_time'?"active":""}><a href="#" onClick={()=> handleFilter('delivery_time')}>Delivery Time</a></li>
-                                            <li value="pureVeg"className={filtertype==='pure_veg'?"active":""}><a href="#"onClick={()=> handleFilter('pure_veg')}>Pure Veg</a></li>
-                                            <li value="offers"className={filtertype==='offers'?"active":""}><a href="#" onClick={()=> handleFilter('offers')}>Offers</a></li>
+                                            <li value="rating" className={filtertype==='ratings'?"active":""} ><a href="#"onClick={()=> handleFilter('ratings','desc')}>Rating</a></li>
+                                            <li value="deliverytime"className={filtertype==='delivery_time'?"active":""}><a href="#" onClick={()=> handleFilter('delivery_time','asc')}>Delivery Time</a></li>
+                                            <li value="pureVeg"className={filtertype==='pure_veg'?"active":""}><a href="#"onClick={()=> handleFilter('pure_veg','true')}>Pure Veg</a></li>
+                                            <li value="offers"className={filtertype==='offers'?"active":""}><a href="#" onClick={()=> handleFilter('offers','')}>Offers</a></li>
                                             <li className="filter"><a href="#">Filters
                                                 <span>
                                         <img alt="filter-icon" src="images/filter.svg"/>
