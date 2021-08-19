@@ -1,0 +1,70 @@
+@font-face
+{
+    font-family: "Montserrat-Bold";
+    src: url('../fonts/Montserrat-Bold.ttf');
+}
+
+@font-face {
+    font-family: "Montserrat-SemiBold";
+    src: url('../fonts/Montserrat-SemiBold.ttf');
+}
+
+@font-face {
+    font-family: "Montserrat-Light";
+    src: url('../fonts/Montserrat-Light.ttf');
+}
+
+@font-face {
+    font-family: "Montserrat-Regular";
+    src: url('../fonts/Montserrat-Regular.ttf');
+}
+
+@font-face {
+    font-family: "Montserrat-Medium";
+    src: url('../fonts/Montserrat-Medium.ttf');
+}
+.container.custom-container {
+    max-width: 1240px !important;
+    padding: 0 20px;
+}
+.privacy-policy {
+    padding: 50px 0;
+}
+.privacy-policy h2 {
+    font-size: 20px;
+    line-height: 24px;
+    color: #1A1A1A;
+    font-family: Montserrat-Semibold, serif;
+    text-transform: capitalize;
+    margin-bottom: 10px;
+}
+.privacy-policy p,.privacy-policy li {
+    font-size: 14px;
+    line-height: 22px;
+    color: #1A1A1A;
+    font-family: Montserrat-Regular, serif;
+    margin-bottom: 10px;
+    padding-left: 15px;
+}
+.privacy-policy h3 {
+    font-size: 14px;
+    line-height: 17px;
+    color: #1A1A1A;
+    font-family: Montserrat-Semibold, serif;
+    text-transform: capitalize;
+    padding: 5px 0;
+}
+.privacy-policy ul {
+    padding-left: 35px;
+}
+.privacy-policy li {
+    list-style: disc;
+}
+
+
+
+@media(max-width: 767px) {
+    .container.custom-container {
+        padding: 0 15px;
+    }
+}

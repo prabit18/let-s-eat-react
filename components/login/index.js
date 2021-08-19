@@ -6,6 +6,7 @@ import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props
 import { googleClientID, facebookAppID } from '../../config/env';
 import LoginContext from '../Context/LoginContext';
 import { useRouter } from 'next/router';
+import "react-responsive-modal/styles.css";
 const Login=(props)=>{
     const router=useRouter()
     const[show,setshow]=useState(true);
@@ -180,6 +181,7 @@ const Login=(props)=>{
     }
     const Loginhandler=(type)=>{
              setSuccess(false);
+             setOpen(true);
                 setErrorMessage('')
                 setshow(true);
                 setError(false);
@@ -307,7 +309,7 @@ const Login=(props)=>{
         }
     return(
         <>
-   
+    
          <div className={["modal fade login-modal", show && (popup==='login' || popup==='change')? "show display-popup" : ""].join(" ")}
             id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
            <div className="modal-dialog modal-dialog-centered" role="document">

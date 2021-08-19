@@ -11,13 +11,10 @@ import '../styles/css/restaurant-list.css';
 import '../styles/css/restaurant-detail-page.css';
 import '../styles/css/checkout.css'
 import '../styles/css/favourite-list.css'
-
+import '../styles/css/service-pages.css'
 import Layout from "../components/Layout";
 import {Provider} from "react-redux";
 import store from "../redux/store";
-import {BrowserRouter, Route, Router, useHistory} from 'react-router-dom';
-import {history}   from 'history';
-import LoadingSpinner from '../components/Loader'
 import Favicon from 'react-favicon'
 
 function MyApp({ Component, pageProps }) {

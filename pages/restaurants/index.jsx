@@ -10,11 +10,11 @@ import Metadata from '../../components/Metadata';
 import { useRouter } from 'next/router';
 const RestaurantListing = (props) => {
 	const router=useRouter();
-	console.log("url should be ",router.query.Curated_type);
 	const[loading,setloading]=useState(true);
 	useEffect(() => {
    props.getRestaurants(router.query.Curated_type).then((Response)=>{setloading(false)});
   },[router.query.Curated_type]);
+
 
   const metacontent={title:"Order Food Online from Best Restaurants Around You | Let's Eat",description:"Order food online from restaurants and get it delivered."}
 const {Restaurants} = props

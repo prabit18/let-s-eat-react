@@ -45,28 +45,29 @@ async function getRestaurants(type) {
         {
             body={};
         }
-    //     if(typeof type === 'object'){
+        if(typeof type === 'object'){
             
-    //         //type=[...new Set(type)];
-    //         console.log("type is",type)
-    //         let filters=[];
-    //         let sortby={};
-    //         for(var key in type){
-    //            if(key==='pure_veg'){
-    //                filters.push({  "key":key,"value":type[key]})
-    //          console.log("fjfff",)
-    //         }else{
-    //             sortby[key]=type[key];
-    //         } 
-    //     }
-    //     body={};
-    //     if(filters){
-    //      body["filters"]=filters
-    //     }else if(sortby){
-    //         body["sort_by"]=sortby
-    //     }
-    //     }
-    //    else {
+            //type=[...new Set(type)];
+            console.log("type is",type)
+            let filters=[];
+            let sortby={};
+            for(var key in type){
+               if(key==='pure_veg'){
+                   filters.push({  "key":key,"value":type[key]})
+             console.log("fjfff",)
+            }else{
+                sortby[key]=type[key];
+            } 
+        }
+        body={};
+        if(filters){
+         body["filters"]=filters
+        }else if(sortby){
+            body["sort_by"]=sortby
+        }
+        console.log("requestbody",body);
+        }
+       else {
         if(type==="pure_veg"){
      body={
       "filters":{
@@ -106,9 +107,10 @@ async function getRestaurants(type) {
     }]
       }
        }
-   // }
+    }
     //    debugger
         const data = await axios.post( apiURL+'restaurants/web/list', body);
+        debugger
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}

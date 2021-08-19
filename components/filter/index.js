@@ -1,70 +1,26 @@
-import { event } from 'jquery';
-import {React,useEffect, useState} from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { connect } from 'react-redux';
-import { UserAction } from '../../redux/actions/user.action';
-import RestaurantsList from './restaurantslist';
-import { useRouter } from 'next/router';
+import {React,useState} from 'react';
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
-const RestaurantListingPage = (props) => {
-    const[filtertype,setFiltertype]=useState({});
-    const router=useRouter();
-    console.log(router.query.Curated_type);  
-    //props.getRestaurants(router.query.curated_type);
-  const  handleFilter = (type,value) =>{
-    filtertype[type]=value;  
-      setFiltertype(filtertype);
-      props.getRestaurants(filtertype)
-    //   setFiltertype(type);
-  }
-  const [state, setState] = useState({
-    isPaneOpen: false,
-    isPaneOpenLeft: false,
-  });
-  const clickhandler=()=>{
-      setOpen(true);
-}
-return (
-	<>
-        <section className="restaurant-list">
-                <div className="container custom-container">
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="listing-box">
-                                <div className="filter-section">
-                                    <div className="resto-count">
-                                        <h2>{props.restaurants.pagination.total_records} Restaurants</h2>
-                                    </div>
-                                    <div className="filter-box custom-scroll">
-                                        <ul>
-                                            <li value="rating" className={filtertype==='ratings'?"active":""} ><a href="javascript:void(0);"onClick={()=> handleFilter('ratings','desc')}>Rating</a></li>
-                                            <li value="deliverytime"className={filtertype==='delivery_time'?"active":""}><a href="javascript:void(0);" onClick={()=> handleFilter('delivery_time','asc')}>Delivery Time</a></li>
-                                            <li value="pureVeg"className={filtertype==='pure_veg'?"active":""}><a href="javascript:void(0);"onClick={()=> handleFilter('pure_veg','true')}>Pure Veg</a></li>
-                                            <li value="offers"className={filtertype==='offers'?"active":""}><a href="javascript:void(0);" onClick={()=> handleFilter('offers','')}>Offers</a></li>
-                                            <li className="filter"><a href="javascript:void(0);" data-toggle="modal" data-target="#filterModal" onClick={() => setState({ isPaneOpen: true })}>Filters
-                                                    <span><img alt="filter-icon" src="../../images/filter.svg"/></span>
-                                                </a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                
-                                <RestaurantsList handleFilter={handleFilter}/> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+const Filter=()=>{
+    const [state, setState] = useState({
+        isPaneOpen: true,
+        isPaneOpenLeft: false,
+      });
+      const clickhandler=()=>{
+          setOpen(true);
+      }
+    return(
+        <>
 <SlidingPane className="some-custom-class"
-        overlayClassName="some-custom-overlay-class" isOpen={state.isPaneOpen}  width="500px" onRequestClose={() => {setState({ isPaneOpen: false });}}>
-    <div className="filter-popup show display-popup">
-        <div className="modal right fade show display-popup" id="filterModal" tabIndex="-1" role="dialog" aria-labelledby="RegModalLabel" aria-hidden="true">
+        overlayClassName="some-custom-overlay-class" isOpen={state.isPaneOpen}  width="500px" onRequestClose={() => {setState({ isPaneOpen: false });}}></SlidingPane>
+    <div className="filter-popup">
+        <div className="modal right fade" id="filterModal" tabIndex="-1" role="dialog" aria-labelledby="RegModalLabel" aria-hidden="true">
             <div className="modal-dialog" role="document">
               <div className="modal-content">
                 <div className="modal-header" id="RegModalLabel">
                     <button type="button" className="close" data-dismiss="modal"
                             aria-label="Close" id="closeModal1"> 
-                        <img src="images/close.svg" alt="close-icon" onClick={()=>{setState({ isPaneOpen: false });}} />
+                        <img src="../..images/close.svg" alt="close-icon"/>
                     </button>
                     <h2>Filter</h2>
                 </div>
@@ -358,19 +314,9 @@ return (
               </div>
             </div>
         </div>
-    </div> 	  
-    </SlidingPane>
- 
-	</>	
-	
-);  
-};
-
-const mapStateToProps = (state) => {
-    const {Restaurants, errors} = state
-   return {restaurants: Restaurants, errors}
+    </div>
+<SlidingPane/>
+        </>
+    )
 }
-const actionCreator = {
-    getRestaurants: UserAction.getRestaurants
-}
-export default connect(mapStateToProps, actionCreator)(RestaurantListingPage);
+export default Filter;
