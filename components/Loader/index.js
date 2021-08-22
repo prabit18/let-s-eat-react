@@ -16,8 +16,8 @@ function LoadingSpinner() {
     return (
         <div className="loader" >
             <Lottie options={defaultOptions}
-              height={100}
-              width={100}
+              height={70}
+              width={60}
               isStopped={isStopped}
               isPaused={isPaused}/>
         </div>

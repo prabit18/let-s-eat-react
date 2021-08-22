@@ -8,6 +8,11 @@ export const UserAction = {
   getMenulist,
   getRestaurant,
   getcart,
+  FavouriteList,
+  getcartV1,
+  getcartV2,
+  getMenuObject,
+  addressList
 };
 
 function getCuisines() {
@@ -42,10 +47,12 @@ function getRestaurants(type) {
 function getCuratedlist() {
   return async (dispatch) => {
     const data = await dataService.getCuratedList();
+    //debugger
     if ((await data).error) {
       dispatch(setErrors(data.error));
     } else {
-      dispatch(setCuratedlist(data.data.data.data));
+      console.log("useractions",data.data.data)
+      dispatch(setCuratedlist(data.data.data));
     }
   };
   function setCuratedlist(data) {
@@ -54,14 +61,20 @@ function getCuratedlist() {
 }
 
 const handleFoodItems = (foodItems) => {
+  
     if(foodItems){
+      
         const FoodData = [...foodItems];
         var localdata = JSON.parse(localStorage.getItem("menuItems"));
-            // if (localdata.length>0&&localdata[0].restaurant_id != FoodData[0].restaurant_id) {
-            //   localStorage.setItem("menuItems", JSON.stringify(FoodData));
-            // } else 
-        if (!localStorage.getItem("menuItems")) {
-          localStorage.setItem("menuItems", JSON.stringify(FoodData));
+        // var loc=localdata.length
+            if (!localdata===null&&localdata[0].restaurant_id != FoodData[0].restaurant_id) {
+              localStorage.setItem("menuItems", JSON.stringify(FoodData));
+            } else  {
+              if(!localStorage.getItem("menuItems")){
+                
+                localStorage.setItem("menuItems", JSON.stringify(FoodData));
+              }
+             
         }
     }
   
@@ -70,6 +83,13 @@ const handleFoodItems = (foodItems) => {
 function getMenulist(type) {
   // debugger
   return (dispatch) => {
+    //   const data = await dataService.getMenuList(type).then((res)=>);
+    //   if((await data &&data).error){
+    //       dispatch(setErrors(data.error))
+    //   }else{
+    //       dispatch(setMenulist(data.data.data.data))
+    //   }
+    //   return data
       dataService.getMenuList(type).then((data) => 
       data.error? dispatch(setErrors(data.error))
           : dispatch(setMenulist(data.data.data.data))
@@ -108,4 +128,50 @@ function getRestaurant(type) {
     return { type: passActions.SET_RESTAURANT, data };
   }
 }
-
+function FavouriteList() {
+  return async (dispatch) => {
+    const data = await dataService.FavouriteList();
+    if ((await data).error) {
+      dispatch(setErrors(data.error));
+    } else {
+      dispatch(setFavouriteList(data.data.data.data));
+    }
+  };
+  function setFavouriteList(data) {
+    return { type: passActions.SET_FAVOURITE, data };
+  }
+}
+function getcartV1(body) {
+    return (dispatch) => {
+      dispatch(cartV1(body));
+    };
+    function cartV1(data) {
+      return { type: passActions.SET_CART_V1, data };
+    }
+  }
+  
+  function getcartV2(body) {
+    return (dispatch) => {
+      dispatch(cartV2(body));
+    };
+    function cartV2(data) {
+      return { type: passActions.SET_CART_V2, data };
+    }
+  }
+  function getMenuObject(body) {
+    return (dispatch) => {
+      dispatch(menuObject(body));
+    };
+    function menuObject(data) {
+      return { type: passActions.SET_MENU_OBJECT, data };
+    }
+  }
+  function addressList(body) {
+    
+    return (dispatch) => {
+      dispatch(InsertaddressList(body));
+    };
+    function InsertaddressList(data) {
+      return { type: passActions.SET_ADDRESS_LIST, data };
+    }
+  }

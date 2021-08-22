@@ -9,9 +9,12 @@ import Customizable from "./Customizable";
 import CartSummary from "./CartSummary";
 import LoadingSpinner from "../Loader";
 import MenulistContext from "../Context/MenulistContext";
+import Metadata from "../Metadata";
 
 const RestaurantDetail = (props) => {
-  // console.log("qw",props);
+  const a=[{"show":true,"popup":'login'}]
+  localStorage.setItem("popup",JSON.stringify(a))
+  //  console.log("checkkkakkakkka",props);
   const [loader, setloader] = useState(true);
   const [foodItems, SetFoodItems] = useState([]);
   const [menuObject, setmenuObject] = useState({});
@@ -62,7 +65,7 @@ const RestaurantDetail = (props) => {
                   <div className="row restaurant-row">
                     <div className="col-md-8 restaurant-list-col">
                       <div className="menu-section">
-                        <MenuItems />
+                        <MenuItems data={props.restaurant.name}/>
                       </div>
                     </div>
                     <CartSummary />

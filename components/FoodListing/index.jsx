@@ -13,7 +13,7 @@ const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });
 const FoodListing = (props) => {
-   // console.log(props)
+   console.log("data is-->",props.data)
     const router = useRouter()
     const handleroute=(type)=>{
         router.push({pathname:"/restaurants/",query:{Curated_type:type}})
@@ -60,20 +60,20 @@ const FoodListing = (props) => {
     }
     return (
         <>
-       {props.restaurants.data && !loading &&<section className="food-listing">
+       {props.data && !loading &&<section className="food-listing">
             <div className="container custom-container" >
                 <div className="row">
                     <div className="col-md-12">
                         <div className="title-header">
                             <div className="removable"></div>
-                            <h2 className="header-text" >{props.restaurants.data&&<span>{props.data.name} </span>}</h2>
+                            <h2 className="header-text" >{props.data&&<span>{props.data.name} </span>}</h2>
                             
                                 <div className="view-all-btn">
                                 <a href={`/restaurants/?curated-list=${props.data.url}`}>View All</a>
                                 </div>
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation home-slider" {...options}>
-                         { props.restaurants.data && props.restaurants.data.map((item)=>(
+                         { props.data && props.data.restaurants.map((item)=>(
                              //<RestaurantsList item={elem}/>
                             <div className="food-product hvr-shadow" key={item.id}>
                                 <a href={`/restaurant/${item.url}`} >
@@ -114,14 +114,7 @@ const FoodListing = (props) => {
         </section>        }</>
     );
 };
-const mapStateToProps = (state) => {
-    const {Restaurants, Curatedlist,errors} = state
-   return {restaurants: Restaurants,curatedlist:Curatedlist, errors}
-}
-const actionCreator = {
-    getCuratedlist: UserAction.getCuratedlist ,
-       getRestaurants: UserAction.getRestaurants
-  }
 
-export default connect(mapStateToProps,actionCreator)(FoodListing);
+
+export default FoodListing;
 

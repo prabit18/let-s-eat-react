@@ -1,12 +1,28 @@
-import React, { useEffect, useState, useContext } from "react";
+import { map } from "jquery";
+import router from "next/router";
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import { connect, useSelector } from "react-redux";
 import { UserAction } from "../../../redux/actions/user.action";
 import { Menulist } from "../../../redux/reducer/menulist.reducer";
+import { dataService } from "../../../services";
 import MenulistContext from "../../Context/MenulistContext";
 import MenulistContetx from "../../Context/MenulistContext";
+import LoginContext from "../../Context/LoginContext";
 import Customizable from "../Customizable";
 import Menu from "./menu";
+import Login from "../../login";
+
+import "react-responsive-modal/styles.css";
+import ModalPopup from "../../Modal";
+import VarientPopup from "../VarientPopup";
+import ClearcartModal from "./ClearcartModal";
+import { Modal } from "react-responsive-modal";
+
 const MenuItems = (props) => {
+  // @refresh reset
+  var pathname = window.location.pathname;
+  localStorage.setItem("pathname", pathname);
+
   const {
     foodItems,
     SetFoodItems,
@@ -20,14 +36,13 @@ const MenuItems = (props) => {
     cartItem,
     setCartItem,
   } = useContext(MenulistContext);
-
+  var user = JSON.parse(localStorage.getItem("user"));
   const [cart_items, setcartItems] = useState([]);
-
   const [foodtype, setFoodType] = useState("Menu");
   const [Name, setName] = useState("");
-
   const [show, setShow] = useState(false);
   const [variant, setVariant] = useState(props.Menulist[0].variants);
+  const [modalType, setmodalType] = useState('')
   const allfoodtypes = [
     ...new Set(props.Menulist.map((item) => item.food_type_name)),
   ];
@@ -42,47 +57,179 @@ const MenuItems = (props) => {
       return val;
     }
   };
- var user=false;
-  useEffect(() => {
-    if (user) {
+  var user = false;
+  const [display, setdisplay] = useState(false);
+  const [favourite, setFavourite] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [openVarient, setOpenVarient] = useState(false);
+
+  const onOpenModal = () => setOpen(true);
+  const onCloseModal = () => {
+    debugger
+    setOpen(false);}
+  const onCloseVarientModal = () =>{ 
+    setOpen(false)
+    setVariant(false)};
+
+  useEffect(async () => {
+    if (!JSON.parse(localStorage.getItem("user"))) {
       SetFoodItems(JSON.parse(localStorage.getItem("menuItems")));
-      JSON.parse(localStorage.getItem("menuItems")).forEach((item) => {
-        item.variants.forEach((child_item) => {
-          menuObject[child_item.id] = child_item;
-          menuObject[child_item.id].image_url = item.image_url;
-          menuObject[child_item.id].name = item.name;
-          menuObject[child_item.id].veg = item.veg;
-          menuObject[child_item.id].description = item.description;
-          menuObject[child_item.id].menu_id = item.id;
-        });
-      });
-      setCartItem(JSON.parse(localStorage.getItem('cartItem')))
-      setcart_item_objs_v1(JSON.parse(localStorage.getItem('cart_item_objs_v1'))||{})
-      setcart_item_objs_v2(JSON.parse(localStorage.getItem('cart_item_objs_v2'))||{})
-
-      setmenuObject(menuObject);
-      localStorage.setItem("menuObject",JSON.stringify(menuObject))
-    }else{
+      ConstructMenuObject(
+        JSON.parse(localStorage.getItem("menuItems")),
+        JSON.parse(localStorage.getItem("cartItem")) || []
+      );
+      setCartItem(JSON.parse(localStorage.getItem("cartItem")) || []);
+      setcart_item_objs_v1(
+        JSON.parse(localStorage.getItem("cart_item_objs_v1")) || {}
+      );
+      setcart_item_objs_v2(
+        JSON.parse(localStorage.getItem("cart_item_objs_v2")) || {}
+      );
+      setFavourite(false);
+    } else {
       SetFoodItems(props.Menulist);
-      props.Menulist.forEach((item) => {
-        item.variants.forEach((child_item) => {
-          menuObject[child_item.id] = child_item;
-          menuObject[child_item.id].image_url = item.image_url;
-          menuObject[child_item.id].name = item.name;
-          menuObject[child_item.id].veg = item.veg;
-          menuObject[child_item.id].description = item.description;
-          menuObject[child_item.id].menu_id = item.id;
-        });
-      });
-      setmenuObject(menuObject);
-      localStorage.setItem("menuObject",JSON.stringify(menuObject))
+      dataService.cartItems().then((response) => {
+        if (response.data) {
+          response.data.forEach((value) => {
+            var list = props.Menulist.filter((val) => val.id === value.item_id);
+            value["le_price"] = value["price"];
+            delete value["price"];
+          });
+          setCartItem(response.data);
+          ConstructMenuObject(props.Menulist, response.data);
 
-      
+          handlesinglevariant(response.data);
+          let User = JSON.parse(localStorage.getItem("user"));
+          dataService
+            .FavouriteList()
+            .then((res) => {
+              res.data.data.message !== "User not found" &&
+                res.data.data.data.map((item) => {
+                  if (item.id === props.Menulist[0].restaurant_id) {
+                    if (
+                      !User.info.favourites.includes(
+                        props.Menulist[0].restaurant_id
+                      )
+                    ) {
+                      User.info.favourites.push(
+                        props.Menulist[0].restaurant_id
+                      );
+                      localStorage.setItem("user", JSON.stringify(user));
+                    } else console.log("");
+                    setFavourite(true);
+                  }
+                });
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+          if (User.info.favourites.includes(props.Menulist[0].restaurant_id)) {
+            setFavourite(true);
+          }
+        }
+      });
     }
   }, []);
+  useEffect(() => {
+    SetFoodItems(props.Menulist);
+  }, [props.Menulist]);
+
+  const ConstructMenuObject = (list, cart) => {
+    let Menu = { ...menuObject };
+    list &&
+      list.forEach((item) => {
+        item.variants.forEach((child_item) => {
+          Menu[child_item.id] = child_item;
+          Menu[child_item.id].image_url = item.image_url;
+          Menu[child_item.id].name = item.name;
+          Menu[child_item.id].veg = item.veg;
+          Menu[child_item.id].description = item.description;
+          Menu[child_item.id].menu_id = item.id;
+          Menu[child_item.id].isVariant =
+            item.variants.length > 1 ? true : false;
+          Menu[child_item.id].status = item.status;
+          Menu[child_item.id].restaurant_id = item.restaurant_id;
+        });
+      });
+    setmenuObject(Menu);
+    localStorage.setItem("menuObject", JSON.stringify(Menu));
+    props.getMenuObject(Menu);
+
+    let rest_id = window.localStorage.pathname.split("/")[2].split("-")[
+      pathname.split("/")[2].split("-").length - 1
+    ];
+    rest_id = rest_id.toLocaleLowerCase();
+    let datarest_id =
+      cart.length > 0 ? cart[0].rest_id || cart[0].restaurant_id : "";
+    datarest_id = datarest_id.toLocaleLowerCase();
+
+    if (JSON.parse(localStorage.getItem("user")) && rest_id === datarest_id) {
+      handleMainvariant(cart, Menu);
+    }
+  };
+  const handleClearCart = () => {
+    if (JSON.parse(localStorage.getItem("user"))) {
+      dataService.clearCart().then((res) => {
+        if (res.data) {
+          setOpen(false);
+          setcartItems([]);
+          props.getcartV1({});
+          props.getcartV2({});
+          localStorage.removeItem("delivery_type");
+          window.location.reload();
+        }
+      });
+    } else {
+      localStorage.clear();
+      window.location.reload();
+    }
+  };
+  // const handleMainvariant = () => {
+  //   return useMemo(() => {
+  //     return handleMainvariant1();
+  //   }, [menuObject]);
+  // };
+  // // const handleMainvariant=useMemo(
+  // //   (value,menu)=>{
+  // //     handleMainvariant1(value,menu)
+  // //   },
+  // // [menuObject])
+
+  const handleMainvariant = (value, menu) => {
+    if (Object.keys(menu).length > 0) {
+      var cartV2 = { ...cart_item_objs_v2 };
+      value.forEach((item, i) => {
+        if (
+          cartV2[item.item_id] &&
+          menu[item.variant_id].isVariant &&
+          menu[item.variant_id].isVariant === true
+        ) {
+          cartV2[item.item_id] += parseInt(item.quantity);
+        } else {
+          cartV2[item.item_id] = parseInt(item.quantity);
+        }
+      });
+
+      props.getcartV2(cartV2);
+      setcart_item_objs_v2(cartV2);
+    }
+  };
+  const handlesinglevariant = (cart) => {
+    let cartV1 = { ...cart_item_objs_v1 };
+    cart.forEach((value) => {
+      if (cartV1[value.variant_id]) {
+        cartV1[value.variant_id]++;
+      } else {
+        cartV1[value.variant_id] = value.quantity;
+      }
+    });
+    props.getcartV1(cartV1);
+    setcart_item_objs_v1(cartV1);
+  };
   // useEffect(() => {
-  //   debugger
+  //
   // }, [cartItem])
+
   const [count, setcount] = useState([]);
 
   item_count["Menu"] = props.Menulist.length;
@@ -112,298 +259,720 @@ const MenuItems = (props) => {
     for (var i in variants) {
       variants[i]["menu_id"] = id;
     }
-    console.log("variants", variants);
     setVariant(variants);
   };
   const [itemId, setItemId] = useState();
   const [restaurantId, setrestaurantId] = useState();
   const [indiviadualFood, setindiviadualFood] = useState([]);
   const handlecustom = (data) => {
-    setShow(true);
-    setName(data.name);
-    handleVarient(data.variants, data.id);
-    setItemId(data.id);
-    setindiviadualFood(data);
-    setrestaurantId(data.restaurant_id);
+    let rest_id = window.localStorage.pathname.split("/")[2].split("-")[
+      pathname.split("/")[2].split("-").length - 1
+    ];
+    let datarest_id = "";
+
+    if (JSON.parse(localStorage.getItem("user"))) {
+      datarest_id =
+        cartItem.length > 0
+          ? cartItem[0].rest_id || cartItem[0].restaurant_id
+          : "";
+    } else {
+      var local = JSON.parse(localStorage.getItem("cartItem"))
+        ? JSON.parse(localStorage.getItem("cartItem"))
+        : [];
+
+      if (local.length > 0) {
+        datarest_id = local[0].restaurant_id;
+      } else {
+        datarest_id = "";
+      }
+    }
+    if (
+      datarest_id.toLocaleLowerCase() === rest_id.toLocaleLowerCase() ||
+      datarest_id === ""
+    ) {
+      // setShow(true);
+      setmodalType("Varient")
+      setOpen(true)
+      setOpenVarient(true);
+      setName(data.name);
+      handleVarient(data.variants, data.id);
+      setItemId(data.id);
+      setindiviadualFood(data);
+      setrestaurantId(data.restaurant_id);
+    } else {
+      setOpen(true);
+      setmodalType("Clear")
+    }
   };
 
   const findindex = (id) => {
-    var elementPos = cartItem.map(function (x) {
-        return x.id;
+    var elementPos = cartItem
+      .map(function (x) {
+        return x.variant_id;
       })
       .indexOf(id);
     return elementPos;
   };
 
   const handleCartObje = (cartItemvalue) => {
-    cartItemvalue.forEach(function (item) {
-      if (cart_item_objs_v1[item.id]) {
-        cart_item_objs_v1[item.id]++;
-      } else {
-        cart_item_objs_v1[item.id] = item.quantity;
-      }
-    });
-    setcart_item_objs_v1(cart_item_objs_v1);
-    localStorage.setItem('cart_item_objs_v1',JSON.stringify(cart_item_objs_v1))
+    let cartV1 = { ...cart_item_objs_v1 };
 
+    if (!JSON.parse(localStorage.getItem("user"))) {
+      if (cartV1[cartItemvalue[0].variant_id]) {
+        cartV1[cartItemvalue[0].variant_id]++;
+      } else {
+        cartV1[cartItemvalue[0].variant_id] = cartItemvalue[0].quantity;
+      }
+      props.getcartV1(cartV1);
+      setcart_item_objs_v1(cartV1);
+      localStorage.setItem("cart_item_objs_v1", JSON.stringify(cartV1));
+    } else {
+      if (cartV1[cartItemvalue[0].variant_id]) {
+        cartV1[cartItemvalue[0].variant_id]++;
+      } else {
+        cartV1[cartItemvalue[0].variant_id] = cartItemvalue[0].quantity;
+      }
+    }
+    props.getcartV1(cartV1);
+    setcart_item_objs_v1(cartV1);
   };
 
   const handleCartinc = (cartItemvalue) => {
-    handlecartV2(cartItemvalue)
-    var CartV1={...cart_item_objs_v1}
-    if (CartV1[cartItemvalue[0].id]) {
-      CartV1[cartItemvalue[0].id]++;
-    }
-    setcart_item_objs_v1(CartV1);
-    localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
-    setcount((prevValue) => [...prevValue, count + 1]);
-  };
+    let CartV1 = { ...cart_item_objs_v1 };
 
-  // const handleCartIncrement = (data) => {
-  //   console.log("new");
-  //   let final = [
-  //     {
-  //       id: data[0].id,
-  //       quantity: 1,
-  //       menu_id: data.id,
-  //       restaurant_id: data.restaurant_id,
-  //     },
-  //   ];
-  //   handleCartinc(final);
-  // };
+    if (!JSON.parse(localStorage.getItem("user"))) {
+      // handlecartV2(cartItemvalue)
+      if (CartV1[cartItemvalue[0].variant_id]) {
+        CartV1[cartItemvalue[0].variant_id]++;
+      }
+      props.getcartV1(CartV1);
+      setcart_item_objs_v1(CartV1);
+      localStorage.setItem("cart_item_objs_v1", JSON.stringify(CartV1));
+    } else {
+      if (CartV1[cartItemvalue[0].variant_id]) {
+        CartV1[cartItemvalue[0].variant_id]++;
+      }
+      props.getcartV1(CartV1);
+      setcart_item_objs_v1(CartV1);
+    }
+  };
 
   //VARIENT CART MANGAGING
   const handlevariantCart = (cartItemvalue) => {
-    handlecartV2(cartItemvalue);
-    cartItemvalue.forEach(function (item) {
-      if (cart_item_objs_v1[item.id]) {
-        cart_item_objs_v1[item.id]++;
+    var cartV1 = { ...cart_item_objs_v1 };
+    if (!JSON.parse(localStorage.getItem("user"))) {
+      handlecartV2(cartItemvalue);
+      if (cartV1[cartItemvalue[0].variant_id]) {
+        cartV1[cartItemvalue[0].variant_id]++;
       } else {
-        cart_item_objs_v1[item.id] = item.quantity;
+        cartV1[cartItemvalue[0].variant_id] = cartItemvalue[0].quantity;
       }
-    });
-    setcart_item_objs_v1(cart_item_objs_v1);
-    setcount((prevValue) => [...prevValue, count + 1]);
+      setcart_item_objs_v1(cartV1);
+      props.getcartV1(cartV1);
+      localStorage.setItem("cart_item_objs_v1", JSON.stringify(cartV1));
+    } else {
+      var cartV1 = { ...cart_item_objs_v1 };
+      handlecartV2(cartItemvalue);
+      if (cartV1[cartItemvalue[0].variant_id]) {
+        cartV1[cartItemvalue[0].variant_id]++;
+      } else {
+        cartV1[cartItemvalue[0].variant_id] = parseInt(
+          cartItemvalue[0].quantity
+        );
+      }
+      // });
+    }
+    props.getcartV1(cartV1);
+    setcart_item_objs_v1(cartV1);
   };
 
-  const handlecartV2 = (cartItemvalue) => {   
-    let CartV2={...cart_item_objs_v2}
-    cartItemvalue.forEach(function (item) {
-      if (CartV2[item.menu_id]) {
-        CartV2[item.menu_id]++;
-      } 
-      else {
-        CartV2[item.menu_id] = item.quantity;
+  const handlecartV2 = (cartItemvalue) => {
+    let CartV2 = { ...cart_item_objs_v2 };
+    if (!JSON.parse(localStorage.getItem("user"))) {
+      if (CartV2[cartItemvalue[0].item_id]) {
+        CartV2[cartItemvalue[0].item_id]++;
+      } else {
+        CartV2[cartItemvalue[0].item_id] = cartItemvalue[0].quantity;
       }
-    });
-    setcart_item_objs_v2(CartV2);
-    localStorage.setItem('cart_item_objs_v2',JSON.stringify(CartV2))
-
-    setcount((prevValue) => [...prevValue, count + 1]);
-    console.log("afterV2", cart_item_objs_v2);
+      // props.getcartV2(CartV2)
+      setcart_item_objs_v2(CartV2);
+      localStorage.setItem("cart_item_objs_v2", JSON.stringify(CartV2));
+    } else {
+      cartItemvalue.forEach(function (item) {
+        if (CartV2[item.item_id]) {
+          CartV2[item.item_id]++;
+        } else {
+          CartV2[item.item_id] = item.quantity;
+        }
+      });
+      props.getcartV2(CartV2);
+      setcart_item_objs_v2(CartV2);
+    }
   };
 
   //SINGLE ITEM CART
   const handleAddCart = (data) => {
-    if (data.variants.length > 1) {
-      setShow(true);
-      handlecustom(data);
+    let rest_id = window.localStorage.pathname.split("/")[2].split("-")[
+      pathname.split("/")[2].split("-").length - 1
+    ];
+    let datarest_id = "";
+    if (JSON.parse(localStorage.getItem("user"))) {
+      datarest_id =
+        cartItem.length > 0
+          ? cartItem[0].rest_id || cartItem[0].restaurant_id
+          : "";
     } else {
-      var cart = [];
-      cart.push({
-        id: data.variants[0].id,
-        name:data.variants[0].name,
-        quantity: 1,
-        menu_id: data.id,
-        variant:false,
-        restaurant_id: data.restaurant_id,
-      });
+      var local = JSON.parse(localStorage.getItem("cartItem"))
+        ? JSON.parse(localStorage.getItem("cartItem"))
+        : [];
+      if (local.length > 0) {
+        datarest_id = local[0].restaurant_id;
+      } else {
+        datarest_id = "";
+      }
+    }
 
-      setCartItem((oldarray) => [
-        ...oldarray,
-        {
-          id: data.variants[0].id,
+    if (
+      datarest_id.toLocaleLowerCase() === rest_id.toLocaleLowerCase() ||
+      datarest_id === ""
+    ) {
+      if (data.variants.length > 1) {
+        setShow(true);
+        handlecustom(data);
+      } else if (!JSON.parse(localStorage.getItem("user"))) {
+        let cart = [];
+        cart.push({
+          variant_id: data.variants[0].id,
+          name: data.name,
           quantity: 1,
-          name:data.variants[0].name,
-          menu_id: data.id,
-          variant:false,
+          item_id: data.id,
+          isVariant: false,
           restaurant_id: data.restaurant_id,
-        },
-      ]);
-      let localItem=[...cartItem,{
-        id: data.variants[0].id,
-        quantity: 1,
-        name:data.variants[0].name,
-        menu_id: data.id,
-        variant:false,
-        restaurant_id: data.restaurant_id,
-      }]
-      let final = [
-        {
-          id: data.variants[0].id,
-          quantity: 1,
-          name:data.variants[0].name,
-          menu_id: data.id,
-          variant:false,
-          restaurant_id: data.restaurant_id,
-        },
-      ];
-      localStorage.setItem('cartItem',JSON.stringify(localItem))
+          veg: data.veg,
+          le_price: data.variants[0].le_price,
+        });
 
-      handleCartObje(final);
+        setCartItem((oldarray) => [
+          ...oldarray,
+          {
+            variant_id: data.variants[0].id,
+            name: data.name,
+            quantity: 1,
+            item_id: data.id,
+            isVariant: false,
+            restaurant_id: data.restaurant_id,
+            veg: data.veg,
+            le_price: data.variants[0].le_price,
+          },
+        ]);
+        let localItem = [];
+        if (cartItem !== null) {
+          localItem = cart;
+        } else {
+          localItem = [
+            {
+              variant_id: data.variants[0].id,
+              name: data.name,
+              quantity: 1,
+              item_id: data.id,
+              isVariant: false,
+              restaurant_id: data.restaurant_id,
+              veg: data.veg,
+              le_price: data.variants[0].le_price,
+            },
+          ];
+        }
+        let final = [
+          {
+            variant_id: data.variants[0].id,
+            name: data.name,
+            quantity: 1,
+            item_id: data.id,
+            isVariant: false,
+            restaurant_id: data.restaurant_id,
+            veg: data.veg,
+            le_price: data.variants[0].le_price,
+          },
+        ];
+        var cartArray = [
+          ...cartItem,
+          {
+            variant_id: data.variants[0].id,
+            name: data.name,
+            quantity: 1,
+            item_id: data.id,
+            isVariant: false,
+            restaurant_id: data.restaurant_id,
+            veg: data.veg,
+            le_price: data.variants[0].le_price,
+          },
+        ];
+        localStorage.setItem("cartItem", JSON.stringify(cartArray));
+
+        handleCartObje(final);
+      } else {
+        var data_body = {
+          rest_id: data.restaurant_id,
+          item_id: data.id,
+          quantity: "1",
+          variant_id: data.variants[0].id,
+        };
+        dataService.AddTocart(data_body).then((resp) => {
+          if (resp.data !== null) {
+            var response = resp.data;
+            setCartItem((oldarray) => [
+              ...oldarray,
+              {
+                variant_id: resp.data["variant_id"],
+                quantity: cart_item_objs_v1[response["variant_id"]],
+                name: menuObject[response.variant_id].name,
+                item_id: response["item_id"],
+                isVariant: false,
+                restaurant_id: response["rest_id"],
+                veg: menuObject[response.variant_id].veg,
+                le_price: menuObject[response.variant_id].le_price,
+              },
+            ]);
+            var result = [resp.data];
+            handleCartObje(result);
+          }
+        });
+      }
+    } else {
+      setOpen(true);
+      setmodalType("Clear")
     }
   };
 
   //SINGLE ITEM INCREMENT
   const handleIncrement = (data) => {
-    let final = [
-      {
-        id: data.variants[0].id,
-        quantity: 1,
-        name:data.variants[0].name,
-        menu_id: data.id,
-        restaurant_id: data.restaurant_id,
-        
-      },
-    ];
+    if (!JSON.parse(localStorage.getItem("user"))) {
+      let final = [
+        {
+          variant_id: data.variants[0].id,
+          name: data.name,
+          quantity: 1,
+          item_id: data.id,
+          isVariant: false,
+          restaurant_id: data.restaurant_id,
+        },
+      ];
 
-    handleCartinc(final);
+      handleCartinc(final);
+    } else {
+      var data_body = {
+        rest_id: data.restaurant_id,
+        item_id: data.id,
+        quantity: "1",
+        variant_id: data.variants[0].id,
+      };
+      dataService.AddTocart(data_body).then((resp) => {
+        if (resp) {
+          var response = resp.data;
+          handleCartinc([response]);
+        }
+      });
+    }
   };
 
   const handleCartRemove = (cartItemvalue) => {
-    var CartV1={...cart_item_objs_v1}
-    if (CartV1[cartItemvalue[0].id]) {
-      CartV1[cartItemvalue[0].id]--;
+    var CartV1 = { ...cart_item_objs_v1 };
+    if (!JSON.parse(localStorage.getItem("user"))) {
+      if (CartV1[cartItemvalue[0].variant_id]) {
+        CartV1[cartItemvalue[0].variant_id]--;
+        props.getcartV1(CartV1);
+        setcart_item_objs_v1(CartV1);
+        localStorage.setItem("cart_item_objs_v1", JSON.stringify(CartV1));
+      }
+    } else {
+      if (CartV1[cartItemvalue.variant_id]) {
+        CartV1[cartItemvalue.variant_id]--;
+      }
+      props.getcartV1(CartV1);
+      setcart_item_objs_v1(CartV1);
     }
-    setcart_item_objs_v1(CartV1);
-    localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
-    setcount((prevValue) => [...prevValue, count + 1]);
   };
 
   const handleDecrement = (data) => {
+    if (!JSON.parse(localStorage.getItem("user"))) {
+      let final = [
+        {
+          variant_id: data.variants[0].id,
+          name: data.name,
+          quantity: 1,
+          item_id: data.id,
+          isVariant: false,
+          restaurant_id: data.restaurant_id,
+        },
+      ];
 
-    let final = [
-      {
-        id: data.variants[0].id,
-        quantity: 1,
-        name:data.variants[0].name,
-        menu_id: data.id,
-        restaurant_id: data.restaurant_id,
-      },
-    ];
+      if (parseInt(cart_item_objs_v1[data.variants[0].id]) === 1) {
+        let index = findindex(data.variants[0].id);
+        if (index > -1) {
+          let originlArray = [...cartItem];
+          originlArray.filter((val) => val !== originlArray[index]);
+          originlArray.splice(index, 1);
+          setCartItem(originlArray);
+          localStorage.setItem("cartItem", JSON.stringify(originlArray));
+        }
+      }
+      handleCartRemove(final);
+    } else {
+      let data_body = {
+        rest_id: data.restaurant_id,
+        item_id: data.id,
+        variant_id: data.variants[0].id,
+        quantity: "-1",
+      };
 
-    if (cart_item_objs_v1[data.variants[0].id] === 1) {
-      let index = findindex(data.variants[0].id);
-      if (index > -1) {
-        let originlArray=[...cartItem]
-        originlArray.filter((val)=>val!==originlArray[index])
-        originlArray.splice(index, 1);
-        setCartItem(originlArray);
-        localStorage.setItem('cartItem',JSON.stringify(originlArray))
-        setcount((prevValue) => [...prevValue, count + 1]);
-      }   
+      dataService.AddTocart(data_body).then((resp) => {
+        if (resp) {
+          if (cart_item_objs_v1[data.variants[0].id] == 1) {
+            let index = findindex(data.variants[0].id);
+            if (index > -1) {
+              let originlArray = [...cartItem];
+              originlArray.filter((val) => val !== originlArray[index]);
+              originlArray.splice(index, 1);
+              setCartItem(originlArray);
+            }
+          }
+          handleCartRemove(data_body);
+        }
+      });
     }
-    handleCartRemove(final);
   };
 
-  const handlecustomAdd = (data) => {
-    setCartItem((oldarray) => [
-      ...oldarray,
-      {
-        id: data.id,
-        name:data.name,
-        quantity: 1,
-        menu_id: itemId,
-        variant:true,
-        restaurant_id: restaurantId,
-      },
-    ]);
-    let local=[...cartItem,{
-      id: data.id,
-      name:data.name,
-      quantity: 1,
-      menu_id: itemId,
-      variant:true,
-      restaurant_id: restaurantId,
-    }]
-    localStorage.setItem('cartItem',JSON.stringify(local))
-    let final = [
-      {
-        id: data.id,
-        name:data.name,
-        quantity: 1,
-        menu_id: itemId,
-        variant:true,
-        restaurant_id: restaurantId,
-      },
+  const handlecustomAdd = (data, name) => {
+    let rest_id = window.localStorage.pathname.split("/")[2].split("-")[
+      pathname.split("/")[2].split("-").length - 1
     ];
-    handlevariantCart(final);
+    let datarest_id = "";
+    if (JSON.parse(localStorage.getItem("user"))) {
+      datarest_id =
+        cartItem.length > 0
+          ? cartItem[0].rest_id || cartItem[0].restaurant_id
+          : "";
+    } else {
+      var local = JSON.parse(localStorage.getItem("cartItem"))
+        ? JSON.parse(localStorage.getItem("cartItem"))
+        : [];
+      if (local.length > 0) {
+        datarest_id = local[0].restaurant_id;
+      } else {
+        datarest_id = "";
+      }
+    }
+
+    if (
+      datarest_id.toLocaleLowerCase() === rest_id.toLocaleLowerCase() ||
+      datarest_id === ""
+    ) {
+      if (!JSON.parse(localStorage.getItem("user"))) {
+        var cart = [];
+        cart.push({
+          variant_id: data.id,
+          name: data.name,
+          quantity: 1,
+          item_id: itemId,
+          isVariant: true,
+          restaurant_id: restaurantId,
+          veg: data.veg,
+          le_price: data.le_price,
+        });
+        setCartItem((oldarray) => [
+          ...oldarray,
+          {
+            variant_id: data.id,
+            name: menuObject[data.id].name,
+            quantity: 1,
+            item_id: itemId,
+            isVariant: true,
+            restaurant_id: restaurantId,
+            veg: menuObject[data.id].veg,
+            le_price: data.le_price,
+          },
+        ]);
+        let localItem = [];
+        if (cartItem === null) {
+          localItem = cart;
+        } else {
+          localItem = [
+            ...cartItem,
+            {
+              variant_id: data.id,
+              name: menuObject[data.id].name,
+              quantity: 1,
+              item_id: itemId,
+              isVariant: true,
+              restaurant_id: restaurantId,
+              veg: menuObject[data.id].veg,
+              le_price: data.le_price,
+            },
+          ];
+        }
+        localStorage.setItem("cartItem", JSON.stringify(localItem));
+        let final = [
+          {
+            variant_id: data.id,
+            name: menuObject[data.id].name,
+            quantity: 1,
+            item_id: itemId,
+            isVariant: true,
+            restaurant_id: restaurantId,
+            veg: menuObject[data.id].veg,
+            le_price: data.le_price,
+          },
+        ];
+        handlevariantCart(final);
+      } else {
+        let data_body = {
+          rest_id: restaurantId,
+          item_id: data.menu_id,
+          variant_id: data.id,
+          quantity: "1",
+        };
+        dataService.AddTocart(data_body).then((resp) => {
+          if (resp) {
+            var response = resp.data;
+
+            setCartItem((oldarray) => [
+              ...oldarray,
+              {
+                variant_id: resp.data["variant_id"],
+                quantity: cart_item_objs_v1[response["variant_id"]],
+                name: menuObject[response["variant_id"]].name,
+                item_id: response["item_id"],
+                isVariant: true,
+                restaurant_id: response["rest_id"],
+                veg: menuObject[response.variant_id].veg,
+                le_price: menuObject[response.variant_id].le_price,
+              },
+            ]);
+            var result = [resp.data];
+            handlevariantCart(result);
+          }
+        });
+      }
+    } else {
+      setOpen(true);
+      setmodalType("Clear")
+    }
   };
 
   const handleVarientincrement = (data) => {
-    handlecartSingleIncrement(data);
-    let CartV1={...cart_item_objs_v1}
-    if (CartV1[data.id]) {
-      CartV1[data.id]++;
+    let CartV1 = { ...cart_item_objs_v1 };
+    if (!localStorage.getItem("user")) {
+      handlecartSingleIncrement(data);
+      let CartV1 = { ...cart_item_objs_v1 };
+      if (CartV1[data.id]) {
+        CartV1[data.id]++;
+      }
+      props.getcartV1(CartV1);
+      setcart_item_objs_v1(CartV1);
+      localStorage.setItem("cart_item_objs_v1", JSON.stringify(CartV1));
+    } else {
+      let data_body = {
+        rest_id: restaurantId,
+        item_id: data.menu_id,
+        variant_id: data.id,
+        quantity: "1",
+      };
+      dataService.AddTocart(data_body).then((resp) => {
+        if (resp) {
+          handlecartSingleIncrement(resp.data);
+          if (CartV1[resp.data.variant_id]) {
+            CartV1[resp.data.variant_id]++;
+          }
+        }
+        props.getcartV1(CartV1);
+        setcart_item_objs_v1(CartV1);
+      });
     }
-    setcart_item_objs_v1(CartV1);
-    localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
-
-    setcount((prv) => [...prv, count + 1]);
   };
   const handlecartSingleIncrement = (data) => {
-    let CartV2={...cart_item_objs_v2}
-    if (CartV2[data.menu_id]) {
-      CartV2[data.menu_id]++ ;
+    let CartV2 = { ...cart_item_objs_v2 };
+    if (!JSON.parse(localStorage.getItem("user"))) {
+      if (CartV2[data.menu_id]) {
+        CartV2[data.menu_id]++;
+      }
+      props.getcartV2(CartV2);
+      setcart_item_objs_v2(CartV2);
+      localStorage.setItem("cart_item_objs_v2", JSON.stringify(CartV2));
+    } else {
+      if (CartV2[data.item_id]) {
+        CartV2[data.item_id]++;
+      }
+      props.getcartV2(CartV2);
+      setcart_item_objs_v2(CartV2);
+      localStorage.setItem("cart_item_objs_v2", JSON.stringify(CartV2));
     }
-    setcart_item_objs_v2(CartV2);
-    localStorage.setItem('cart_item_objs_v2',JSON.stringify(CartV2))
-    setcount((prv) => [...prv, count+1]);
   };
 
   const handleVarientDecrement = (data) => {
-    handlecartSingleDecrement(data);
-    if (cart_item_objs_v1[data.id] === 1) {
-      let index = findindex(data.id);
-      if (index > -1) {
-        let originlArray=[...cartItem]
-        originlArray.filter((val)=>val!==originlArray[index])
-        originlArray.splice(index, 1);
-        localStorage.setItem('cartItem',JSON.stringify(originlArray))
-        setCartItem(originlArray);
-        setcount((prevValue) => [...prevValue, count + 1]);
+    if (!JSON.parse(localStorage.getItem("user"))) {
+      handlecartSingleDecrement(data);
+      if (parseInt(cart_item_objs_v1[data.id]) === 1) {
+        let index = findindex(data.id);
+        if (index > -1) {
+          let originlArray = [...cartItem];
+          originlArray.filter((val) => val !== originlArray[index]);
+          originlArray.splice(index, 1);
+          localStorage.setItem("cartItem", JSON.stringify(originlArray));
+          setCartItem(originlArray);
+          setcount((prevValue) => [...prevValue, count + 1]);
+        }
       }
+      let CartV1 = { ...cart_item_objs_v1 };
+      if (CartV1[data.id]) {
+        CartV1[data.id]--;
+      }
+      props.getcartV1(CartV1);
+      setcart_item_objs_v1(CartV1);
+      localStorage.setItem("cart_item_objs_v1", JSON.stringify(CartV1));
+    } else {
+      let data_body = {
+        rest_id: restaurantId,
+        item_id: data.menu_id,
+        variant_id: data.id,
+        quantity: "-1",
+      };
+      dataService.AddTocart(data_body).then((resp) => {
+        if (resp) {
+          handlecartSingleDecrement(data);
+          if (parseInt(cart_item_objs_v1[data.id]) === 1) {
+            let index = findindex(data.id);
+            if (index > -1) {
+              let originlArray = [...cartItem];
+              originlArray.filter((val) => val !== originlArray[index]);
+              originlArray.splice(index, 1);
+              localStorage.setItem("cartItem", JSON.stringify(originlArray));
+              setCartItem(originlArray);
+            }
+          }
+          let CartV1 = { ...cart_item_objs_v1 };
+          if (CartV1[data.id]) {
+            CartV1[data.id]--;
+          }
+          props.getcartV1(CartV1);
+          setcart_item_objs_v1(CartV1);
+        }
+      });
     }
-    let CartV1={...cart_item_objs_v1}
-    if (CartV1[data.id]) {
-      CartV1[data.id]--;
-    }
-    setcart_item_objs_v1(CartV1);
-    localStorage.setItem('cart_item_objs_v1',JSON.stringify(CartV1))
-
   };
 
   const handlecartSingleDecrement = (data) => {
-    let cartV2={...cart_item_objs_v2}
+    let cartV2 = { ...cart_item_objs_v2 };
     if (cartV2[data.menu_id]) {
       cartV2[data.menu_id]--;
     }
+    props.getcartV2(cartV2);
     setcart_item_objs_v2(cartV2);
-    localStorage.setItem('cart_item_objs_v2',JSON.stringify(cartV2))
-
+    localStorage.setItem("cart_item_objs_v2", JSON.stringify(cartV2));
   };
 
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
   };
+  const [dis, setdis] = useState(false);
+  const Addfavourite = () => {
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      dataService
+        .AddFavouriteRestaurant(props.Menulist[0].restaurant_id)
+        .then((response) => {
+          if (response.data.data.error_status) {
+            setFavourite(true);
+            //  RemoveFavourite();
+          } else {
+            let user = JSON.parse(localStorage.getItem("user"));
+            if (
+              !user.info.favourites.includes(props.Menulist[0].restaurant_id)
+            ) {
+              user.info.favourites.push(props.Menulist[0].restaurant_id);
+              localStorage.setItem("user", JSON.stringify(user));
+            } else console.log("");
+            setFavourite(true);
+            setdisplay(true);
+            setTimeout(() => {
+              setdisplay(false);
+            }, 5000);
+            // window.location.reload();
+          }
+        });
+    } else {
+      setdis(!dis);
+      localStorage.setItem("restaurantID", props.Menulist[0].restaurant_id);
+      console.log("please login and then you can add into favourites");
+    }
+  };
+  const RemoveFavourite = () => {
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      dataService
+        .RemoveFavouriteRestaurant(props.Menulist[0].restaurant_id)
+        .then((response) => {
+          if (response.data.data.error_status) {
+          } else {
+            let user = JSON.parse(localStorage.getItem("user"));
+            user.info.favourites.splice(
+              user.info.favourites.indexOf(props.Menulist[0].restaurant_id),
+              1
+            );
+            localStorage.setItem("user", JSON.stringify(user));
+            setFavourite(false);
+            setdisplay(false);
+          }
+        });
+    }
+  };
+  const handleOpenClose=()=>{
+    setOpen(false)
+  }
+  // const ModalPopup = () => {
+  //   return (
+  //     <div>
+  //       <Modal open={open} onClose={onCloseModal} center>
+  //         <div class="exist-item-popup">
+  //           <div class="exist-cart-inner">
+  //             <h3>Items already in cart</h3>
+  //             <p>
+  //               Your cart contains items from other restaurant.
+  //               <br />
+  //               Would you like to reset your cart for adding items
+  //               <br /> from this restaurant?
+  //             </p>
+  //             <div class="exist-cart-btn">
+  //               <button type="button" >
+  //                 No
+  //               </button>
+  //               <button
+  //                 type="button"
+  //                 class="start-fresh"
+  //                 onClick={() => handleClearCart()}
+  //               >
+  //                 Yes, Start afresh
+  //               </button>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </Modal>
+  //     </div>
+  //   );
+  // };
+
   return (
     <>
       <div className="header-border">
+        {display && (
+          <div id="snackbar" className="show">
+            {props.data} added to Favourites
+          </div>
+        )}
         <div className="menu-header">
           <div className="mobile-search-bar">
             <label
               className="restaurant-list-label"
-              htmlfor="search-dish"
+              htmlFor="search-dish"
             ></label>
             <input
               name="search-dish"
@@ -415,6 +984,19 @@ const MenuItems = (props) => {
               className="mobile-close"
               src="../../images/close_icon.svg"
             />
+<Modal open={open} onClose={()=>setOpen(false)} center  >
+  {modalType==="Clear"?<ClearcartModal handleClearCart={handleClearCart} handleOpenClose={handleOpenClose}/>:
+  <VarientPopup
+  variant={variant}
+  Name={Name}
+  cart_item_objs_v1={cart_item_objs_v1}
+  cart_item_objs_v2={cart_item_objs_v2}
+  handlecustomAdd={handlecustomAdd}
+  handleVarientDecrement={handleVarientDecrement}
+  handleVarientincrement={handleVarientincrement}
+/>}
+
+</Modal>
           </div>
           <div className="menu-header-inner">
             <div className="menu-hand">
@@ -432,13 +1014,39 @@ const MenuItems = (props) => {
               <li>
                 <a href="#">Reviews</a>
               </li>
+              <li className="favourite">
+                {!favourite ? (
+                  <a href="#" onClick={Addfavourite}>
+                    <img
+                      className="empty-heart"
+                      src="/images/Fav-Outline.svg"
+                      alt="heart-icon"
+                      onClick={Addfavourite}
+                    />
+                    Favourite
+                  </a>
+                ) : (
+                  <a href="#" onClick={RemoveFavourite}>
+                    <img
+                      className="filled-heart"
+                      src="/images/Fav-Filled.svg"
+                      alt="filled-heart-icon"
+                      onClick={RemoveFavourite}
+                    />
+                    Favourite
+                  </a>
+                )}
+                <LoginContext.Provider value={{ dis, setdis }}>
+                  {dis && <Login />}
+                </LoginContext.Provider>
+              </li>
             </ul>
           </div>
           <div className="menu-search">
             <form>
               <label
                 className="restaurant-list-label"
-                for="search-your-dish"
+                htmlFor="search-your-dish"
               ></label>
               <input
                 name="Search"
@@ -466,8 +1074,9 @@ const MenuItems = (props) => {
               <li
                 onClick={() => clickhandler(type)}
                 className={
-                  foodtype === type ? "active food-filter" : "food-filter" 
-                } style={{cursor:"pointer"}}
+                  foodtype === type ? "active food-filter" : "food-filter"
+                }
+                style={{ cursor: "pointer" }}
               >
                 <a>
                   {type}({item_count[type]})
@@ -476,6 +1085,22 @@ const MenuItems = (props) => {
             ))}
           </ul>
         </div>
+        {/* <Modal
+          open={openVarient}
+          onClose={onCloseVarientModal}
+          center
+          styles={{ maxWidth: "500px" }}
+        >
+          <VarientPopup
+            variant={variant}
+            Name={Name}
+            cart_item_objs_v1={cart_item_objs_v1}
+            cart_item_objs_v2={cart_item_objs_v2}
+            handlecustomAdd={handlecustomAdd}
+            handleVarientDecrement={handleVarientDecrement}
+            handleVarientincrement={handleVarientincrement}
+          />
+        </Modal> */}
         <div className="menu-item-list">
           <h2>
             {foodtype}({item_count[foodtype]})
@@ -545,7 +1170,7 @@ const MenuItems = (props) => {
                                 </div>
                                 <label
                                   className="restaurant-list-label"
-                                  for="quantity-number"
+                                  htmlFor="quantity-number"
                                 ></label>
                                 <input
                                   about="317"
@@ -558,7 +1183,7 @@ const MenuItems = (props) => {
                                   {item.variants.length > 1 ? (
                                     <button
                                       className="quantity-arrow-plus quantity"
-                                      onClick={() => setShow(true)}
+                                      onClick={() => handleAddCart(item)}
                                     >
                                       +
                                     </button>
@@ -576,9 +1201,11 @@ const MenuItems = (props) => {
                           </>
                         ) : (
                           <>
-                            {cart_item_objs_v1&&cart_item_objs_v1[item.variants[0].id] ===
-                              undefined ||
-                              cart_item_objs_v1&&cart_item_objs_v1[item.variants[0].id] === 0 ? (
+                            {(cart_item_objs_v1 &&
+                              cart_item_objs_v1[item.variants[0].id] ===
+                                undefined) ||
+                            (cart_item_objs_v1 &&
+                              cart_item_objs_v1[item.variants[0].id] === 0) ? (
                               <div className="menu-add-btn" key={i}>
                                 <button onClick={() => handleAddCart(item)}>
                                   Add
@@ -599,13 +1226,16 @@ const MenuItems = (props) => {
                                 </div>
                                 <label
                                   className="restaurant-list-label"
-                                  for="quantity-number"
+                                  htmlFor="quantity-number"
                                 ></label>
                                 <input
                                   about="317"
                                   className="quantity-num form-control quantity qty"
                                   type="number"
-                                  value={cart_item_objs_v1&&cart_item_objs_v1[item.variants[0].id]}
+                                  value={
+                                    cart_item_objs_v1 &&
+                                    cart_item_objs_v1[item.variants[0].id]
+                                  }
                                   id="quantity-number"
                                 />
                                 <div className="new-down">
@@ -650,111 +1280,25 @@ const MenuItems = (props) => {
             onClick="closeNav()"
           ></div>
         </div>
-        <div className="customize-list-popup">
-          <div
-            aria-modal="true"
-            aria-labelledby="exampleModalLabel2"
-            className={["modal fade", show ? "show display-popup" : ""].join(
-              " "
-            )}
-            id="exampleModal2"
-            role="dialog"
-            tabIndex="-1"
-          >
-            <div className="modal-dialog" role="document">
-              <div className="modal-content" id="exampleModalLabel2">
-                <button
-                  aria-label="Close"
-                  className="close"
-                  data-dismiss="modal"
-                  type="button"
-                  onClick={() => setShow(false)}
-                >
-                  <img alt="close-icon" src="../../images/new-close.svg" />
-                </button>
-                <div className="modal-header">
-                  <h2>{Name}</h2>
-                </div>
-                <div className="modal-body">
-                  <div className="quantity">
-                    <p>Quantity</p>
-                  </div>
-                  <div className="customize-items-box">
-                    {variant.map((data, i) => (
-                      <div className="customize-items">
-                        <div className="customize-items-outer">
-                          <div className="customize-items-description">
-                            <h4>{data.name}</h4>
-                            <p>{data.description}</p>
-                          </div>
-                          <div className="customize-items-price">
-                            <h4>£{data.le_price}</h4>
-                          </div>
-                        </div>
-
-                        {cart_item_objs_v1&&cart_item_objs_v1[data.id] === undefined ||
-                        cart_item_objs_v1&&cart_item_objs_v1[data.id] === 0 ? (
-                          <div
-                            className="customize-items-btn"
-                            style={{ cursor: "pointer" }}
-                          >
-                            <a onClick={() => handlecustomAdd(data)}>Add</a>
-                          </div>
-                        ) : (
-                          <div
-                            className="new-counter quantity-block"
-                            key={data.id}
-                          >
-                            <div className="new-up">
-                              <button
-                                className="quantity-arrow-minus quantity"
-                                onClick={() => handleVarientDecrement(data)}
-                              >
-                                -
-                              </button>
-                            </div>
-                            <label
-                              className="restaurant-list-label"
-                              for="quantity-number"
-                            ></label>
-                            <input
-                              about="317"
-                              className="quantity-num form-control quantity qty"
-                              type="number"
-                              value={cart_item_objs_v1&&cart_item_objs_v1[data.id]}
-                              id="quantity-number"
-                            />
-                            <div className="new-down">
-                              <button
-                                className="quantity-arrow-plus quantity"
-                                onClick={() => handleVarientincrement(data)}
-                              >
-                                +
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  {/* <div className="add-to-order enable">
-                    <a href="#">Add to Order</a>
-                  </div> */}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* <ModalPopup>
+          
+                
+        </ModalPopup> */}
       </div>
     </>
   );
 };
+
 const mapStateToProps = (state) => {
-  const { Menulist } = state;
-  return { Menulist };
+  const { Menulist, Favourites, menuObject } = state;
+  return { Menulist, Favourites, menuObject };
 };
 const actionCreator = {
   getMenulist: UserAction.getMenulist,
   getcart: UserAction.getcart,
+  FavouriteList: UserAction.FavouriteList,
+  getcartV1: UserAction.getcartV1,
+  getcartV2: UserAction.getcartV2,
+  getMenuObject: UserAction.getMenuObject,
 };
 export default connect(mapStateToProps, actionCreator)(MenuItems);

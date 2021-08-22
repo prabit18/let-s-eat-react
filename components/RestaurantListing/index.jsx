@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { UserAction } from '../../redux/actions/user.action';
 import RestaurantsList from './restaurantslist';
 import { useRouter } from 'next/router';
+import Metadata from '../Metadata';
 const RestaurantListingPage = (props) => {
     const[filtertype,setFiltertype]=useState("");
     const router=useRouter();

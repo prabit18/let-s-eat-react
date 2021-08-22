@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
 import { apiURL } from "../config/env";
+import { authHeader } from "../redux/helper/authHeader";
+
 export const dataService = {
     getCuisines,
     getRestaurants,
@@ -14,7 +16,43 @@ export const dataService = {
     socialLogin,
     Mobileupadte,
     verifyMobileNumber,
-    getRestaurantsInfinite
+    getRestaurantsInfinite,
+    AddFavouriteRestaurant,
+    RemoveFavouriteRestaurant,
+    FavouriteList,
+    AddTocart,
+    RemoveItemFromcart,
+    cartItems,
+    bulkUpdate,
+    clearCart,
+    getMenuListbyRestID,
+    getIndividualRestuarant,
+    addAddress,
+    ListAddress,
+    UpdateAddress,
+    UpdateAllAddress,
+    PlaceOrder,
+    GetProfile
+}
+
+const handlecart=()=>{
+    
+        // if(JSON.parse(localStorage.getItem('cartItem'))!==null){
+            let localCart=JSON.parse(localStorage.getItem('cartItem'));
+            let cartV1=JSON.parse(localStorage.getItem('cart_item_objs_v1'))
+            var resultdata=[];
+            localCart.map((value)=>{
+              resultdata.push({
+                "rest_id": value.restaurant_id,
+                "item_id": value.item_id,
+                "quantity": String(cartV1[value.variant_id]),
+                "variant_id":value.variant_id
+              })
+            })
+            return resultdata
+             
+          
+    
 }
 
 async function getCuisines() {
@@ -100,22 +138,50 @@ async function getRestaurantsInfinite(type) {
 
 async function getCuratedList(type) {
     try {
-        const data = await axios.post( apiURL+'curatedlist/web/featured_curated_list', {});
+        const data = await axios.post(apiURL+'restaurants/web/list_by_curated_list', {});
+        console.log("new data",data)
         return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+async function getMenuList(type) {  
+    
+    if(typeof type==="string"){
+    var body={ "url":type};
+    try {
+        if(typeof type==="string"||undefined){
+            
+
+        const data = await axios.post( apiURL+'menu-items/restaurant/menu',body);
+        return {error: false, data: data}
+        }else{
+            //debugger
+            console.log("cart details",type)
+           var menulist=type;
+           menulist["error"]=false
+            console.log("body",menulist);
+            return {error: false, data: menulist}
+}
     } catch (e) {
         return {error: true, message: e}
     }
 }
 
 
+}
 
-async function getMenuList(type) {
-    if(typeof type==="string"){
-    var body={ "url":type};
+async function getMenuListbyRestID(id) {  
+    
+    if(id){
+    var body={
+        "restaurant_id":id
+    };
     try {
-        if(typeof type==="string"||undefined){
+        if(id){
+            
 
-        const data = await axios.post( apiURL+'menu-items/web/restaurants/menu',body);
+        const data = await axios.post( apiURL+'menu-items/restaurant/list',body);
         return {error: false, data: data}
         }else{
             //debugger
@@ -134,9 +200,21 @@ async function getMenuList(type) {
 }
 async function getRestaurant(type) {
     //console.log('s',type);
+    
     var body={"url":type};
     try {
         const data = await axios.post( apiURL+'restaurants/web/view',body);
+        return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+async function getIndividualRestuarant(id) {
+    //console.log('s',type);
+    
+    var body={"id":id};
+    try {
+        const data = await axios.post( apiURL+'restaurants/web/get',body);
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
@@ -149,33 +227,41 @@ async function getSignup(Email,first_name,last_name) {
         "last_name":last_name
      }
     try {
-        const data = await axios.post( apiURL+'customers/web/sign_up',body);
+        const data = await axios.post( apiURL+'customer/sign-up',body);
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
     }
 }
 async function verifyOtp(sessiontoken,otp,username) {
+
+      
      var body={ 
                "otp":otp,   
                "session":sessiontoken,
                "username":username,
              }
-     try {
-         const data = await axios.post( apiURL+'customers/web/verify_otp',body);
-         console.log("data----",data)
-         return {error: false, data: data}
-     } catch (e) {
-         return {error: true, message: e}
-     }
+             
+                try {
+                    const data = await axios.post( apiURL+'customer/verify-otp',body);
+                    console.log("data---->",data)
+                    if(data){
+                        return {error: false, data: data} 
+                    }
+                } catch (e) {
+                    return {error: true, message: e}
+                
+             }
+     
  }
  async function ResendOtp(username) {
     var body={ 
               "username":username,
             }
     try {
-        const data = await axios.post( apiURL+'customers/web/resend_otp',body);
+        const data = await axios.post( apiURL+'customer/resend-otp',body);
         return {error: false, data: data}
+
     } catch (e) {
         return {error: true, message: e}
     }
@@ -187,7 +273,7 @@ async function verifyOtp(sessiontoken,otp,username) {
      }
     try {
         
-        const data = await axios.post(apiURL+'customers/web/login',body);
+        const data = await axios.post(apiURL+'customer/sign-in',body);
         console.log("Data--->>",data)
         return data.data
     } catch (e) {
@@ -196,9 +282,27 @@ async function verifyOtp(sessiontoken,otp,username) {
 }
 async function socialLogin(body) {
     try {
-        const data = await axios.post(apiURL+'customers/web/social_login',body);
-        console.log("Data--->>",data)
-        return data.data
+        const data = await axios.post(apiURL+'customer/social-login',body);
+        if(data){
+            localStorage.setItem('user',JSON.stringify(data.data.data))
+
+            
+            if(JSON.parse(localStorage.getItem('cartItem'))!==null){
+                let payload = handlecart()
+                bulkUpdate(payload).then((response)=>{
+                    if(response.data){
+                        console.log("success",response.data);
+                        // return {error: false, data: response.data}
+                        // return data.data
+                    }
+                    return data.data
+
+                })
+            }else{
+                return {error: false, data: data}
+            }
+        }
+       
     } catch (e) {
         return {error: true, message: e}
     }
@@ -218,7 +322,7 @@ async function socialLogin(body) {
     console.log(headers)
    try {
        
-       const data = await axios.post(apiURL+'customers/web/update_mobile_number',body,{headers:headers});
+       const data = await axios.post(apiURL+'customer/phone-number/update',body,{headers:headers});
        console.log("Data comes from mobile update --->>",data)
        return data.data
    } catch (e) {
@@ -232,10 +336,218 @@ async function verifyMobileNumber(sessiontoken,otp,username) {
               "username":username,
             }
     try {
-        const data = await axios.post( apiURL+'customers/web/verify_otp',body);
+        const data = await axios.post( apiURL+'customer/phone-number/verify',body,{headers: authHeader()});
         console.log("data----",data)
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
+    }
+}
+//get profile
+async function GetProfile() {
+   
+    try {
+        const data = await axios.post( apiURL+'customer/profile/get',{},{headers: authHeader()});
+        console.log("data----",data)
+        return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+
+//verify phone
+
+async function AddFavouriteRestaurant(RestaurantID) {
+    var body={ 
+            "restaurant_id":RestaurantID,
+            }
+            let user=JSON.parse(localStorage.getItem('user'))
+       let authorization="Bearer " +user.token.id_token
+    let headers = {
+        "Content-Type": "application/json",
+        "Authorization": authorization,
+    }
+    try {
+        const data = await axios.post( apiURL+'customers/web/add_favourite',body,{headers:headers});
+        return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+async function RemoveFavouriteRestaurant(RestaurantID) {
+      var body={ 
+        "restaurant_id":RestaurantID,
+        }
+       let user=JSON.parse(localStorage.getItem('user'))
+       let authorization="Bearer " +user.token.id_token
+    let headers = {
+        "Content-Type": "application/json",
+        "Authorization": authorization,
+    }
+    try {
+        const data = await axios.post( apiURL+'customers/web/remove_favorite',body,{headers:headers});
+        return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+async function FavouriteList() {
+    var body={}
+     let user=JSON.parse(localStorage.getItem('user'))
+     let authorization="Bearer " +user.token.id_token
+  let headers = {
+      "Content-Type": "application/json",
+      "Authorization": authorization,
+  }
+  try {
+      const data = await axios.post( apiURL+'customers/web/list_favourite',body,{headers:headers});
+      console.log("data is coming",data)
+      return {error: false, data: data}
+  } catch (e) {
+      return {error: true, message: e}
+  }
+}
+
+//cart
+
+async function AddTocart(body){
+    var payload=JSON.stringify(body)
+    try{
+        const data = await axios.post(apiURL+'carts/create',payload,{headers: authHeader()});
+        return {error:false,data:data.data.data}
+    }catch(e){
+        return {error: true, message: e}
+
+
+    }
+}
+//cart item remove
+async function RemoveItemFromcart(body){
+    var payload=JSON.stringify(body)
+    try{
+        const data = await axios.post(apiURL+'carts/remove',payload,{headers: authHeader()});
+        return {error:false,data:data.data.data}
+    }catch(e){
+        return {error: true, message: e}
+
+
+    }
+}
+
+//checkout
+async function cartItems(){
+    try{
+    var data= await axios.post(apiURL+'carts/list',{},{headers: authHeader()})
+return {error:false,data:data.data.data.data}
+
+    }
+    catch(e){
+        console.log(e);
+        return {error: true, message: e}
+
+    }
+}
+
+async function bulkUpdate(body){
+    try{
+    let data= await axios.post(apiURL+'carts/bulk-create',body,{headers: authHeader()})
+    
+    console.log("data",data);
+    if(data){
+        localStorage.setItem('cartItem',JSON.stringify([]))
+    localStorage.setItem('cart_item_objs_v1',JSON.stringify({}))
+    localStorage.setItem('cart_item_objs_v2',JSON.stringify({}))
+    return {error:false,data:data.data}
+    }
+
+    }
+    catch(e){
+        console.log(e);
+        return {error: true, message: e}
+
+    }
+}
+async function clearCart(){
+    try{
+    var data= await axios.post(apiURL+'carts/remove-all',{},{headers: authHeader()})
+return {error:false,data:data.data.data}
+
+    }
+    catch(e){
+        console.log(e);
+        return {error: true, message: e}
+
+    }
+}
+
+async function addAddress(body){
+    let payload=JSON.stringify(body)
+    try{
+    var data= await axios.post(apiURL+'customer/address/create',payload,{headers: authHeader()})
+    console.log("data",data);
+return {error:false,data:data}
+
+    }
+    catch(e){
+        console.log(e);
+        return {error: true, message: e}
+
+    }
+}
+async function ListAddress(){
+    try{
+    var data= await axios.post(apiURL+'customer/address/list',{},{headers: authHeader()})
+    console.log("data",data);
+return {error:false,data:data}
+
+    }
+    catch(e){
+        console.log(e);
+        return {error: true, message: e}
+
+    }
+}
+async function UpdateAddress(id){
+    let payload={
+        "default":true
+    }
+    try{
+    var data= await axios.post(apiURL+`customer/address/update/${id}`,payload,{headers: authHeader()})
+    console.log("data",data);
+return {error:false,data:data}
+
+    }
+    catch(e){
+        console.log(e);
+        return {error: true, message: e}
+
+    }
+}
+async function UpdateAllAddress(id,body){
+    let payload=body
+    try{
+    var data= await axios.post(apiURL+`customers/address/update/${id}`,payload,{headers: authHeader()})
+    console.log("data",data);
+return {error:false,data:data}
+
+    }
+    catch(e){
+        console.log(e);
+        return {error: true, message: e}
+
+    }
+}
+async function PlaceOrder(id,body){
+    let payload=body
+    try{
+    var data= await axios.post(apiURL+`orders/create`,payload,{headers: authHeader()})
+    console.log("data",data);
+return {error:false,data:data}
+
+    }
+    catch(e){
+        console.log(e);
+        return {error: true, message: e}
+
     }
 }

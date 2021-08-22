@@ -7,35 +7,26 @@ import { connect } from "react-redux";
 import CategorySectionLoader from "../Loader/CategorySectionLoader";
 import BottomSectionLoader from "../Loader/BottomSectionLoader";
 import HomePageLoader from "../Loader/HomePageLoader";
-import Head from 'next/head'
+import Metadata from "../Metadata";
+import { dataService } from "../../services";
 
 const HomePage = (props) => {
   const [loading, setloading] = useState(false);
-    useEffect(() => {
+   const metacontent={title:"Order Food Online from Best Restaurants Around You | Let's Eat",description:"Order food online from restaurants and get it delivered."}
+   useEffect(() => {
       setloading(true);
-      props.getRestaurants().then(() => {
-        props.getCuratedlist().then(() => setloading(false));
-      });
+        props.getCuratedlist().then((response) => setloading(false));
   },[]);
 
-const {Curatedlist,Restaurants} = props
+const {Curatedlist} = props
   return (
     <>
-     <Head>
-              <title>LetsEat|Home</title>
-              <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-              <meta name="description" content="Online food order"/>
-              <meta name="keywords" content="Food store pickup, Food delivery"/>
-              <meta content="Lets Eat" property="og:title" />
-              <meta content="Online food order." property="og:description"/>
-              <meta content="/images/le-logo.svg" property="og:image"/>
-              <meta content="https://staging.letseat.co.uk" property="og:url" />
-            </Head>
+      <Metadata metacontent={metacontent}/>
       {!loading ? (
         <>
           <HomeTopSection />
           {Curatedlist.length > 0 &&
-            Curatedlist.map((item) => <FoodListing data={item} key={item.id}/>)}
+             Curatedlist.map((item) => <FoodListing data={item} key={item.id}/>)}
         </>
       ) : (
         <HomePageLoader />
@@ -45,14 +36,14 @@ const {Curatedlist,Restaurants} = props
 };
 
 const mapStateToProps = (state) => {
+  // debugger
   const {
-    Curatedlist,Restaurants
+    Curatedlist
   } = state
-  return {Curatedlist,Restaurants}
+  return {Curatedlist}
 }
 const actionCreator = {
   getCuratedlist: UserAction.getCuratedlist,
-  getRestaurants: UserAction.getRestaurants,
 };
 
 export default connect(mapStateToProps, actionCreator)(HomePage);

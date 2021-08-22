@@ -74,7 +74,8 @@
 }
 .display-popup{
   display: block;
-  top: 90px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .restaurant-detail p {
     font-size: 13px;
@@ -661,7 +662,14 @@ button.quantity-arrow-plus {
     left: 0;
 }
 
-.summery-food-item {
+.summery-veg-item:before {
+    content: url(../../public/images/icon_veg.svg);
+    position: absolute;
+    top: 2px;
+    left: 0;
+}
+
+.summery-food-item,.summery-veg-item {
     position: relative;
 }
 
@@ -698,7 +706,7 @@ p.food-item-price {
     line-height: 26px;
 }
 
-.added-food-box .quantity-change p {
+.added-food-box .quantity-change p,.subtotal-sec .subtotal-head p {
     font-size: 16px;
     line-height: 18px;
     color: #283350;
@@ -708,6 +716,7 @@ p.food-item-price {
 
 .added-food-box .quantity-change .new-counter.quantity-block {
     margin-bottom: 5px;
+    margin-right: 0;
 }
 
 .order-summery .card-footer {
@@ -1176,12 +1185,21 @@ p.food-item-price {
 .menu-status-deactivate{
     filter: grayscale(1);
     pointer-events:none;
+    opacity: 0.75;
+}
+.delivery-deactivate{
+    filter: grayscale(1);
+    pointer-events:none;
+    opacity: 0.75;
+    background-color: #C6CAD9;
+    border-radius: 0px;
+    
 }
 .delivery-option .toggle-section {
     margin-bottom: 0;
 }
 .delivery-option .payment-item [type="radio"]:checked + label, .payment-item [type="radio"]:not(:checked) + label {
-    padding: 8px 10px 8px 27px;
+    padding: 8px 10px 8px 26px;
 }
 .service-not-available {
     background-color: #FFF2F2;
@@ -1406,6 +1424,115 @@ ul.menu-feild.frame.white-background {
     top: 10px;
     left: 450px;
     border-radius: 20px;
+}
+.favourite img{
+    width: 20px;
+    height: 16px;
+}
+img.empty-heart {
+    padding-right: 5px;
+}
+#snackbar {
+    visibility: hidden;
+    background-color: #FFEEB3;
+    color: #293250;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px 15px;
+    position: fixed;
+    z-index: 1;
+    left: 19%;
+    top: 235px;
+    font-size: 13px;
+    line-height: 18px;
+    font-family: Montserrat-Mdium, sans-serif;
+}
+#snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+.payment-item.delivery-item.active {
+    background-color: #457CD6;
+}
+.payment-item.delivery-item input[type="radio"]:checked + label,
+.payment-item.delivery-item input[type="radio"]:checked + label span{
+    color: #FFFFFF;
+}
+.payment-item.delivery-item input[type="radio"]:checked + label:before {
+    border: 1px solid #FFFFFF;
+    background: #457CD6;
+}    
+.payment-item.delivery-item input[type="radio"]:checked + label:after {
+    background: #FFFFFF;
+}
+
+/* exist-popup */
+.exist-cart-inner h3 {
+    font-size: 20px;
+    line-height: 18px;
+    color: #293250;
+    text-transform: capitalize;
+    font-family: 'Montserrat-SemiBold';
+    text-align: center;
+    padding: 40px 0 0;}
+.exist-cart-inner p {
+    padding: 20px 0;
+    font-size: 16px;
+    line-height: 22px;
+    color: #3B4148;
+    font-family: 'Montserrat-Regular';
+    text-align: center;
+}
+.exist-cart-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px 0 35px 0;
+    margin-bottom: 10px;
+
+}
+.exist-cart-btn button {
+    border: none;
+    border-radius: 20px;
+    min-width: 160px;
+    height: 40px;
+    background-color: #DCDFE8;
+    font-size: 15px;
+    line-height: 18px;
+    color: #283350;
+    font-family: 'Montserrat-Medium';
+    margin-right: 20px;
+}
+.start-fresh {
+    background-color: #FFD438!important;
+    margin: 0;
+}
+.subtotal-sec p {
+    font-size: 13px;
+    line-height: 16px;
+    color: #44566F;
+    font-family: 'Montserrat-Regular';
+}
+.subtotal-head h6 {
+    font-size: 15px;
+    line-height: 18px;
+    color: #3B4148;
+    font-family: 'Montserrat-Medium';
+}
+.subtotal-head {
+    padding: 10px 0 0;
+    border-top: 1px solid #C0C6D9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.subtotal-sec {
+    padding: 0 15px 10px;
+}
+.payment-item .delivery-deactivate [type="radio"]:not(:checked) + label:before {
+    border: 1px solid #FFFFFF;
+    background: transparent;
 }
 /*media query*/
 @media (max-width: 1200px) {
@@ -1710,6 +1837,9 @@ ul.menu-feild.frame.white-background {
     .menu-list li {
         border-top: none;
         border-bottom: 3px solid transparent;
+    }
+    .white-background.offer-sec{
+        margin-top: 30px;
     }
 
 }
@@ -2150,4 +2280,38 @@ ul.menu-feild.frame.white-background {
     .menu-search input {
         padding: 0;
     }
+    /* exist-popup */
+    @media (max-width: 400px){
+        .exist-cart-btn button {
+            margin-right: 0;
+            min-width: 100%;
+            margin-bottom: 15px;
+        }
+        .exist-cart-btn {
+            flex-direction: column;
+        }
+        .exist-item-popup .modal-body {
+            padding: 0;
+        }
+        }
+        
+        @media (max-width: 575px){
+        .exist-cart-btn button {
+            font-size: 14px;
+            line-height: 16px;
+            margin-right: 15px;
+        }
+        .exist-cart-btn {
+            padding: 20px 0 5px 0;
+        }
+        .exist-cart-inner p {
+            padding: 15px 0;
+            font-size: 14px;
+            line-height: 20px;
+        }
+        .exist-cart-inner h3 {
+            font-size: 16px;
+            line-height: 14px;
+        }
+        }
 }

@@ -11,7 +11,7 @@ export default class ProfileDropdown extends React.Component {
     };
   }
    logouthandler(){
-    localStorage.removeItem('user')
+    localStorage.clear()
     window.location.reload();
     // console.log('calling this function')
   }
@@ -40,7 +40,7 @@ export default class ProfileDropdown extends React.Component {
         <DropdownMenu>
           <DropdownItem >Profile</DropdownItem>
           <DropdownItem >Orders</DropdownItem>
-          <DropdownItem>Favourites</DropdownItem>
+          <DropdownItem href="/favourites">Favourites</DropdownItem>
           <DropdownItem>Rewards</DropdownItem>
           <DropdownItem>Notifications</DropdownItem>
           <DropdownItem>Reviews</DropdownItem>
