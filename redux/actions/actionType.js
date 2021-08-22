@@ -13,7 +13,8 @@ export const passActions = {
     SET_LOAD_FAVOURITE: 'SET_LOAD_FAVOURITE',
     SET_CART_V1:'SET_CART_V1',
     SET_CART_V2:'SET_CART_V2',
-    SET_MENU_OBJECT:'SET_MENU_OBJECT'
+    SET_MENU_OBJECT:'SET_MENU_OBJECT',
+    SET_ADDRESS_LIST:'SET_ADDRESS_LIST'
 
 }
 export const errorActions = {

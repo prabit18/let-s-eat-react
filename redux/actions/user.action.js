@@ -11,7 +11,8 @@ export const UserAction = {
   FavouriteList,
   getcartV1,
   getcartV2,
-  getMenuObject
+  getMenuObject,
+  addressList
 };
 
 function getCuisines() {
@@ -60,14 +61,20 @@ function getCuratedlist() {
 }
 
 const handleFoodItems = (foodItems) => {
+  
     if(foodItems){
+      
         const FoodData = [...foodItems];
         var localdata = JSON.parse(localStorage.getItem("menuItems"));
-            if (localdata&&localdata[0].restaurant_id != FoodData[0].restaurant_id) {
+        // var loc=localdata.length
+            if (!localdata===null&&localdata[0].restaurant_id != FoodData[0].restaurant_id) {
               localStorage.setItem("menuItems", JSON.stringify(FoodData));
-            } else 
-        if (!localStorage.getItem("menuItems")) {
-          localStorage.setItem("menuItems", JSON.stringify(FoodData));
+            } else  {
+              if(!localStorage.getItem("menuItems")){
+                
+                localStorage.setItem("menuItems", JSON.stringify(FoodData));
+              }
+             
         }
     }
   
@@ -157,5 +164,14 @@ function getcartV1(body) {
     };
     function menuObject(data) {
       return { type: passActions.SET_MENU_OBJECT, data };
+    }
+  }
+  function addressList(body) {
+    
+    return (dispatch) => {
+      dispatch(InsertaddressList(body));
+    };
+    function InsertaddressList(data) {
+      return { type: passActions.SET_ADDRESS_LIST, data };
     }
   }

@@ -19,11 +19,14 @@ import {BrowserRouter, Route, Router, useHistory} from 'react-router-dom';
 import {history}   from 'history';
 import LoadingSpinner from '../components/Loader'
 import Favicon from 'react-favicon'
-
+import Head from 'next/head';
 function MyApp({ Component, pageProps }) {
   
   return (
       <Provider store={store}>
+          {/* <Head>
+          <script src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyAXIZmJQHd7s-e_W9EOOOmyM7ThQ2hMbo0&libraries=places`}></script>
+      </Head> */}
          <Favicon url='/images/favicon.ico'/>
           <Layout>
               

@@ -37,6 +37,10 @@ const Login=(props)=>{
         }
       }, []);
 
+      
+             
+          
+    
 
       const FBLogin = (response) => {
         if (response.status !== 'unknown' && response.status !== 'not_authorized') {
@@ -46,10 +50,13 @@ const Login=(props)=>{
                 provider: "facebook",
             }
             dataService.socialLogin(body).then((res)=>{
+                
                 setLogin(true);
                 localStorage.setItem('user',JSON.stringify(res.data))
                 setProfilename(res.data.info.first_name);
-                window.location.reload()
+                setTimeout(() => {
+                    router.reload(window.location.pathname)
+                }, 1000);
         })
         }
     }
@@ -61,10 +68,16 @@ const Login=(props)=>{
                 provider: "google",
             }
             dataService.socialLogin(body).then((res)=>{
-                setLogin(true);
-                localStorage.setItem('user',JSON.stringify(res.data))
-                setProfilename(res.data.info.first_name);
-                window.location.reload()
+                
+
+                    setLogin(true);
+                    // localStorage.setItem('user',JSON.stringify(res.data))
+                    setProfilename(JSON.parse(localStorage.getItem('user')).info.first_name);
+                    setTimeout(() => {
+                        router.reload(window.location.pathname)
+                    }, 1500);
+                
+                
         })
     }
 }
@@ -109,6 +122,7 @@ const Login=(props)=>{
                 }
             }
             else{
+                
                 setLogin(true);
                 localStorage.setItem('user',JSON.stringify(res.data.data.data))
                 console.log("response otp",res);
@@ -118,14 +132,19 @@ const Login=(props)=>{
                 if(type==='login')
                 setTimeout(() => {
                     router.reload(window.location.pathname)
-                }, 1000);
+                }, 2000);
                 if(type==='signup'){
                     setshow(true)
                     setpopup('success')
                    setSuccessMessage('Signed up')
                    setTimeout(() => {
-                    router.reload(window.location.pathname)
-                }, 1000);
+                       if(JSON.parse(localStorage.getItem('cartItem')).length===0){
+                        router.reload(window.location.pathname)
+                       }else{
+                        handlecart(res.data.data.data)
+                       }
+                    
+                }, 3000);
                 }
                 setProfilename(res.data.data.data.info.first_name);
                 console.log(res.data.data.data.info.first_name);
@@ -282,7 +301,7 @@ const Login=(props)=>{
             setshow(false);
            setdis(false);
         }
-        const handlecart=(data)=>{
+        const handlecart=async(data)=>{
             if(data){
                 if(JSON.parse(localStorage.getItem('cartItem'))!==null){
                     let localCart=JSON.parse(localStorage.getItem('cartItem'));
@@ -296,12 +315,16 @@ const Login=(props)=>{
                         "variant_id":value.variant_id
                       })
                     })
-                    dataService.bulkUpdate(resultdata).then((response)=>{
+                    
+                     dataService.bulkUpdate(resultdata).then((response)=>{
                         if(response.data){
                             console.log("success",response.data);
+                            router.reload(window.location.pathname)
                             return {error: false, data: response.data}
                         }
                     })
+                  }else{
+                      router.reload(window.location.pathname)
                   }
             }
         }

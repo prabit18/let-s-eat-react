@@ -9,6 +9,7 @@ import errors from "./error.reducer";
 import { cartV1 } from './cartV1.reducer';
 import { cartV2 } from './cartV2.reducer';
 import { menuObject } from './menuObject.reducer';
+import { addressList } from './addressList.reducer';
 
 const rootReducer = combineReducers({
     Cuisines,
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
     errors,
     cartV1,
     cartV2,
-    menuObject
+    menuObject,
+    addressList
 })
 
 export default rootReducer;
