@@ -1,16 +1,11 @@
 import { map } from "jquery";
 import router from "next/router";
-<<<<<<< HEAD
 import React, { useEffect, useState, useContext,useMemo,useRef } from "react";
-=======
-import React, { useEffect, useState, useContext, useMemo } from "react";
->>>>>>> 06e272c788b5f9e0d5c96ee8f6efd748a9643f95
 import { connect, useSelector } from "react-redux";
 import { UserAction } from "../../../redux/actions/user.action";
 import { Menulist } from "../../../redux/reducer/menulist.reducer";
 import { dataService } from "../../../services";
 import MenulistContext from "../../Context/MenulistContext";
-import MenulistContetx from "../../Context/MenulistContext";
 import LoginContext from "../../Context/LoginContext";
 import Customizable from "../Customizable";
 import Menu from "./menu";
