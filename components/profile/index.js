@@ -1,13 +1,14 @@
+import router, { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import OtpInput from 'react-otp-input';
 import { setErrors } from '../../redux/actions/error.action';
 import { dataService } from '../../services';
 const Profile=(props)=>{
+    const router=useRouter()
     console.log("prosps",props.data);
     const[LastName,setLastName]=useState(props.data.last_name)
     const[FirstName,setFirstName]=useState(props.data.first_name);
     const[Editprofile,setEditprofile]=useState(false);
-    console.log('Firstname and lastname',FirstName,LastName);
     const[show,setShow]=useState(false);
     const [popup,setpopup]=useState(null);
     const[session,setSession]=useState('');
@@ -25,10 +26,10 @@ const Profile=(props)=>{
     const[verified,setverified]=useState(false);
     const [phone_number, setphone_number] = useState()
     const[addbutton,setaddbutton]=useState(false);
-  useEffect(() => {
-    if (JSON.parse(localStorage.getItem("user"))) {
-        const User = JSON.parse(localStorage.getItem("user"));
-        setSuccess(true);
+  useEffect(() => { 
+      const User = JSON.parse(localStorage.getItem("user"));
+    if (User) {   
+            setSuccess(true);
             if(!User.info.phone_number)
             {   
                 setverify(true);
@@ -37,7 +38,9 @@ const Profile=(props)=>{
                 setverified(true);
                 //setverifynow(true);
                 setphone_number(User.info.phone_number)
-            }}
+            }
+            
+        }
         },[])
         const Otpverification=async()=>{
             console.log(attempt)
@@ -53,7 +56,7 @@ const Profile=(props)=>{
                 const user=JSON.parse(localStorage.getItem('user'))
                 let Email=user.info.email
             dataService.verifyMobileNumber(session,otp,Email).then((res)=>{
-                console.log(res);
+                console.log("res is ...>",res);
                 setloading(false);
                 if(res.data.data.error_status){
                     if(res.data.data.attempts!=undefined)
@@ -76,9 +79,11 @@ const Profile=(props)=>{
                     }
                 }
                 else{
+                    debugger
                     console.log("verified!");
-                    localStorage.setItem('user',JSON.stringify(res.data.data.data))
-                    console.log("response comes from verifymobile----->",res);
+                    let user=JSON.parse(localStorage.getItem('user'));
+                    user.info.phone_number=phone_number;
+                    localStorage.setItem('user',JSON.stringify(user));
                     setverify(false);
                     setverifynow(false);
                     setverified(true);

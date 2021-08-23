@@ -3,9 +3,12 @@ import { UserAction } from '../../redux/actions/user.action';
 import Profile from '../../components/profile';
 import { connect } from 'react-redux';
 import { dataService } from '../../services';
+import { useRouter } from 'next/router';
+
 const ProfilePage=(props)=>{
+    const router=useRouter()
     useEffect(()=>{
-       props.getProfile();
+        props.getProfile();
     },[])
     console.log('profile',props.Profile);
     return(

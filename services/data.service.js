@@ -288,7 +288,7 @@ async function verifyMobileNumber(sessiontoken,otp,username) {
               "username":username,
             }
     try {
-        const data = await axios.post( apiURL+'customer/phone-number/verify ',body);
+        const data = await axios.post( apiURL+'customer/phone-number/verify ',body,{headers: authHeader()});
         console.log("data----",data)
         return {error: false, data: data}
     } catch (e) {
@@ -431,6 +431,7 @@ async function getProfile() {
   } catch (e) {
       return {error: true, message: e}
   }
+
 }
 async function UpdateProfile(FirstName,LastName) {
     var body={

@@ -11,11 +11,13 @@ const Emptypage=()=>{
                                 <div className="listing-box favourite-listing-box">
                                     <div className="col-lg-2 col-md-2" id="profile-menu">
                                         <div className="favourite-menu-section">
-                                            <ul className="menu-feild frame favourite-menu">
-                                                <li className="food-filter"><a href="#">Profile</a></li>
+                                           <ul className="menu-feild frame favourite-menu">
+                                                <li className="food-filter active"><a href="#">Profile</a></li>
                                                 <li className="food-filter"><a href="#">Orders</a></li>
-                                                <li className="food-filter active"><a href="#">Favourites</a></li>
-                                                <li className="food-filter"><a href="#">Address</a></li>
+                                                <li className="food-filter"><a href="#">Manage Address</a></li>
+                                                <li className="food-filter"><a href="#">Favorite Restaurants</a></li>
+                                                <li className="food-filter"><a href="#">My Tasty Points</a></li>
+                                                <li className="food-filter"><a href="#">Invite a User</a></li>
                                                 <li className="food-filter"><a href="#">Help</a></li>
                                             </ul>
                                         </div>
