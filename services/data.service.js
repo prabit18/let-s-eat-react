@@ -5,6 +5,7 @@ import { authHeader } from "../redux/helper/authHeader";
 
 export const dataService = {
     getCuisines,
+    getCuisineslist,
     getRestaurants,
     getCuratedList,
     getMenuList,
@@ -24,12 +25,14 @@ export const dataService = {
     RemoveItemFromcart,
     cartItems,
     bulkUpdate,
-    clearCart
+    clearCart,
+    getProfile,
+    UpdateProfile
 }
 
 async function getCuisines() {
     try {
-        const data = await axios.post( apiURL+'cuisines/web/featured_cuisine_list', {});
+        const data = await axios.post( apiURL+'cuisines/featured/list', {});
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
@@ -99,18 +102,17 @@ async function getRestaurants(type) {
              }
             }      
        }
-       else {
+       else if(type.length>0){
         body={
              "filters":[{
         "key":"curated_list",
         "value":[type]
     }]
       }
-       }
+       }else body={};
     }
     //    debugger
         const data = await axios.post( apiURL+'restaurants/web/list', body);
-        debugger
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
@@ -144,6 +146,14 @@ async function getRestaurantsInfinite(type) {
 async function getCuratedList(type) {
     try {
         const data = await axios.post(apiURL+'restaurants/web/list_by_curated_list', {});
+        return {error: false, data: data}
+    } catch (e) {
+        return {error: true, message: e}
+    }
+}
+async function getCuisineslist() {
+    try {
+        const data = await axios.post(apiURL+'cuisines/list', {});
         console.log("new data",data)
         return {error: false, data: data}
     } catch (e) {
@@ -157,7 +167,7 @@ async function getMenuList(type) {
     try {
         if(typeof type==="string"||undefined){
 
-        const data = await axios.post( apiURL+'menu-items/web/restaurants/menu',body);
+        const data = await axios.post( apiURL+'menu-items/restaurant/menu ',body);
         return {error: false, data: data}
         }else{
             //debugger
@@ -191,7 +201,7 @@ async function getSignup(Email,first_name,last_name) {
         "last_name":last_name
      }
     try {
-        const data = await axios.post( apiURL+'customers/web/sign_up',body);
+        const data = await axios.post( apiURL+'customer/sign-up',body);
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
@@ -206,7 +216,7 @@ async function verifyOtp(sessiontoken,otp,username) {
                "username":username,
              }
      try {
-         const data = await axios.post( apiURL+'customers/web/verify_otp',body);
+         const data = await axios.post( apiURL+'customer/verify-otp',body);
          console.log("data---->",data)
          return {error: false, data: data}
         
@@ -219,7 +229,7 @@ async function verifyOtp(sessiontoken,otp,username) {
               "username":username,
             }
     try {
-        const data = await axios.post( apiURL+'customers/web/resend_otp',body);
+        const data = await axios.post( apiURL+'customer/resend-otp',body);
         return {error: false, data: data}
 
     } catch (e) {
@@ -233,7 +243,7 @@ async function verifyOtp(sessiontoken,otp,username) {
      }
     try {
         
-        const data = await axios.post(apiURL+'customers/web/login',body);
+        const data = await axios.post(apiURL+'customer/sign-in',body);
         console.log("Data--->>",data)
         return data.data
     } catch (e) {
@@ -242,7 +252,7 @@ async function verifyOtp(sessiontoken,otp,username) {
 }
 async function socialLogin(body) {
     try {
-        const data = await axios.post(apiURL+'customers/web/social_login',body);
+        const data = await axios.post(apiURL+'customer/social-login',body);
         console.log("Data--->>",data)
         return data.data
     } catch (e) {
@@ -264,7 +274,7 @@ async function socialLogin(body) {
     console.log(headers)
    try {
        
-       const data = await axios.post(apiURL+'customers/web/update_mobile_number',body,{headers:headers});
+       const data = await axios.post(apiURL+'customer/phone-number/update',body,{headers:headers});
        console.log("Data comes from mobile update --->>",data)
        return data.data
    } catch (e) {
@@ -278,7 +288,7 @@ async function verifyMobileNumber(sessiontoken,otp,username) {
               "username":username,
             }
     try {
-        const data = await axios.post( apiURL+'customers/web/verify_otp',body);
+        const data = await axios.post( apiURL+'customer/phone-number/verify ',body);
         console.log("data----",data)
         return {error: false, data: data}
     } catch (e) {
@@ -296,7 +306,7 @@ async function AddFavouriteRestaurant(RestaurantID) {
         "Authorization": authorization,
     }
     try {
-        const data = await axios.post( apiURL+'customers/web/add_favourite',body,{headers:headers});
+        const data = await axios.post( apiURL+'customer/favourite/create',body,{headers:headers});
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
@@ -313,7 +323,7 @@ async function RemoveFavouriteRestaurant(RestaurantID) {
         "Authorization": authorization,
     }
     try {
-        const data = await axios.post( apiURL+'customers/web/remove_favorite',body,{headers:headers});
+        const data = await axios.post( apiURL+'customer/favourite/remove',body,{headers:headers});
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
@@ -328,7 +338,7 @@ async function FavouriteList() {
       "Authorization": authorization,
   }
   try {
-      const data = await axios.post( apiURL+'customers/web/list_favourite',body,{headers:headers});
+      const data = await axios.post( apiURL+'customer/favourite/list',body,{headers:headers});
       console.log("data is coming",data)
       return {error: false, data: data}
   } catch (e) {
@@ -405,4 +415,39 @@ return {error:false,data:data.data.data}
         return {error: true, message: e}
 
     }
+}
+async function getProfile() {
+    var body={}
+     let user=JSON.parse(localStorage.getItem('user'))
+     let authorization="Bearer " +user.token.id_token
+  let headers = {
+      "Content-Type": "application/json",
+      "Authorization": authorization,
+  }
+  try {
+      const data = await axios.post( apiURL+'customer/profile/get',body,{headers:headers});
+      console.log("data is coming",data)
+      return {error: false, data: data}
+  } catch (e) {
+      return {error: true, message: e}
+  }
+}
+async function UpdateProfile(FirstName,LastName) {
+    var body={
+        "first_name":FirstName,
+        "last_name":LastName
+    }
+     let user=JSON.parse(localStorage.getItem('user'))
+     let authorization="Bearer " +user.token.id_token
+  let headers = {
+      "Content-Type": "application/json",
+      "Authorization": authorization,
+  }
+  try {
+      const data = await axios.post( apiURL+'customer/profile/update',body,{headers:headers});
+      console.log("data is coming",data)
+      return {error: false, data: data}
+  } catch (e) {
+      return {error: true, message: e}
+  }
 }

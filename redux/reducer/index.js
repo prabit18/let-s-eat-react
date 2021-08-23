@@ -9,9 +9,11 @@ import errors from "./error.reducer";
 import { cartV1 } from './cartV1.reducer';
 import { cartV2 } from './cartV2.reducer';
 import { menuObject } from './menuObject.reducer';
-
+import { Cusinieslist } from './cuisinieslist.reducer';
+import { Profile } from './profile.reducer';
 const rootReducer = combineReducers({
     Cuisines,
+    Cusinieslist,
     Restaurants,
     Curatedlist,
     Menulist,
@@ -20,7 +22,8 @@ const rootReducer = combineReducers({
     errors,
     cartV1,
     cartV2,
-    menuObject
+    menuObject,
+    Profile,
 })
 
 export default rootReducer;

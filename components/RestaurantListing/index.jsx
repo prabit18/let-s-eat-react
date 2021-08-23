@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 const RestaurantListingPage = (props) => {
+    console.log('cusines are ',props.Cusinieslist)
     const[filtertype,setFiltertype]=useState({});
     const router=useRouter();
     console.log(router.query.Curated_type);  
@@ -40,8 +41,8 @@ return (
                                         <ul>
                                             <li value="rating" className={filtertype==='ratings'?"active":""} ><a href="javascript:void(0);"onClick={()=> handleFilter('ratings','desc')}>Rating</a></li>
                                             <li value="deliverytime"className={filtertype==='delivery_time'?"active":""}><a href="javascript:void(0);" onClick={()=> handleFilter('delivery_time','asc')}>Delivery Time</a></li>
-                                            <li value="pureVeg"className={filtertype==='pure_veg'?"active":""}><a href="javascript:void(0);"onClick={()=> handleFilter('pure_veg','true')}>Pure Veg</a></li>
-                                            <li value="offers"className={filtertype==='offers'?"active":""}><a href="javascript:void(0);" onClick={()=> handleFilter('offers','')}>Offers</a></li>
+                                            <li value="pureVeg"className={filtertype==='pure_veg'?"active":""}><a href="javascript:void(0);"onClick={()=> handleFilter('pure_veg','true')}> Recommended</a></li>
+                                            <li value="offers"className={filtertype==='offers'?"active":""}><a href="javascript:void(0);" onClick={()=> handleFilter('offers','')}>Close by</a></li>
                                             <li className="filter"><a href="javascript:void(0);" data-toggle="modal" data-target="#filterModal" onClick={() => setState({ isPaneOpen: true })}>Filters
                                                     <span><img alt="filter-icon" src="../../images/filter.svg"/></span>
                                                 </a></li>
@@ -71,37 +72,6 @@ return (
                 <div className="modal-body common-body">
                     <div className="filter-container">
                         <form>
-                            <div className="filter-sec sort-section">
-                                <h4>Sort</h4>
-                                <div className="form-row">
-                                    <div className="col">
-                                      <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked/>
-                                      <label className="form-check-label" for="exampleRadios1">
-                                            Recommended
-                                      </label>
-                                    </div>
-                                    <div className="col">
-                                      <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option1" checked/>
-                                      <label className="form-check-label" for="exampleRadios2">
-                                            Delivery Time
-                                      </label>
-                                    </div>
-                                </div>
-                                <div className="form-row">
-                                    <div className="col">
-                                      <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option1" checked/>
-                                      <label className="form-check-label" for="exampleRadios3">
-                                            Close by
-                                      </label>
-                                    </div>
-                                    <div className="col">
-                                      <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios4" value="option1" checked/>
-                                      <label className="form-check-label" for="exampleRadios4">
-                                            Rating: High to Low
-                                      </label>
-                                    </div>
-                                </div>
-                            </div>
                             <div className="filter-sec delivery-section">
                                 <h4>Delivery Type</h4>
                                 <div className="form-row">
@@ -121,21 +91,22 @@ return (
                             </div>
                             <div className="filter-sec cuisines-section">
                                 <h4>Cuisines</h4>
+                            { props.Cusinieslist.map((item)=>(
                                 <div className="form-row">
                                     <div className="col">
                                         <input className="form-check-input" type="checkbox" value="" id="defaultCheck1"/>
                                         <label className="form-check-label" for="defaultCheck1">
-                                            Afghani
+                                            {item.name}
                                         </label>
                                     </div>
                                     <div className="col">
                                         <input className="form-check-input" type="checkbox" value="" id="defaultCheck2"/>
                                         <label className="form-check-label" for="defaultCheck1">
-                                            Japanese
+                                            {item.name}
                                         </label>
                                     </div>
-                                </div>
-                                <div className="form-row">
+                                </div>))}
+                                {/* <div className="form-row">
                                     <div className="col">
                                         <input className="form-check-input" type="checkbox" value="" id="defaultCheck1"/>
                                         <label className="form-check-label" for="defaultCheck2">
@@ -330,8 +301,8 @@ return (
                                             Snacks
                                         </label>
                                     </div>
-                                </div>
-                                <div className="form-row">
+                                </div> */}
+                                {/* <div className="form-row">
                                     <div className="col">
                                         <input className="form-check-input" type="checkbox" value="" id="defaultCheck25"/>
                                         <label className="form-check-label" for="defaultCheck25">
@@ -344,7 +315,7 @@ return (
                                             Sweets
                                         </label>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </form>
                     </div>

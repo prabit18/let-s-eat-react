@@ -3,6 +3,8 @@ import ProfileDropdown from '../dropdown';
 import LoginContext from '../Context/LoginContext';
 import Login from '../login';
 import { useRouter } from 'next/router';
+import { data } from 'jquery';
+import { dataService } from '../../services';
 const Navbar = (props) => {
     const router=useRouter()
     const [searchBox, setSearchBox] = useState(false);
@@ -12,12 +14,18 @@ const Navbar = (props) => {
     const[login,setLogin]=useState(false);
     const[profilename,setProfilename]=useState('');
     const[dis,setdis]=useState(false);
-    useEffect(() => {
-        const loggedInUser = localStorage.getItem("user");        
+    useEffect(() => { 
+        const loggedInUser = localStorage.getItem("user");       
         if (loggedInUser) {
             const User = JSON.parse(localStorage.getItem("user"));
             console.log(User);
             setLogin(true);
+            dataService.getProfile().then((res)=>{
+                console.log("After updating profile",res.data.data.data);
+                User.info.first_name=res.data.data.data.first_name;
+                User.info.last_name=res.data.data.data.last_name;
+                localStorage.setItem('user',JSON.stringify(User))
+            })
             setProfilename(User.info.first_name);
         }
         else console.log("user is not loggedin");

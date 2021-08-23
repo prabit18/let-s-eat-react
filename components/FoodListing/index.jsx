@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import {foodCategoryName} from "../constants";
 import dynamic from "next/dynamic";
-import { connect } from 'react-redux';
-import RestaurantsList from '../RestaurantListing/restaurantslist';
 import router, { useRouter } from 'next/router';
 import { UserAction } from '../../redux/actions/user.action';
 import Restaurant from '../RestaurantListing/1restaurant';
 import BottomSectionLoader from '../Loader/BottomSectionLoader';
 import CategorySectionLoader from '../Loader/CategorySectionLoader';
-// import restaurantdetailpage from '../../pages/restaurantdetail';
 const OwlCarousel  = dynamic(import('react-owl-carousel'), {
     ssr: false
 });

@@ -11,7 +11,10 @@ export const UserAction = {
   FavouriteList,
   getcartV1,
   getcartV2,
-  getMenuObject
+  getMenuObject,
+  getCuisineslist,
+  getProfile,
+  UpdateProfile,
 };
 
 function getCuisines() {
@@ -58,7 +61,20 @@ function getCuratedlist() {
     return { type: passActions.SET_CURATEDLIST, data };
   }
 }
-
+function getCuisineslist() {
+  return async (dispatch) => {
+    const data = await dataService.getCuisineslist();
+    if ((await data).error) {
+      dispatch(setErrors(data.error));
+    } else {
+      console.log("useractions CUISINES",data.data.data)
+      dispatch(setCuisineslist(data.data.data));
+    }
+  };
+  function setCuisineslist(data) {
+    return { type: passActions.SET_CUISINESLIST, data };
+  }
+}
 const handleFoodItems = (foodItems) => {
     if(foodItems){
         const FoodData = [...foodItems];
@@ -157,5 +173,31 @@ function getcartV1(body) {
     };
     function menuObject(data) {
       return { type: passActions.SET_MENU_OBJECT, data };
+    }
+  }
+  function getProfile() {
+    return async (dispatch) => {
+      const data = await dataService.getProfile();
+      if ((await data).error) {
+        dispatch(setErrors(data.error));
+      } else {
+        dispatch(setProfile(data.data.data.data));
+      }
+    };
+    function setProfile(data) {
+      return { type: passActions.SET_PROFILE, data };
+    }
+  }
+  function UpdateProfile() {
+    return async (dispatch) => {
+      const data = await dataService.UpdatetProfile();
+      if ((await data).error) {
+        dispatch(setErrors(data.error));
+      } else {
+        dispatch(setUpdateProfile(data.data.data.data));
+      }
+    };
+    function setUpdateProfile(data) {
+      return { type: passActions.SET_UPDATE_PROFILE, data };
     }
   }

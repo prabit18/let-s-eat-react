@@ -12,7 +12,7 @@ export default class ProfileDropdown extends React.Component {
   }
    logouthandler(){
     localStorage.removeItem('user')
-    window.location.reload();
+     window.location.reload(); 
     // console.log('calling this function')
   }
   toggle() {
@@ -38,7 +38,7 @@ export default class ProfileDropdown extends React.Component {
           {this.props.profile}
         </DropdownToggle>
         <DropdownMenu>
-          <DropdownItem >Profile</DropdownItem>
+          <DropdownItem href='/profile'>Profile</DropdownItem>
           <DropdownItem >Orders</DropdownItem>
           <DropdownItem href="/favourites">Favourites</DropdownItem>
           <DropdownItem>Rewards</DropdownItem>
