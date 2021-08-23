@@ -11,8 +11,8 @@ const router = useRouter()
     }
     return(
         <>
-     <div class="page-banner">
-        <section className="main-section">
+         <div className="page-banner">
+            <section className="main-section">
             <section className="restaurant-list">
                     <div className="container custom-container">
                         <div className="row">
@@ -21,15 +21,17 @@ const router = useRouter()
                                     <div className="col-lg-2 col-md-2" id="profile-menu">
                                         <div className="favourite-menu-section">
                                             <ul className="menu-feild frame favourite-menu">
-                                                <li className="food-filter"><a href="#">Profile</a></li>
+                                                <li className="food-filter "><a href="#">Profile</a></li>
                                                 <li className="food-filter"><a href="#">Orders</a></li>
-                                                <li className="food-filter active"><a href="#">Favourites</a></li>
-                                                <li className="food-filter"><a href="#">Address</a></li>
+                                                <li className="food-filter"><a href="#">Manage Address</a></li>
+                                                <li className="food-filter active"><a href="#">Favorite Restaurants</a></li>
+                                                <li className="food-filter"><a href="#">My Tasty Points</a></li>
+                                                <li className="food-filter"><a href="#">Invite a User</a></li>
                                                 <li className="food-filter"><a href="#">Help</a></li>
                                             </ul>
                                         </div>
-                                    </div>
-                                    <div className="col-lg-10 right-favourite-col">
+                                    </div>       
+                              <div className="col-lg-10 right-favourite-col">
                                         <div className="filter-section">
                                             <div className="resto-count favourite-menu-header">
                                                 <h2>Favourites</h2>
@@ -70,8 +72,8 @@ const router = useRouter()
                                             </div>
                                          ))}   
                                           </div>
-                                        </div>
-                                    </div>
+                                     </div>
+                                   </div>
                                 </div>
                             </div>
                         </div>

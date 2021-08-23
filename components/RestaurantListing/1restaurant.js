@@ -22,8 +22,14 @@ const Restaurant=(props)=>{
                                                  <div className="food-item">
                                                    <img alt="food-item" src={`https://development-cdn.letseat.co.uk/${props.item.image_url}`}/>
                                                     <div className="brand-logo">
-                                                    <img alt="restaurant-logo" src={`https://development-cdn.letseat.co.uk/${props.item.logo}`}/>
-                                                </div>
+                                                      <img alt="restaurant-logo" src={`https://development-cdn.letseat.co.uk/${props.item.logo}`}/>
+                                                   </div>
+                                                   {
+                                                   props.item.promotion_tier_icon_url.length>1 &&
+                                                   <div className="diamond-pro">
+                                                        <img src={`https://development-cdn.letseat.co.uk/resize-image/109/${props.item.promotion_tier_icon_url}`} alt="Promoted"/>
+                                                    </div>
+                                                   }
                                             </div>
                                             <div className="food-desc">
                                                 <h4>{props.item.name}</h4>

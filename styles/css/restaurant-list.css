@@ -321,9 +321,179 @@ p.rating-content {
     width: 90%!important;
     height: 20px!important;
 }
-/* .infinite-scroll-component::-webkit-scrollbar {
+.filter-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0 25px;
+}
+
+.filter-box ul {
+    display: flex;
+}
+
+.filter-box li {
+    padding: 5px 15px;
+    border: 1px solid #909AB9;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.filter-box li a {
+    font-size: 14px;
+    line-height: 18px;
+    color: #404040;
+    font-family: Montserrat-Regular, sans-serif;
+}
+
+.filter {
+    margin-right: 0 !important;
+    background-color: #F4F4F4;
+}
+
+.filter span {
+    padding-left: 10px;
+}
+.modal.right .modal-dialog {
+    position: fixed;
+    margin: auto;
+    min-width: 500px;
+    height: 100%;
+    -webkit-transform: translate3d(0%, 0, 0);
+        -ms-transform: translate3d(0%, 0, 0);
+         -o-transform: translate3d(0%, 0, 0);
+            transform: translate3d(0%, 0, 0);
+}
+
+.modal.right .modal-content {
+    height: 100%;
+    overflow-y: auto;
+    border-radius: 0;
+    border: none;
+}
+.modal.right .modal-body {
+    padding: 0 20px 0 55px;
+}
+.modal.right.fade .modal-dialog {
+    right: -320px;
+    -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+       -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+         -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+            transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+.modal.right.fade.show .modal-dialog {
+    right: 0;
+}
+.modal.right .modal-header {
+    padding: 25px 20px 20px 55px;
+    border: none;
+    display: block;
+}
+.modal-header button.close{
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    opacity: 1 !important;
+    width: 34px;
+    height: 34px;
+    padding: 10px !important;
+    margin: 0 !important;
+    display: flex;
+    z-index: 1;
+}
+.filter-popup .modal-header h2 {
+    font-size: 20px;
+    line-height: 11px;
+    color: #2A3251;
+    font-family: 'Montserrat-SemiBold',sans-serif;
+}
+.filter-popup .modal-body form h4 {
+    font-size: 16px;
+    line-height: 18px;
+    color: #3B4148;
+    font-family: 'Montserrat-Medium',sans-serif;
+    margin-bottom: 10px;
+}
+.filter-popup .modal-body form label {
+    font-size: 14px;
+    line-height: 14px;
+    font-family: 'Montserrat-Regular',sans-serif;
+    color: #3B4148;
+    margin-bottom: 10px;
+    padding-left: 20px;
+}
+.filter-sec{
+    margin-bottom: 20px;
+}
+.filter-popup [type="radio"]:checked + label:before, 
+.filter-popup [type="radio"]:not(:checked) + label:before{
+    display: none;
+}
+.filter-popup [type="radio"]:checked + label:after {
+    background: url(/images/checked-radio.svg);
+}
+.filter-popup [type="radio"]:not(:checked) + label:after{
+    background: url(/images/unchecked-radio.svg);
+}
+.filter-popup [type="radio"]:checked + label:after, 
+.filter-popup [type="radio"]:not(:checked) + label:after{
+    width: 13px;
+    height: 13px;
+    position: absolute;
+    left: 0;
+    top: calc(50% - 7px);
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+.filter-popup input[type=checkbox]{
     appearance: none;
-} */
+}
+.filter-popup input[type=checkbox] + label{
+    padding-left: 0;
+    display: flex;
+    align-items: center;
+}
+.filter-popup input[type=checkbox] + label:before {
+    content: ""; 
+    display: inline-block;
+    margin-right: 10px;
+    width: 14px; 
+    height: 14px;
+    background: url(/images/uncheck-checkbox.svg); 
+}
+.filter-popup input[type=checkbox]:checked + label,.filter-popup [type="radio"]:checked + label{
+    font-family: 'Montserrat-Medium',sans-serif;
+}
+.filter-popup input[type=checkbox]:checked + label:before {
+    background: url(/images/checked-checkbox.svg);
+}
+.filter-action a {
+    font-size: 14px;
+    line-height: 14px;
+    color: #0A83EA;
+    font-family: 'Montserrat-Medium',sans-serif;
+}
+.filter-action button {
+    font-size: 14px;
+    line-height: 18px;
+    color: #2A3251;
+    background-color: #FFD438;
+    border: none;
+    border-radius: 18px;
+    height: 35px;
+    width: 130px;
+    font-family: 'Montserrat-Medium';
+    margin-left: 140px;
+}
+.filter-popup .modal-footer {
+    justify-content: flex-start;
+    padding: 15px 55px 100px;
+}
+.filter-popup .modal{
+    z-index: 9990;
+}
+
 
 
 /*media queries*/

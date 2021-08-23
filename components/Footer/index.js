@@ -31,10 +31,10 @@ const Footer = () => {
                             <div className="footer-links legal">
                                 <h3>LEGAL</h3>
                                 <ul>
-                                    <li><a href="#">Terms & Conditions</a></li>
+                                    <li><a href="terms-of-services">Terms of Services</a></li>
                                     <li><a href="#">Cancellation & Refund</a></li>
-                                    <li><a href="#">Privacy Policy</a></li>
-                                    <li><a href="#">Cookie Policy</a></li>
+                                    <li><a href="/privacy-policy">Privacy Policy</a></li>
+                                    <li><a href="/cookie-policy">Cookie Policy</a></li>
                                     <li><a href="#">Offer Terms</a></li>
                                     <li><a href="#">Phishing & Fraud</a></li>
                                 </ul>

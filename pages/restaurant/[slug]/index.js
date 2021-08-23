@@ -10,7 +10,7 @@ import Metadata from '../../../components/Metadata';
 const restaurantdetailpage= (props) =>{
   const router = useRouter()
   const { slug } = router.query
-  console.log("query",router.query);
+  console.log("query",slug);
   const type=slug;
     useEffect(() => {
 

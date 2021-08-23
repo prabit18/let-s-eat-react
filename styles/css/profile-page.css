@@ -1,0 +1,114 @@
+.resto-count.favourite-menu-header h5 {
+    color: #283350;
+    font-size: 16px;
+    line-height: 18px;
+    font-family: 'Montserrat-SemiBold', sans-serif;
+}
+.favourite-menu-header a {
+    font-size: 14px;
+    line-height: 18px;
+    color: #0A83EA;
+    font-family: 'Montserrat-Medium', sans-serif;
+    text-transform: uppercase;
+}
+.profile-list.food-list{
+    padding-left: 10px;
+}
+.profile-list form {
+    max-width: 50%;
+    padding: 0 0 100px;
+}
+.profile-list label,.profile-list input,.email-content p {
+    font-size: 16px;
+    line-height: 18px;
+    color: #3B4148;
+    font-family: 'Montserrat-Regular', sans-serif;
+    margin-bottom: 0;
+    padding-right: 0;
+}
+.email-content p{
+    font-family: 'Montserrat-Medium', sans-serif;
+}
+.profile-list input {
+    border: none;
+    border-radius: 6px;
+    height: 35px;
+    font-family: 'Montserrat-Medium', sans-serif;
+    padding: 8px 20px;
+    box-shadow: none!important;
+    transition: none;
+}
+.profile-list .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.personal-detail .favourite-menu-header {
+    padding: 0 0 20px;
+}
+.personal-detail {
+    padding-bottom: 20px;
+}
+.verified-content::before {
+    position: absolute;
+    top: -2px;
+    left: -20px;
+    content: url(/images/verify-icon.svg);
+}
+.email-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 55px;
+    border-radius: 8px;
+    background-color: #F2F4FA;
+    padding: 0 20px;
+}
+.email-content .verified-content {
+    color: #26D07C;
+    font-size: 14px;
+    line-height: 15px;
+    font-family: 'Montserrat-Medium', sans-serif;
+    position: relative;
+}
+.profile-save{
+    display: block;
+}
+.right-favourite-col.profile-col{
+    padding-left: 15px;
+}
+.form-control:disabled, .form-control[readonly] {
+    background-color: #FFFFFF;
+    opacity: 1;
+}
+.new-profile-input{
+    border: 1px solid #c0c6d9!important;
+}
+/*modal*/
+.phone-modal .modal-body h2 {
+    font-size: 20px;
+    line-height: 18px;
+    font-family: 'Montserrat-SemiBold';
+    padding: 25px 0 30px;
+}
+.mobile-no-field .form-control::placeholder, .mobile-no-field .form-control {
+    text-align: left;
+}
+.mobile-no-field .form-control {
+    width: 300px;
+}
+
+@media(max-width: 1199px){
+    .right-favourite-col {
+        padding: 0;
+        max-width: 75%;
+        flex: 0 0 75%;
+    }
+    .favourite-listing-box .col-md-2 {
+        max-width: 25%;
+        flex: 0 0 25%;
+    }
+    .profile-list form {
+        max-width: 65%;
+    }
+}
