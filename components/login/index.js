@@ -6,6 +6,7 @@ import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props
 import { googleClientID, facebookAppID } from '../../config/env';
 import LoginContext from '../Context/LoginContext';
 import { useRouter } from 'next/router';
+import "react-responsive-modal/styles.css";
 const Login=(props)=>{
     const router=useRouter()
     const[show,setshow]=useState(true);
@@ -199,6 +200,7 @@ const Login=(props)=>{
     }
     const Loginhandler=(type)=>{
              setSuccess(false);
+             setOpen(true);
                 setErrorMessage('')
                 setshow(true);
                 setError(false);
@@ -330,7 +332,7 @@ const Login=(props)=>{
         }
     return(
         <>
-   
+    
          <div className={["modal fade login-modal", show && (popup==='login' || popup==='change')? "show display-popup" : ""].join(" ")}
             id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
            <div className="modal-dialog modal-dialog-centered" role="document">
@@ -371,7 +373,7 @@ const Login=(props)=>{
                         clientId={googleClientID}
                         autoLoad={false}
                         render={renderProps => (
-                        <a href="#" onClick={renderProps.onClick} disabled={renderProps.disabled}><img src="../../images/g-icon.svg" alt="Google"/>with Google</a>
+                        <a href="javascript:void(0);" onClick={renderProps.onClick} disabled={renderProps.disabled}><img src="../../images/g-icon.svg" alt="Google"/>with Google</a>
                         )}
                         buttonText="Login"
                         onSuccess={GLogin}
@@ -383,13 +385,13 @@ const Login=(props)=>{
                                     fields='first_name,last_name,email, picture'
                                     callback={FBLogin}
                                     render={renderProps => (
-                                        <a href="#" onClick={renderProps.onClick}><img src="../../images/f-icon.svg" alt="Facebook"/>with Facebook</a>
+                                        <a href="javascript:void(0);" onClick={renderProps.onClick}><img src="../../images/f-icon.svg" alt="Facebook"/>with Facebook</a>
                                     )}
                                 />
                     </div>
                 </div>
                 <div className="modal-footer">
-                    <p>Don’t have an account? <a href="#" data-toggle="modal" data-target="#signupModal" data-dismiss="modal" aria-label="Close"onClick={()=>Signuphandler('signup')}>Sign up</a></p>
+                    <p>Don’t have an account? <a href="javascript:void(0);" data-toggle="modal" data-target="#signupModal" data-dismiss="modal" aria-label="Close"onClick={()=>Signuphandler('signup')}>Sign up</a></p>
                 </div>
             </div>
         </div>
@@ -405,8 +407,8 @@ const Login=(props)=>{
                 </div>
                 <div className="modal-body">
                     <div className="mobile-otp">
-                        <p>Please enter the 6 Digit OTP shared with you via Email,{Email}<br/><span>OTP valid for 10 minutes.</span></p>
-                        <a href="#" data-toggle="modal" data-target="#loginModal" data-dismiss="modal" aria-label="Close"onClick={()=>Loginhandler('change')}>Change Email Address</a>
+                        <p>Please enter the 6 Digit OTP shared with you via Email <span>OTP valid for 10 minutes.</span></p>
+                        <a href="javascript:void(0);" data-toggle="modal" data-target="#loginModal" data-dismiss="modal" aria-label="Close"onClick={()=>Loginhandler('change')}>Change Email Address</a>
                     </div>
                         
                     <OtpInput className={["otp-input",Error?" error-otp-input":""].join('')}
@@ -441,7 +443,7 @@ const Login=(props)=>{
                         <div className="resend-otp">
                             {
                             Disabled ?<p>Did not receive? Resend</p> :
-                            <p>Did not receive? <a onClick={()=>Loginhandler('resend')}disabled={Disabled}>Resend</a></p>
+                            <p>Did not receive? <a href="javascript:void(0);" onClick={()=>Loginhandler('resend')}disabled={Disabled}>Resend</a></p>
                             }
                         </div>
                     </div>
@@ -477,7 +479,7 @@ const Login=(props)=>{
                             <input type="email" id="email" name="email" className="form-control" placeholder=" " onChange={(e)=>validateEmailforsignup(e.target.value)}/>
                             <label htmlFor="email" className="input-label">Email Address</label>
                         </div>
-                        <p className="text-agree">Signing up for an account, you agree to our <br/><a href="#">Terms & Conditions</a>, <a href="#">Privacy Policy</a> and <a href="#">Cancellation & Refund Policies</a></p>
+                        <p className="text-agree">Signing up for an account, you agree to our <br/><a href="javascript:void(0);">Terms & Conditions</a>, <a href="javascript:void(0);">Privacy Policy</a> and <a href="javascript:void(0);">Cancellation & Refund Policies</a></p>
                         <div className="form-group">
                             <button type="button" className="form-control login-buttons" value="Send OTP" data-toggle="modal" data-target="#emailOtpModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('otpsignup')} disabled={loading}>
                                 Send OTP
@@ -496,7 +498,7 @@ const Login=(props)=>{
                         clientId={googleClientID}
                         autoLoad={false}
                         render={renderProps => (
-                        <a href="#" onClick={renderProps.onClick} disabled={renderProps.disabled}><img src="../../images/g-icon.svg" alt="Google"/>with Google</a>
+                        <a href="javascript:void(0);" onClick={renderProps.onClick} disabled={renderProps.disabled}><img src="../../images/g-icon.svg" alt="Google"/>with Google</a>
                         )}
                         buttonText="Login"
                         onSuccess={GLogin}
@@ -508,13 +510,13 @@ const Login=(props)=>{
                                     fields='first_name,last_name,email, picture'
                                     callback={FBLogin}
                                     render={renderProps => (
-                                        <a href="#" onClick={renderProps.onClick}><img src="../../images/f-icon.svg" alt="Facebook"/>with Facebook</a>
+                                        <a href="javascript:void(0);" onClick={renderProps.onClick}><img src="../../images/f-icon.svg" alt="Facebook"/>with Facebook</a>
                                     )}
                                 />
                     </div>
                 </div>
                 <div className="modal-footer">
-                    <p>Already have an account? <a href="#" data-toggle="modal" data-target="#loginModal" data-dismiss="modal" aria-label="Close"onClick={()=>Loginhandler('login')}>Log in</a></p>
+                    <p>Already have an account? <a href="javascript:void(0);" data-toggle="modal" data-target="#loginModal" data-dismiss="modal" aria-label="Close"onClick={()=>Loginhandler('login')}>Log in</a></p>
                 </div>
             </div>
         </div>
@@ -530,7 +532,7 @@ const Login=(props)=>{
                 </div>
                 <div className="modal-body">
                     <div className="mobile-otp">
-                    <p>Please enter the 6 Digit OTP shared with you via Email,{Email}<br/><span>OTP valid for 10 minutes.</span></p>
+                    <p>Please enter the 6 Digit OTP shared with you via Email <span>OTP valid for 10 minutes.</span></p>
                     </div>
                      <OtpInput className={["otp-input",Error?" error-otp-input":""].join('')}
                     value={otp}
@@ -562,7 +564,7 @@ const Login=(props)=>{
                         <div className="resend-otp">
                         {
                             Disabled ?<p>Did not receive? Resend</p> :
-                            <p>Did not receive? <a data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('resend')} >Resend</a></p>
+                            <p>Did not receive? <a href="javascript:void(0);" data-toggle="modal" data-target="#successModal" data-dismiss="modal" aria-label="Close" onClick={()=>Signuphandler('resend')} >Resend</a></p>
                         }
                         </div>
                     </div>

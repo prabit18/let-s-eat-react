@@ -33,10 +33,11 @@ import CheckoutLoader from "../Loader/CheckoutLoader";
 import LoadingSpinner from "../Loader";
 import Geocode from "react-geocode";
 import { GooleMapApiKey } from "../../config/env";
+import PaymentGateway from "../PaymentGateway";
 
 const Checkout = (props) => {
   const API_Key = GooleMapApiKey;
-
+  const [isPayment,setIspayment]=useState(false)
   const [Spinner, setSpinner] = useState(false);
   const Type = useRef("");
 
@@ -911,12 +912,13 @@ const Checkout = (props) => {
     // let landmark =landmark
     let lat = JSON.parse(localStorage.getItem("latlong")).lat;
     let lng = JSON.parse(localStorage.getItem("latlong")).lng;
+    debugger
     if (typeof lat === "string") {
       lat = parseFloat(lat.replace(/\"/g, ""));
       lng = parseFloat(lng.replace(/\"/g, ""));
     }
-
-    let payload = {
+let fLat=JSON.stringify()
+    let payload = [{
       addresses: localStorage.getItem("address"),
       flat_number: flate_number,
       type: addressType,
@@ -925,11 +927,11 @@ const Checkout = (props) => {
         latitude: JSON.stringify(lat),
         longitude: JSON.stringify(lng),
       },
-    };
+    }];
 
     // setloadingContent(true)
     dataService
-      .UpdateAllAddress(item.id, JSON.stringify(payload))
+      .UpdateAllAddress(item.id,payload)
       .then((resp) => {
         seteditModal(resp.data.data.data.address);
 
@@ -937,6 +939,8 @@ const Checkout = (props) => {
         // setloadingContent(false)
         setaddressList(resp.data.data.data.address);
         setOpen(false);
+      }).catch((e)=>{
+        console.log(e);
       });
   };
   const HandleAddressList = () => {
@@ -968,11 +972,22 @@ const Checkout = (props) => {
       customer_flat_number: HandleAddressList()[0].flat_number,
       customer_address_type: HandleAddressList()[0].type,
       items: handleOrderCart(),
-      tasty_point_discount: "15",
+      tasty_point_discount: "",
       note: suggestion,
       order_type: deliveryOption,
     };
     dataService.PlaceOrder(payload).then((resp) => {
+      console.log("repsonse-->",resp.data.data.data)
+      dataService.PaymentIntent(resp.data.data.data.order_id).then((response)=>{
+        console.log("Response-->",response.data.data.data.client_public_key)
+        let key=response.data.data.data.client_public_key
+        localStorage.setItem('Public_key',key)
+        if(key){
+          setIspayment(true)
+        }
+      }).catch((e)=>{
+        console.log(e)
+      })
     });
   };
   const [paymentName, setPaymentName] = useState();
@@ -1964,6 +1979,7 @@ const Checkout = (props) => {
                   </div>
                 </div>
               </div>
+              {isPayment&&<PaymentGateway/>}
             </section>
           </section>
         </div>

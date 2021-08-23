@@ -1,6 +1,10 @@
 import { map } from "jquery";
 import router from "next/router";
+<<<<<<< HEAD
+import React, { useEffect, useState, useContext,useMemo,useRef } from "react";
+=======
 import React, { useEffect, useState, useContext, useMemo } from "react";
+>>>>>>> 06e272c788b5f9e0d5c96ee8f6efd748a9643f95
 import { connect, useSelector } from "react-redux";
 import { UserAction } from "../../../redux/actions/user.action";
 import { Menulist } from "../../../redux/reducer/menulist.reducer";
@@ -17,7 +21,6 @@ import ModalPopup from "../../Modal";
 import VarientPopup from "../VarientPopup";
 import ClearcartModal from "./ClearcartModal";
 import { Modal } from "react-responsive-modal";
-
 const MenuItems = (props) => {
   // @refresh reset
   var pathname = window.location.pathname;
@@ -134,7 +137,7 @@ const MenuItems = (props) => {
     SetFoodItems(props.Menulist);
   }, [props.Menulist]);
 
-  const ConstructMenuObject = (list, cart) => {
+  const ConstructMenuObject = (list, cart) => {    
     let Menu = { ...menuObject };
     list &&
       list.forEach((item) => {
@@ -1015,31 +1018,19 @@ const MenuItems = (props) => {
                 <a href="#">Reviews</a>
               </li>
               <li className="favourite">
-                {!favourite ? (
-                  <a href="#" onClick={Addfavourite}>
-                    <img
-                      className="empty-heart"
-                      src="/images/Fav-Outline.svg"
-                      alt="heart-icon"
-                      onClick={Addfavourite}
-                    />
-                    Favourite
-                  </a>
-                ) : (
-                  <a href="#" onClick={RemoveFavourite}>
-                    <img
-                      className="filled-heart"
-                      src="/images/Fav-Filled.svg"
-                      alt="filled-heart-icon"
-                      onClick={RemoveFavourite}
-                    />
-                    Favourite
-                  </a>
-                )}
-                <LoginContext.Provider value={{ dis, setdis }}>
-                  {dis && <Login />}
-                </LoginContext.Provider>
-              </li>
+              {!favourite?
+              (<a href="javascript:void(0);" onClick={Addfavourite}>
+              <img className="empty-heart" src="/images/Fav-Outline.svg" alt="heart-icon" onClick={Addfavourite}/>Favourite
+                </a>):
+                  (<a href="javascript:void(0);" onClick={RemoveFavourite}>
+                      <img className="filled-heart" src="/images/Fav-Filled.svg" alt="filled-heart-icon"  onClick={RemoveFavourite}/>
+                      Favourite
+                  </a>)
+                  }
+                   <LoginContext.Provider value={{dis,setdis}}>
+                    {dis&& <Login />}
+                    </LoginContext.Provider>
+             </li> 
             </ul>
           </div>
           <div className="menu-search">

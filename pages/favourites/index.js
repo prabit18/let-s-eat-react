@@ -2,7 +2,6 @@ import {React,useEffect} from 'react'
 import FavouriteList from '../../components/favouritelist'
 import {UserAction} from "../../redux/actions/user.action";
 import { connect } from "react-redux";
-import RestaurantListLoader from '../../components/Loader/RestaurantListLoader';
 import Emptypage from '../../components/Emptypage';
 const Favourite=(props)=>{
   
