@@ -11,7 +11,7 @@ export default class ProfileDropdown extends React.Component {
     };
   }
    logouthandler(){
-    localStorage.removeItem('user')
+    localStorage.clear();
      window.location.reload(); 
     // console.log('calling this function')
   }

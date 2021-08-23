@@ -18,6 +18,7 @@ export const passActions = {
     SET_LOAD_CUISINESLIST: 'SET_LOAD_CUISINESLIST',
     SET_PROFILE: 'SET_PROFILE',
     SET_LOAD_PROFILE: 'SET_LOAD_PROFILE',
+    SET_ADDRESS_LIST:'SET_ADDRESS_LIST'
 
 }
 export const errorActions = {

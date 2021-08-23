@@ -38,7 +38,7 @@ function RestaurantDetailLoader() {
                 <div className="row restaurant-row">
                     <div className="col-md-8 restaurant-list-col">
                         <div className="menu-section">
-                            <div className="header-border">
+                            <div className="header-border" style={{"backgroundColor":"transparent"}}>
                                 <div className="white-background restaurant-img-sec header-sec">
                                     <div className="gray-background inter-crop-img menu-nav"></div>
                                     <div className="gray-background inter-crop-img overview-nav"></div>

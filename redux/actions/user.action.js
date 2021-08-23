@@ -15,6 +15,7 @@ export const UserAction = {
   getCuisineslist,
   getProfile,
   UpdateProfile,
+  addressList
 };
 
 function getCuisines() {
@@ -76,14 +77,20 @@ function getCuisineslist() {
   }
 }
 const handleFoodItems = (foodItems) => {
+  
     if(foodItems){
+      
         const FoodData = [...foodItems];
         var localdata = JSON.parse(localStorage.getItem("menuItems"));
-            if (localdata&&localdata[0].restaurant_id != FoodData[0].restaurant_id) {
+        // var loc=localdata.length
+            if (!localdata===null&&localdata[0].restaurant_id != FoodData[0].restaurant_id) {
               localStorage.setItem("menuItems", JSON.stringify(FoodData));
-            } else 
-        if (!localStorage.getItem("menuItems")) {
-          localStorage.setItem("menuItems", JSON.stringify(FoodData));
+            } else  {
+              if(!localStorage.getItem("menuItems")){
+                
+                localStorage.setItem("menuItems", JSON.stringify(FoodData));
+              }
+             
         }
     }
   
@@ -199,5 +206,14 @@ function getcartV1(body) {
     };
     function setUpdateProfile(data) {
       return { type: passActions.SET_UPDATE_PROFILE, data };
+    }
+  }
+  function addressList(body) {
+    
+    return (dispatch) => {
+      dispatch(InsertaddressList(body));
+    };
+    function InsertaddressList(data) {
+      return { type: passActions.SET_ADDRESS_LIST, data };
     }
   }

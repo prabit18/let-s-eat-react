@@ -74,7 +74,8 @@
 }
 .display-popup{
   display: block;
-  top: 90px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .restaurant-detail p {
     font-size: 13px;
@@ -705,7 +706,7 @@ p.food-item-price {
     line-height: 26px;
 }
 
-.added-food-box .quantity-change p {
+.added-food-box .quantity-change p,.subtotal-sec .subtotal-head p {
     font-size: 16px;
     line-height: 18px;
     color: #283350;
@@ -1184,6 +1185,15 @@ p.food-item-price {
 .menu-status-deactivate{
     filter: grayscale(1);
     pointer-events:none;
+    opacity: 0.75;
+}
+.delivery-deactivate{
+    filter: grayscale(1);
+    pointer-events:none;
+    opacity: 0.75;
+    background-color: #C6CAD9;
+    border-radius: 0px;
+    
 }
 .delivery-option .toggle-section {
     margin-bottom: 0;
@@ -1465,7 +1475,7 @@ img.empty-heart {
     text-transform: capitalize;
     font-family: 'Montserrat-SemiBold';
     text-align: center;
-}
+    padding: 40px 0 0;}
 .exist-cart-inner p {
     padding: 20px 0;
     font-size: 16px;
@@ -1478,7 +1488,9 @@ img.empty-heart {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 25px 0 10px 0;
+    padding: 25px 0 35px 0;
+    margin-bottom: 10px;
+
 }
 .exist-cart-btn button {
     border: none;
@@ -1495,6 +1507,32 @@ img.empty-heart {
 .start-fresh {
     background-color: #FFD438!important;
     margin: 0;
+}
+.subtotal-sec p {
+    font-size: 13px;
+    line-height: 16px;
+    color: #44566F;
+    font-family: 'Montserrat-Regular';
+}
+.subtotal-head h6 {
+    font-size: 15px;
+    line-height: 18px;
+    color: #3B4148;
+    font-family: 'Montserrat-Medium';
+}
+.subtotal-head {
+    padding: 10px 0 0;
+    border-top: 1px solid #C0C6D9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.subtotal-sec {
+    padding: 0 15px 10px;
+}
+.payment-item .delivery-deactivate [type="radio"]:not(:checked) + label:before {
+    border: 1px solid #FFFFFF;
+    background: transparent;
 }
 /*media query*/
 @media (max-width: 1200px) {

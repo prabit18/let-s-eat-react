@@ -112,6 +112,7 @@ const Signup=(props)=>{
                 setLogin(true);
                 localStorage.setItem('user',JSON.stringify(res.data.data.data))
                 console.log("response otp",res);
+                handlecart(res.data.data.data)
                 //setError(true);
                 setVeri(false);
                 if(type==='login')
@@ -124,7 +125,7 @@ const Signup=(props)=>{
                    setSuccessMessage('Signed up')
                    setTimeout(() => {
                     router.reload(window.location.pathname)
-                }, 1000);
+                }, 2000);
                 }
                 setProfilename(res.data.data.data.info.first_name);
                 console.log(res.data.data.data.info.first_name);
