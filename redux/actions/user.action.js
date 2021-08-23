@@ -66,8 +66,11 @@ const handleFoodItems = (foodItems) => {
       
         const FoodData = [...foodItems];
         var localdata = JSON.parse(localStorage.getItem("menuItems"));
+        let data1=localdata&&localdata[0].restaurant_id;
+        let data2=FoodData[0].restaurant_id
+        console.log(typeof data1, typeof data2)
         // var loc=localdata.length
-            if (!localdata===null&&localdata[0].restaurant_id != FoodData[0].restaurant_id) {
+            if (localdata!==null&&data1!== data2) {
               localStorage.setItem("menuItems", JSON.stringify(FoodData));
             } else  {
               if(!localStorage.getItem("menuItems")){

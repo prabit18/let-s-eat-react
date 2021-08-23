@@ -134,7 +134,7 @@ const MenuItems = (props) => {
     SetFoodItems(props.Menulist);
   }, [props.Menulist]);
 
-  const ConstructMenuObject = (list, cart) => {
+  const ConstructMenuObject = (list, cart) => {    
     let Menu = { ...menuObject };
     list &&
       list.forEach((item) => {
