@@ -26,7 +26,8 @@ const rootReducer = combineReducers({
     cartV2,
     menuObject,
     Profile,
-    addressList
+    addressList,
+    Cusinieslist,
 })
 
 export default rootReducer;
