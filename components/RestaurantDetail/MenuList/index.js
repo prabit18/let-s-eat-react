@@ -1,6 +1,6 @@
 import { map } from "jquery";
 import router from "next/router";
-import React, { useEffect, useState, useContext,useMemo,useRef } from "react";
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import { connect, useSelector } from "react-redux";
 import { UserAction } from "../../../redux/actions/user.action";
 import { Menulist } from "../../../redux/reducer/menulist.reducer";
@@ -132,7 +132,7 @@ const MenuItems = (props) => {
     SetFoodItems(props.Menulist);
   }, [props.Menulist]);
 
-  const ConstructMenuObject = (list, cart) => {
+  const ConstructMenuObject = (list, cart) => {    
     let Menu = { ...menuObject };
     list &&
       list.forEach((item) => {

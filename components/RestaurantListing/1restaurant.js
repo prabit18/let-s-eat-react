@@ -8,7 +8,8 @@ const Restaurant=(props)=>{
     const router = useRouter()
     const handleroute=(url)=>{
         
-        router.push({pathname:"/restaurant/"+url });
+        // router.push({pathname:"/restaurant/"+url },null,{ shallow: false });
+        window.location='/restaurant/'+url
     }
   
     return(

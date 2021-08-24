@@ -28,6 +28,7 @@ const CartSummary = (props) => {
   const [restaurantDetail, setrestaurantDetail] = useState([]);
   useEffect(() => {
    // setdeliveryOption(localStorage.getItem("delivery_type"));
+   let URL=window.location.pathname.split("-")[window.location.pathname.split("-").length-1]
 
     if (!JSON.parse(localStorage.getItem("user"))) {
       let id =
@@ -35,12 +36,13 @@ const CartSummary = (props) => {
         JSON.parse(localStorage.getItem("cartItem"))
           ? JSON.parse(localStorage.getItem("cartItem"))[0].restaurant_id
           : "";
+          
       dataService
         .getIndividualRestuarant(id)
         .then((res) => {
           
           if (id !== "") {
-            debugger
+            
             console.log("rest-resp", res.data.data.data);
             setrestaurantDetail(res.data.data.data);
             if(res.data.data.data.deliverable===false){

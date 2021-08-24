@@ -109,15 +109,17 @@ function MapContainer(props) {
           {places.length > 0 ? (
             places.map((place, i) => (
               <Marker
+              icon="/images/Location Pin-V2-new.svg/"
                 key={i}
                 position={place.geometry.location}
                 draggable
                 onDragend={(t, map, coord) => onMarkerDragEnd(coord)}
+                style={{width:"50px",height:"50px"}}
               />
             ))
           ) : (
             <Marker
-              // icon="/public/images/Icon material-location-on.svg"
+              icon="/images/Location Pin-V2-new.svg"
               position={loc}
               draggable
               onDragend={(t, map, coord) => onMarkerDragEnd(coord)}

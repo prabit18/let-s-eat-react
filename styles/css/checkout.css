@@ -729,7 +729,7 @@ button.quantity-arrow-plus {
 }
 .verified-content::before{
     position: absolute;
-    top: 0;
+    top: -2px;
     left: -20px;
     content: url("/images/verify-icon.svg");
 }
@@ -1016,7 +1016,7 @@ button.quantity-arrow-plus {
     margin-right: 0;
 }
 .address-form form .proceed-button {
-    margin-bottom: 0;
+    margin: 15px 0 20px;
 }
 .location-data img.checkmark_img {
     position: absolute;
@@ -1699,6 +1699,7 @@ button.plus-btn {
     border: 1px solid #FFFFFF !important;
     background: transparent;
 }
+/* Stripe Payment */
 @media(min-width: 576px) {
     .address-modal.delete-modal .modal-dialog {
         min-width: 580px;
