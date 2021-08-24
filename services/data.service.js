@@ -69,13 +69,14 @@ async function getCuisines() {
 }
 
 async function getRestaurants(type) {
+    console.log("type is",type);
     
     try {
         var body={};
-        if(!type)
+        if(type===undefined)
         {
             body={};
-        }
+        }else{
         if(typeof type === 'object'){
             
             //type=[...new Set(type)];
@@ -130,15 +131,16 @@ async function getRestaurants(type) {
              }
             }      
        }
-       else if(type.length>0){
+       else {
         body={
              "filters":[{
         "key":"curated_list",
         "value":[type]
     }]
       }
-       }else body={};
+       }
     }
+}
     //    debugger
         const data = await axios.post( apiURL+'restaurants/web/list', body);
         return {error: false, data: data}
@@ -536,14 +538,14 @@ async function clearCart() {
 }
 async function getProfile() {
     var body={}
-     let user=JSON.parse(localStorage.getItem('user'))
-     let authorization="Bearer " +user.token.id_token
-  let headers = {
-      "Content-Type": "application/json",
-      "Authorization": authorization,
-  }
+//      let user=JSON.parse(localStorage.getItem('user'))
+//      let authorization="Bearer " +user.token.id_token
+//   let headers = {
+//       "Content-Type": "application/json",
+//       "Authorization": authorization,
+//   }
   try {
-      const data = await axios.post( apiURL+'customer/profile/get',body,{headers:headers});
+      const data = await axios.post( apiURL+'customer/profile/get',body,{headers:authHeader()});
       console.log("data is coming",data)
       return {error: false, data: data}
   } catch (e) {
@@ -564,25 +566,6 @@ async function addAddress(body) {
     return { error: true, message: e };
   }
 }
-// async function UpdateProfile(FirstName,LastName) {
-//     var body={
-//         "first_name":FirstName,
-//         "last_name":LastName
-//     }
-//      let user=JSON.parse(localStorage.getItem('user'))
-//      let authorization="Bearer " +user.token.id_token
-//   let headers = {
-//       "Content-Type": "application/json",
-//       "Authorization": authorization,
-//   }
-//   try {
-//       const data = await axios.post( apiURL+'customer/profile/update',body,{headers:headers});
-//       console.log("data is coming",data)
-//       return {error: false, data: data}
-//   } catch (e) {
-//       return {error: true, message: e}
-//   }
-// }
 async function UpdateProfile(FirstName,LastName) {
     var body={
         "first_name":FirstName,

@@ -12,9 +12,15 @@ const RestaurantListing = (props) => {
 	// let UrlPrams=router.pathname==='/restaurants'?"":router.query.Curated_type
 	// console.log('url',router.pathname, UrlPrams);
 	useEffect(() => {
-   props.getRestaurants(router.query.Curated_type).then((Response)=>{setloading(false)});
+		let UrlPrams=router.query!==undefined?router.query.Curated_type:null;
+		console.log("urlprams",UrlPrams);
+		if(UrlPrams===undefined){
+   props.getRestaurants().then((Response)=>{setloading(false)});
+		}else{
+			props.getRestaurants(UrlPrams).then((Response)=>{setloading(false)});
+		}
    props.getCuisineslist();
-  },[router.query.Curated_type]);
+  },[]);
   const metacontent={title:"Order Food Online from Best Restaurants Around You | Let's Eat",description:"Order food online from restaurants and get it delivered."}
 const {Restaurants} = props
 console.log('all cuisines list',props.Cusinieslist.data);

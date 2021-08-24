@@ -92,7 +92,7 @@ return (
                             <div className="filter-sec cuisines-section">
                                 <h4>Cuisines</h4>
                                 {
-                                props.Cusinieslist.map((item)=>(
+                               props.Cusinieslist && props.Cusinieslist.map((item)=>(
                                 <div className="cuisines-wrap">
                                     <ul>
                                         <li>
