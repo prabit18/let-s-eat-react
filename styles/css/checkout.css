@@ -1699,6 +1699,7 @@ button.plus-btn {
     border: 1px solid #FFFFFF !important;
     background: transparent;
 }
+/* Stripe Payment */
 @media(min-width: 576px) {
     .address-modal.delete-modal .modal-dialog {
         min-width: 580px;

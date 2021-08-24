@@ -34,6 +34,7 @@ import LoadingSpinner from "../Loader";
 import Geocode from "react-geocode";
 import { GooleMapApiKey } from "../../config/env";
 import PaymentGateway from "../PaymentGateway";
+import { useElements } from "@stripe/react-stripe-js";
 
 const Checkout = (props) => {
   const API_Key = GooleMapApiKey;
@@ -100,6 +101,7 @@ const Checkout = (props) => {
   const [editModal, seteditModal] = useState(false);
   const [editData, setEditData] = useState([]);
   const [profileData, setprofileData] = useState([])
+  const [orderId, setorderId] = useState('')
 
   useEffect(() => {
     getCurrentLoaction()
@@ -963,6 +965,8 @@ let fLat=JSON.stringify()
     });
     return myCart;
   };
+  
+  const [StripPublicKey, setStripPublicKey] = useState()
   const PlaceNewOrder = () => {
     let payload = {
       restaurant_id: cartItem[0].rest_id,
@@ -978,16 +982,21 @@ let fLat=JSON.stringify()
     };
     dataService.PlaceOrder(payload).then((resp) => {
       console.log("repsonse-->",resp.data.data.data)
+      setorderId(resp.data.data.data.order_id)
       dataService.PaymentIntent(resp.data.data.data.order_id).then((response)=>{
         console.log("Response-->",response.data.data.data.client_public_key)
         let key=response.data.data.data.client_public_key
         localStorage.setItem('Public_key',key)
+        // elements.getElement(CardElement)
         if(key){
-          setIspayment(true)
+          setStripPublicKey(key)
+          setIspayment(true)  
         }
       }).catch((e)=>{
         console.log(e)
       })
+    }).catch((e)=>{
+      console.log(e.message)
     });
   };
   const [paymentName, setPaymentName] = useState();
@@ -1979,7 +1988,7 @@ let fLat=JSON.stringify()
                   </div>
                 </div>
               </div>
-              {isPayment&&<PaymentGateway/>}
+              {isPayment&&<PaymentGateway StripPublicKey={StripPublicKey} orderId={orderId}/>}
             </section>
           </section>
         </div>

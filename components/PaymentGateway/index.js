@@ -8,12 +8,13 @@ import CheckoutForm from './CheckoutForm';
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
 
-const PaymentGateway=()=> {
-  const stripePromise = loadStripe(localStorage.getItem('Public_key'));
-
+const PaymentGateway=({StripPublicKey,orderId})=> {
+  console.log({StripPublicKey})
+  // const [stripePromiseAll, setstripePromise] = useState(localStorage.getItem('Public_key'))
+  const stripePromise = loadStripe("pk_test_6pRNASCoBOKtIshFeQd4XMUh");
   return (
     <Elements stripe={stripePromise}>
-      <CheckoutForm />
+      <CheckoutForm orderId={orderId}/>
     </Elements>
   );
 };

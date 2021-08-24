@@ -3,7 +3,7 @@ import {useStripe, useElements, CardElement} from '@stripe/react-stripe-js';
 
 import CardSection from './CardSection';
 
-export default function CheckoutForm() {
+export default function CheckoutForm({orderId}) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -17,6 +17,23 @@ export default function CheckoutForm() {
       // Make  sure to disable form submission until Stripe.js has loaded.
       return;
     }
+    const stripeTokenHandler= async(token)=> {
+        const paymentData = {token: token.id};
+      
+        // Use fetch to send the token ID and any other payment data to your server.
+        // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+        const response = await fetch('https://staging-apis.letseat.co.uk/staging/api/v1/orders/web/validate-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(orderId),
+        });
+      
+        // Return and display the result of the charge.
+        console.log("response token",response.json());
+        return response.json();
+      }
 
     const card = elements.getElement(CardElement);
     const result = await stripe.createToken(card);

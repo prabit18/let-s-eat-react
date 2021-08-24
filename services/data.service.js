@@ -35,7 +35,8 @@ export const dataService = {
     UpdateAddress,
     UpdateAllAddress,
     PlaceOrder,
-    GetProfile
+    GetProfile,
+    PaymentIntent
 }
 
 const handlecart=()=>{
@@ -302,17 +303,17 @@ async function verifyOtp(sessiontoken,otp,username) {
   }
 }
  
-async function ResendOtp(username) {
-  var body = {
-    username: username,
-  };
-  try {
-    const data = await axios.post(apiURL + "customer/resend-otp", body);
-    return { error: false, data: data };
-  } catch (e) {
-    return { error: true, message: e };
-  }
-}
+// async function ResendOtp(username) {
+//   var body = {
+//     username: username,
+//   };
+//   try {
+//     const data = await axios.post(apiURL + "customer/resend-otp", body);
+//     return { error: false, data: data };
+//   } catch (e) {
+//     return { error: true, message: e };
+//   }
+// }
 async function getLogin(Email) {
   console.log(Email);
   var body = {
@@ -582,20 +583,26 @@ async function addAddress(body) {
 //       return {error: true, message: e}
 //   }
 // }
-async function addAddress(body){
-    let payload=JSON.stringify(body)
-    try{
-    var data= await axios.post(apiURL+'customer/address/create',payload,{headers: authHeader()})
-    console.log("data",data);
-return {error:false,data:data}
-
+async function UpdateProfile(FirstName,LastName) {
+    var body={
+        "first_name":FirstName,
+        "last_name":LastName
     }
-    catch(e){
-        console.log(e);
-        return {error: true, message: e}
-
-    }
+     let user=JSON.parse(localStorage.getItem('user'))
+     let authorization="Bearer " +user.token.id_token
+  let headers = {
+      "Content-Type": "application/json",
+      "Authorization": authorization,
+  }
+  try {
+      const data = await axios.post( apiURL+'customer/profile/update',body,{headers:headers});
+      console.log("data is coming",data)
+      return {error: false, data: data}
+  } catch (e) {
+      return {error: true, message: e}
+  }
 }
+
 async function ListAddress() {
   try {
     var data = await axios.post(
