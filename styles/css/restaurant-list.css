@@ -488,10 +488,10 @@ p.rating-content {
 }
 .filter-popup .modal-footer {
     justify-content: flex-start;
-    padding: 15px 55px;
+    padding: 15px 0;
 }
 .filter-popup .modal,.slide-pane__overlay.overlay-after-open {
-    z-index: 9990;
+    z-index: 99901;
     display: block;
 }
 .cuisines-wrap ul {

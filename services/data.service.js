@@ -78,6 +78,7 @@ async function getRestaurants(type) {
             body={};
         }
         else{
+          
         if(typeof type === 'object'){
             
             //type=[...new Set(type)];

@@ -7,25 +7,117 @@ import RestaurantsList from './restaurantslist';
 import { useRouter } from 'next/router';
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
+import { NavItem } from 'reactstrap';
 const RestaurantListingPage = (props) => {
-    console.log('cusines are ',props.Cusinieslist)
-    const[filtertype,setFiltertype]=useState({});
+    const[filtertype,setFiltertype]=useState('');
     const router=useRouter();
     console.log(router.query.Curated_type);  
-    //props.getRestaurants(router.query.curated_type);
+    const[val,setval]=useState(false);
+    const[cuisinetype,setcuisinetype]=useState([]);
+    const[odd,setOdd]=useState([]);
+    const[even,setEven]=useState([]);
+    const[pickupoption,setPickupoption]=useState('');
+    const[filterBody,setFilterBody]=useState({});
+    const [state, setState] = useState({
+        isPaneOpen: false,
+        isPaneOpenLeft: false,
+      });
+    var body={}
+    const multiplefilter=()=>{
+    
+        if(pickupoption){
+            body={
+                "filters":[{
+                    "key":"cuisine_types",
+                    "value":cuisinetype
+                    },
+                    {
+                   "key":pickupoption,
+                   "value":[true]
+                }]
+              }
+        }else if(cuisinetype){
+        body={
+          "filters":[{
+              "key":"cuisine_types",
+              "value":cuisinetype
+          }]
+        }
+    }else {
+        body={};
+    }
+       setFilterBody(body);
+        props.getRestaurants(body)
+        setState({ isPaneOpen: false })
+    }
   const  handleFilter = (type,value) =>{
-    filtertype[type]=value;  
-      setFiltertype(filtertype);
-      props.getRestaurants(filtertype)
-    //   setFiltertype(type);
+      let b=filterBody;
+      setFiltertype(type)
+      var sortobject={};
+      sortobject["key"]=type;
+      sortobject["value"]=value;
+      b.sort_by=sortobject;
+      console.log("new body",b);
+     props.getRestaurants(b);
   }
-  const [state, setState] = useState({
-    isPaneOpen: false,
-    isPaneOpenLeft: false,
-  });
   const clickhandler=()=>{
-      setOpen(true);
+     
+    if(even.length<=0||odd.length<=0){
+    props.Cusinieslist.map((item,index)=>{
+        if(index%2==0){
+           even.push(item);
+           setEven(even);
+        }else{
+         odd.push(item);
+         setOdd(odd);
+        }
+    })
 }
+    setState({ isPaneOpen: true })
+}
+const [checked,setChecked]=useState({})
+const selectvaluehandler=(type,e)=>{
+    
+    setval(e.target.checked)
+    if(!cuisinetype.includes(type)){
+    cuisinetype.push(type);
+    checked[type]=val;
+    setChecked(checked);
+    }else{
+        delete checked[type];
+        setChecked(checked);
+        const index = cuisinetype.indexOf(type);
+        if (index > -1) {
+            cuisinetype.splice(index, 1);
+        }          
+    }
+    setcuisinetype(cuisinetype);
+    console.log("cusinetype",cuisinetype);
+}
+const ClearAllhandler=()=>{
+    while(cuisinetype.length>0){
+        cuisinetype.pop();
+    }
+    for (var member in checked) delete checked[member]
+    setcuisinetype(cuisinetype);
+    setPickupoption('');
+    console.log("updated cuisine",cuisinetype);
+    props.getRestaurants();
+}
+const pickuphandler=(type)=>{
+    
+    if(pickupoption===type){
+        setPickupoption('');
+        delete checked[type];
+        setChecked(checked);
+    }else {
+        setPickupoption(type);
+        checked[type]=true;
+      setChecked(checked);
+    }
+    
+}
+
 return (
 	<>
         <section classNameName="restaurant-list">
@@ -43,22 +135,20 @@ return (
                                             <li value="deliverytime"className={filtertype==='delivery_time'?"active":""}><a href="javascript:void(0);" onClick={()=> handleFilter('delivery_time','asc')}>Delivery Time</a></li>
                                             <li value="pureVeg"className={filtertype==='pure_veg'?"active":""}><a href="javascript:void(0);"onClick={()=> handleFilter('pure_veg','true')}> Recommended</a></li>
                                             <li value="offers"className={filtertype==='offers'?"active":""}><a href="javascript:void(0);" onClick={()=> handleFilter('offers','')}>Close by</a></li>
-                                            <li className="filter"><a href="javascript:void(0);" data-toggle="modal" data-target="#filterModal" onClick={() => setState({ isPaneOpen: true })}>Filters
+                                            <li className="filter"><a href="javascript:void(0);" data-toggle="modal" data-target="#filterModal" onClick={clickhandler}>Filters
                                                     <span><img alt="filter-icon" src="../../images/filter.svg"/></span>
                                                 </a></li>
                                         </ul>
                                     </div>
-                                </div>
-                                
+                                 </div>
                                 <RestaurantsList handleFilter={handleFilter}/> 
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-<SlidingPane className="some-custom-class custom-popup" overlayClassName="some-custom-overlay-class" isOpen={state.isPaneOpen} width="500px" onRequestClose={() => {setState({ isPaneOpen: false });}}>
-    
-<div className="filter-popup">
+<SlidingPane className="some-custom-class custom-popup" overlayClassName="some-custom-overlay-class" isOpen={state.isPaneOpen} width="500px" onRequestClose={() => {setState({ isPaneOpen: false });}}>   
+   <div className="filter-popup">
         <div className="modal right fade show">
             <div className="modal-dialog">
                 <div className="modal-content">
@@ -76,13 +166,13 @@ return (
                                 <h4>Delivery Type</h4>
                                 <div className="form-row">
                                     <div className="col">
-                                        <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios5" value="option1" />
+                                        <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios5" value="option1"  checked={pickupoption==='home_delivery'?true:false} onClick={()=>pickuphandler('home_delivery')} />
                                         <label className="form-check-label" for="exampleRadios5">
                                             Home Delivery
                                         </label>
                                     </div>
                                     <div className="col">
-                                        <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios6" value="option1" />
+                                        <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios6" value="option1" checked={pickupoption==='store_pickup'?true:false} onClick={()=>pickuphandler('store_pickup')}/>
                                         <label className="form-check-label" for="exampleRadios6">
                                             Store Pick Up
                                         </label>
@@ -91,38 +181,39 @@ return (
                             </div>
                             <div className="filter-sec cuisines-section">
                                 <h4>Cuisines</h4>
-                                {
-                               props.Cusinieslist && props.Cusinieslist.map((item)=>(
                                 <div className="cuisines-wrap">
-                                    <ul>
+
+                                     <ul>
+                                  {even.map((item)=>(
                                         <li>
-                                            <input className="form-check-input" type="checkbox" value="" id={item.id}/>
+                                            <input className="form-check-input" type="checkbox" checked={checked.hasOwnProperty(item.name)&&val} value={item.name} onChange={(e)=>selectvaluehandler(item.name,e)} id={item.id}/>
                                             <label className="form-check-label" htmlFor={item.id}>
                                                 {item.name}
                                             </label>
                                         </li>
+                                  ))}
                                         </ul>
-                                    <ul>
-                                        <li>
-                                            <input className="form-check-input" type="checkbox" value="" id={item.id}/>
-                                            <label className="form-check-label" for={item.id}>
-                                                {item.name}
-                                            </label>
-                                        </li>
-                                        </ul>
+                                        <ul>
+                                     {odd.map((item)=>(
+                                            <li>
+                                                <input className="form-check-input" type="checkbox" checked={checked.hasOwnProperty(item.name)&&val}value={item.name} onChange={(e)=>selectvaluehandler(item.name,e)} id={item.id}/>
+                                                <label className="form-check-label" for={item.id}>
+                                                    {item.name}
+                                                </label>
+                                            </li>
+                                     ))}
+                                            </ul>
                                 </div>
-                                ))}
                                 </div>
                         </form>
-                            </div>
-                            </div>    
-                                
-                    <div className="modal-footer">
+                        <div className="modal-footer">
                         <div className="filter-action">
-                            <a href="#">Clear All</a>
-                            <button type="button">Apply</button>
+                            <a href="javascript:void()" onClick={ClearAllhandler}>Clear All</a>
+                            <button type="button" onClick={multiplefilter}>Apply</button>
                         </div>
                     </div>
+                        </div>
+                        </div>  
                 </div>
             </div>
         </div>
