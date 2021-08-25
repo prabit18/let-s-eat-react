@@ -7,9 +7,7 @@ import CategorySectionLoader from '../Loader/CategorySectionLoader';
 import { useRouter } from 'next/router';
 const HomeTopSection = (props) => {
     const history=useRouter()
-    const {Cuisines,Curatedlist} = props
-    const [loading, setloading] = useState(true)
-  
+    const {Cuisines,Curatedlist} = props 
     return (
         <div className={history.pathname.includes('/restaurants')?`page-banner`:'top-bg'}>
             <OffersSection/>

@@ -17,7 +17,6 @@ const HomePage = (props) => {
 
 const {Curatedlist} = props
 // Curatedlist.map((item)=>{console.log(item)})
-console.log("curated",Curatedlist)
   return (
     <>
       <Metadata metacontent={metacontent}/>

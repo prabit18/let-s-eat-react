@@ -14,10 +14,18 @@ const RestaurantListing = (props) => {
 	useEffect(() => {
 		let UrlPrams=router.query!==undefined?router.query.Curated_type:null;
 		console.log("urlprams",UrlPrams);
-		if(UrlPrams===undefined){
+		let cuisine_prams=router.query!==undefined?router.query.Cuisine_type:null;
+		var body={
+			"filters":[{
+			"key":"cuisine_types",
+			"value":[cuisine_prams]
+		}]}
+		if(UrlPrams===undefined||cuisine_prams){
    props.getRestaurants().then((Response)=>{setloading(false)});
-		}else{
+		}else if(UrlPrams){
 			props.getRestaurants(UrlPrams).then((Response)=>{setloading(false)});
+		}else if(cuisine_prams){
+			props.getRestaurants(body).then((Response)=>{setloading(false)});
 		}
    props.getCuisineslist();
   },[]);

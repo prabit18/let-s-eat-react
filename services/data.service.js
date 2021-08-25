@@ -76,28 +76,30 @@ async function getRestaurants(type) {
         if(type===undefined)
         {
             body={};
-        }else{
+        }
+        else{
         if(typeof type === 'object'){
             
             //type=[...new Set(type)];
-            console.log("type is",type)
-            let filters=[];
-            let sortby={};
-            for(var key in type){
-               if(key==='pure_veg'){
-                   filters.push({  "key":key,"value":type[key]})
-             console.log("fjfff",)
-            }else{
-                sortby[key]=type[key];
-            } 
-        }
-        body={};
-        if(filters){
-         body["filters"]=filters
-        }else if(sortby){
-            body["sort_by"]=sortby
-        }
-        console.log("requestbody",body);
+        //     console.log("type is",type)
+        //     let filters=[];
+        //     let sortby={};
+        //     for(var key in type){
+        //        if(key==='pure_veg'){
+        //            filters.push({  "key":key,"value":type[key]})
+        //      console.log("fjfff",)
+        //     }else{
+        //         sortby[key]=type[key];
+        //     } 
+        // }
+        // body={};
+        // if(filters){
+        //  body["filters"]=filters
+        // }else if(sortby){
+        //     body["sort_by"]=sortby
+        // }
+        // console.log("requestbody",body);
+        body=type;
         }
        else {
         if(type==="pure_veg"){
