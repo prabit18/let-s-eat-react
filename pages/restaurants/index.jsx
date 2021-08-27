@@ -30,7 +30,6 @@ const RestaurantListing = (props) => {
   },[]);
   const metacontent={title:"Order Food Online from Best Restaurants Around You | Let's Eat",description:"Order food online from restaurants and get it delivered."}
 const {Restaurants} = props
-console.log('all cuisines list',props.Cusinieslist.data);
 	return (
 		<>
 		   <Metadata metacontent={metacontent}/>

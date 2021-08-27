@@ -2,14 +2,16 @@ import React, { useEffect } from 'react'
 import { UserAction } from '../../redux/actions/user.action';
 import Profile from '../../components/profile';
 import { connect } from 'react-redux';
-import { dataService } from '../../services';
 import { useRouter } from 'next/router';
 import Metadata from '../../components/Metadata';
 
 const ProfilePage=(props)=>{
     const router=useRouter()
     useEffect(()=>{
+      let user=JSON.parse(localStorage.getItem('user'));
+      if(user){
         props.getProfile();
+      }
     },[])
     const metacontent={title:`${props.Profile.first_name} ${props.Profile.last_name} | Let's Eat`,description:""}
     return(

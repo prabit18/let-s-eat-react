@@ -11,7 +11,8 @@ import { dataService } from "../../services/data.service";
 import RestaurantListLoader from "../Loader/RestaurantListLoader";
 
 const RestaurantsList = (props) => {
-  const [restaurantList, setRestaurantList] = useState({ list: [] });
+  console.log("props is comming",props.restaurants.data)
+  const [restaurantList, setRestaurantList] = useState({ list: props.restaurants.data });
   const { list } = restaurantList;
   const [loading, setloading] = useState(false);
   const [totalPage, setTotalpage] = useState();
@@ -29,7 +30,7 @@ const RestaurantsList = (props) => {
 
   useEffect(() => {
     setloading(true);
-    setRestaurantList({ list: [] });
+    setRestaurantList({ list:props.restaurants.data });
     dataService.getRestaurantsInfinite(1);
     setTotalpage(parseInt(restaurants.pagination.number_of_pages));
     setRestaurantList({
@@ -44,7 +45,9 @@ const RestaurantsList = (props) => {
     }, 1000);
   }, []);
   console.log("refresh", refresh);
-
+useEffect(()=>{
+setRestaurantList({list:props.restaurants.data})
+},[props.restaurants.data])
   const fetchData = () => {
     if (refresh === true) {
       setspinner(true);

@@ -67,11 +67,12 @@ const Signup=(props)=>{
                 access_token:response.tokenObj.access_token,
                 provider: "google",
             }
+            setpopup('')
             dataService.socialLogin(body).then((res)=>{
-                setLogin(true);
-                localStorage.setItem('user',JSON.stringify(res.data))
-                setProfilename(res.data.info.first_name);
-                window.location.reload()
+                    setLogin(true);
+                    localStorage.setItem('user',JSON.stringify(res.data.data.data))
+                    setProfilename(JSON.parse(localStorage.getItem('user')).info.first_name);
+                        router.reload(window.location.pathname)    
         })
     }
 }

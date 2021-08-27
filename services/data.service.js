@@ -75,14 +75,13 @@ async function getRestaurants(type) {
     console.log("type is",type);
     try {
         var body={};
-        if(type===undefined)
+        if(!type)
         {
             body={};
         }
         else if(typeof type === 'object'){
         body=type;
         }
-    //    debugger
         const data = await axios.post( apiURL+'restaurants/web/list', body);
         return {error: false, data: data}
     } catch (e) {
@@ -211,9 +210,7 @@ async function getSignup(Email, first_name, last_name) {
     return { error: true, message: e };
   }
 }
-async function verifyOtp(sessiontoken,otp,username) {
-
-      
+async function verifyOtp(sessiontoken,otp,username) {  
      var body={ 
                "otp":otp,   
                "session":sessiontoken,
@@ -233,8 +230,6 @@ async function verifyOtp(sessiontoken,otp,username) {
     var body={ 
               "username":username,
             }
-  
-
   try {
     const data = await axios.post(apiURL + "customer/verify-otp", body);
     console.log("data---->", data);
@@ -245,18 +240,6 @@ async function verifyOtp(sessiontoken,otp,username) {
     return { error: true, message: e };
   }
 }
- 
-// async function ResendOtp(username) {
-//   var body = {
-//     username: username,
-//   };
-//   try {
-//     const data = await axios.post(apiURL + "customer/resend-otp", body);
-//     return { error: false, data: data };
-//   } catch (e) {
-//     return { error: true, message: e };
-//   }
-// }
 async function getLogin(Email) {
   console.log(Email);
   var body = {
@@ -299,19 +282,11 @@ async function Mobileupadte(Mobile_Number) {
   var body = {
     phone_number: "+91" + Mobile_Number,
   };
-  let user = JSON.parse(localStorage.getItem("user"));
-  console.log("token is", user.token);
-  let authorization = "Bearer " + user.token.id_token;
-  let headers = {
-    "Content-Type": "application/json",
-    Authorization: authorization,
-  };
-  console.log(headers);
   try {
     const data = await axios.post(
       apiURL + "customer/phone-number/update",
       body,
-      { headers: headers }
+      { headers:authHeader() }
     );
     console.log("Data comes from mobile update --->>", data);
     return data.data;
@@ -352,20 +327,12 @@ async function GetProfile() {
   }
 }
 
-//verify phone
-
 async function AddFavouriteRestaurant(RestaurantID) {
     var body={ 
             "restaurant_id":RestaurantID,
             }
-            let user=JSON.parse(localStorage.getItem('user'))
-       let authorization="Bearer " +user.token.id_token
-    let headers = {
-        "Content-Type": "application/json",
-        "Authorization": authorization,
-    }
     try {
-        const data = await axios.post( apiURL+'customer/favourite/create',body,{headers:headers});
+        const data = await axios.post( apiURL+'customer/favourite/create',body,{headers:authHeader()});
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
@@ -375,14 +342,8 @@ async function RemoveFavouriteRestaurant(RestaurantID) {
       var body={ 
         "restaurant_id":RestaurantID,
         }
-       let user=JSON.parse(localStorage.getItem('user'))
-       let authorization="Bearer " +user.token.id_token
-    let headers = {
-        "Content-Type": "application/json",
-        "Authorization": authorization,
-    }
     try {
-        const data = await axios.post( apiURL+'customer/favourite/remove',body,{headers:headers});
+        const data = await axios.post( apiURL+'customer/favourite/remove',body,{headers:authHeader()});
         return {error: false, data: data}
     } catch (e) {
         return {error: true, message: e}
@@ -390,14 +351,8 @@ async function RemoveFavouriteRestaurant(RestaurantID) {
 }
 async function FavouriteList() {
   var body = {};
-  let user = JSON.parse(localStorage.getItem("user"));
-  let authorization = "Bearer " + user.token.id_token;
-  let headers = {
-    "Content-Type": "application/json",
-    Authorization: authorization,
-  };
   try {
-      const data = await axios.post( apiURL+'customer/favourite/list',body,{headers:headers});
+      const data = await axios.post( apiURL+'customer/favourite/list',body,{headers:authHeader()});
       console.log("data is coming",data)
       return {error: false, data: data}
   } catch (e) {
@@ -479,12 +434,6 @@ async function clearCart() {
 }
 async function getProfile() {
     var body={}
-//      let user=JSON.parse(localStorage.getItem('user'))
-//      let authorization="Bearer " +user.token.id_token
-//   let headers = {
-//       "Content-Type": "application/json",
-//       "Authorization": authorization,
-//   }
   try {
       const data = await axios.post( apiURL+'customer/profile/get',body,{headers:authHeader()});
       console.log("data is coming",data)

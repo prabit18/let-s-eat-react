@@ -8,26 +8,28 @@ import { useRouter } from 'next/router';
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { NavItem } from 'reactstrap';
+import Emptylist from '../emptylist';
 const RestaurantListingPage = (props) => {
     const[filtertype,setFiltertype]=useState('');
     const router=useRouter();
-    console.log("urls is coming here",router.query.Curated_type);  
     const[val,setval]=useState(false);
     const[cuisinetype,setcuisinetype]=useState([]);
     const[odd,setOdd]=useState([]);
     const[even,setEven]=useState([]);
     const[pickupoption,setPickupoption]=useState('');
-    const[filterBody,setFilterBody]=useState({});
+    const[restaurants,setRestaurants]=useState([]);
     const [state, setState] = useState({
         isPaneOpen: false,
         isPaneOpenLeft: false,
       });
-      const urls=router.query.Cuisine_type;
     var body={}
-    const multiplefilter=()=>{
-        if(urls){
-            cuisinetype.push(router.query.Cuisine_type);
-            setcuisinetype(cuisinetype);
+    const[filterBody,setFilterBody]=useState(body);
+    let path=router.asPath;
+    const multiplefilter=()=>{    
+		let finalpath=path.split("?")[1]===undefined?"":path.split("?")[1]
+        let key=finalpath.split("=")[0];
+        if(key==='cuisine_types'){
+            cuisinetype.push(finalpath.split("=")[1].replace('+'," "));
         }
         if(pickupoption){
             body={
@@ -40,7 +42,7 @@ const RestaurantListingPage = (props) => {
                    "value":[true]
                 }]
               }
-        }else if(cuisinetype && router.query.Curated_type){
+        }else if(cuisinetype && key==='curated_list'){
         body={
           "filters":[{
               "key":"cuisine_types",
@@ -48,7 +50,7 @@ const RestaurantListingPage = (props) => {
           },
           {
               "key":"curated_list",
-              "value":[router.query.Curated_type]
+              "value":[finalpath.split("=")[1].replace('+'," ")]
           }]
         }
     }else if(cuisinetype&&!router.query.Curated_type){
@@ -62,7 +64,9 @@ const RestaurantListingPage = (props) => {
         body={}
     }
        setFilterBody(body);
-        props.getRestaurants(body)
+        props.getRestaurants(body);
+        setRestaurants(props.restaurants.data);
+        console.log("updated restaurnat",props.restaurants);
         setState({ isPaneOpen: false })
     }
   const  handleFilter = (type,value) =>{
@@ -92,15 +96,12 @@ const RestaurantListingPage = (props) => {
 }
 const [checked,setChecked]=useState([])
 const selectvaluehandler=(type,e)=>{
-    console.log("onchange value",val,e.target.checked)
     if(!cuisinetype.includes(type)){
     cuisinetype.push(type);
     setcuisinetype(cuisinetype);
     let checkList=[...checked]
     checkList=[...checkList,type]
-    // checked[type]=e.target.checked;
     setChecked(checkList);
-    console.log("checked",checked)
     }else{
         let checkList=[...checked]
         const i = checkList.indexOf(type);
@@ -118,7 +119,6 @@ const selectvaluehandler=(type,e)=>{
     console.log("cusinetype",cuisinetype);
 }
 const ClearAllhandler=()=>{
-    console.log("coming inside this function");
     while(cuisinetype.length>0){
         cuisinetype.pop();
     }
@@ -126,6 +126,8 @@ const ClearAllhandler=()=>{
     setcuisinetype(cuisinetype);
     setPickupoption('');
     console.log("updated cuisine",cuisinetype);
+    body={};
+    debugger
     props.getRestaurants(body);
 }
 const pickuphandler=(type)=>{
@@ -143,8 +145,10 @@ const pickuphandler=(type)=>{
 }
 
 return (
+    
 	<>
-        <section classNameName="restaurant-list">
+    {props.restaurants.pagination.total_records>0?
+        (<section classNameName="restaurant-list">
                 <div className="container custom-container">
                     <div className="row">
                         <div className="col-md-12">
@@ -157,20 +161,22 @@ return (
                                         <ul>
                                             <li value="rating" className={filtertype==='ratings'?"active":""} ><a href="javascript:void(0);"onClick={()=> handleFilter('ratings','desc')}>Rating</a></li>
                                             <li value="deliverytime"className={filtertype==='delivery_time'?"active":""}><a href="javascript:void(0);" onClick={()=> handleFilter('delivery_time','asc')}>Delivery Time</a></li>
-                                            <li value="pureVeg"className={filtertype==='pure_veg'?"active":""}><a href="javascript:void(0);"onClick={()=> handleFilter('pure_veg','true')}> Recommended</a></li>
-                                            <li value="offers"className={filtertype==='offers'?"active":""}><a href="javascript:void(0);" onClick={()=> handleFilter('offers','')}>Close by</a></li>
+                                            <li value="pureVeg"className={filtertype==='recommended'?"active":""}><a href="javascript:void(0);"onClick={()=> handleFilter('recommended','desc')}> Recommended</a></li>
+                                            <li value="offers"className={filtertype==='close_by'?"active":""}><a href="javascript:void(0);" onClick={()=> handleFilter('close_by','')}>Close by</a></li>
                                             <li className="filter"><a href="javascript:void(0);" data-toggle="modal" data-target="#filterModal" onClick={clickhandler}>Filters
                                                     <span><img alt="filter-icon" src="../../images/filter.svg"/></span>
                                                 </a></li>
                                         </ul>
                                     </div>
                                  </div>
-                                <RestaurantsList handleFilter={handleFilter}/> 
+                                <RestaurantsList restaurants={props.restaurants.data.data}/> 
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </section>):
+            (<Emptylist/>)
+}
 <SlidingPane className="some-custom-class custom-popup" overlayClassName="some-custom-overlay-class" isOpen={state.isPaneOpen} width="500px" onRequestClose={() => {setState({ isPaneOpen: false });}}>   
    <div className="filter-popup">
         <div className="modal right fade show">
@@ -232,7 +238,7 @@ return (
                         </form>
                         <div className="modal-footer">
                         <div className="filter-action">
-                            <a href="#" onClick={ClearAllhandler}>Clear All</a>
+                            <a href={path} onClick={ClearAllhandler}>Clear All</a>
                             <button type="button" onClick={multiplefilter}>Apply</button>
                         </div>
                     </div>

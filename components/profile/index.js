@@ -30,7 +30,8 @@ const Profile=(props)=>{
       const User = JSON.parse(localStorage.getItem("user"));
     if (User) {   
             setSuccess(true);
-            if(!User.info.phone_number)
+            console.log("mobile",props.data.mobile_verified)
+            if(!props.data.mobile_verified)
             {   
                 setverify(true);
                 setaddbutton(true);
@@ -269,11 +270,11 @@ const Profile=(props)=>{
                                                     <div className="filter-section">
                                                         <div className="resto-count favourite-menu-header">
                                                             <h5>Phone Number</h5>
-                                                            <a href="#" data-toggle="modal" data-target="#phoneModal" onClick={()=>MobileNumberhandler('mobilenumber')}>CHANGE</a>
+                                                            <a href="javascript:void();" data-toggle="modal" data-target="#phoneModal" onClick={()=>MobileNumberhandler('mobilenumber')}>CHANGE</a>
                                                         </div>
                                                     </div>
                                                     <div className="email-content">
-                                                        <p>+91 {props.data.phone_number}</p>
+                                                        <p>+{props.data.phone_number}</p>
                                                         <p className="verified-content">Verified</p>
                                                     </div>
                                                 </div>):

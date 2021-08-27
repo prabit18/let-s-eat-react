@@ -12,7 +12,7 @@ const Emptypage=()=>{
                                     <div className="col-lg-2 col-md-2" id="profile-menu">
                                         <div className="favourite-menu-section">
                                            <ul className="menu-feild frame favourite-menu">
-                                                <li className="food-filter active"><a href="/profile">Profile</a></li>
+                                                <li className="food-filter"><a href="/profile">Profile</a></li>
                                                 <li className="food-filter"><a href="#">Orders</a></li>
                                                 <li className="food-filter"><a href="#">Manage Address</a></li>
                                                 <li className="food-filter active"><a href="/favourites">Favorite Restaurants</a></li>

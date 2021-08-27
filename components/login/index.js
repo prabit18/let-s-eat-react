@@ -7,6 +7,7 @@ import { googleClientID, facebookAppID } from '../../config/env';
 import LoginContext from '../Context/LoginContext';
 import { useRouter } from 'next/router';
 import "react-responsive-modal/styles.css";
+import { data } from 'jquery';
 const Login=(props)=>{
     const router=useRouter()
     const[show,setshow]=useState(true);
@@ -70,14 +71,10 @@ const Login=(props)=>{
             }
             setpopup('')
             dataService.socialLogin(body).then((res)=>{
-                
-                    
                     setLogin(true);
-                    localStorage.setItem('user',JSON.stringify(res.data))
+                    localStorage.setItem('user',JSON.stringify(res.data.data.data))
                     setProfilename(JSON.parse(localStorage.getItem('user')).info.first_name);
-                        router.reload(window.location.pathname)
-                
-                
+                        router.reload(window.location.pathname)    
         })
     }
 }
