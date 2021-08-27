@@ -35,10 +35,10 @@ import Geocode from "react-geocode";
 import { GooleMapApiKey } from "../../config/env";
 import PaymentGateway from "../PaymentGateway";
 import { useElements } from "@stripe/react-stripe-js";
-
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 const Checkout = (props) => {
   const API_Key = GooleMapApiKey;
-  const [isPayment,setIspayment]=useState(false)
+  const [isPayment, setIspayment] = useState(false);
   const [Spinner, setSpinner] = useState(false);
   const Type = useRef("");
 
@@ -100,15 +100,16 @@ const Checkout = (props) => {
   const [error, seterror] = useState(false);
   const [editModal, seteditModal] = useState(false);
   const [editData, setEditData] = useState([]);
-  const [profileData, setprofileData] = useState([])
-  const [orderId, setorderId] = useState('')
-
+  const [profileData, setprofileData] = useState([]);
+  const [orderId, setorderId] = useState("");
+  const [StripSecrete, setStripSecrete] = useState("");
+  const [savedCardList, setsavedCardList] = useState([])
   useEffect(() => {
-    getCurrentLoaction()
     if (localStorage.getItem("suggestion")) {
       setSuggestion(localStorage.getItem("suggestion"));
     }
     if (JSON.parse(localStorage.getItem("user"))) {
+      getCurrentLoaction()
       const User = JSON.parse(localStorage.getItem("user"));
       setSuccess(true);
       setEmail(User.info.email);
@@ -203,21 +204,34 @@ const Checkout = (props) => {
                     setaddressList(result.data.data.data);
                   })
                   .catch((e) => {});
-                  dataService.GetProfile().then((responseData)=>{
-                    if(responseData){
-                      setprofileData(responseData.data.data.data)
+                dataService.GetProfile().then((responseData) => {
+                  if (responseData) {
+                    let profile=responseData.data.data.data
+                    setprofileData(profile);
+                    if(profile.stripe_account_id!==""){
+                      dataService.SavedCards(profile.stripe_account_id).then((stripeCards)=>{
+                        console.log("stripe cards",stripeCards)
+                        let card=stripeCards.data.data.data.data
+                        setsavedCardList(card)
+                      })
                     }
-                  })
+                  }
+                });
               });
           });
       });
       setrestaurantdetail(props.Restaurant);
     } else {
       setdeliveryOption(localStorage.getItem("delivery_type"));
-      setcart_item_objs_v1(JSON.parse(localStorage.getItem("cart_item_objs_v1")));
-      setcart_item_objs_v2(JSON.parse(localStorage.getItem("cart_item_objs_v2")));
+      setcart_item_objs_v1(
+        JSON.parse(localStorage.getItem("cart_item_objs_v1"))
+      );
+      setcart_item_objs_v2(
+        JSON.parse(localStorage.getItem("cart_item_objs_v2"))
+      );
       handleMainvariant(JSON.parse(localStorage.getItem("cartItem")));
-      let restId = JSON.parse(localStorage.getItem("cartItem"))[0].restaurant_id;
+      let restId = JSON.parse(localStorage.getItem("cartItem"))[0]
+        .restaurant_id;
       dataService
         .getIndividualRestuarant(restId)
         .then((res) => {
@@ -232,26 +246,41 @@ const Checkout = (props) => {
             } else {
               setdeliveryOption(localStorage.getItem("delivery_type"));
             }
-            let data = JSON.parse(localStorage.getItem("menuItems"));
-            let response = data;
-            let Menu = { ...menuObject };
-            response.forEach((item) => {
-              item.variants.forEach((child_item) => {
-                Menu[child_item.id] = child_item;
-                Menu[child_item.id].image_url = item.image_url;
-                Menu[child_item.id].name = item.name;
-                Menu[child_item.id].veg = item.veg;
-                Menu[child_item.id].description = item.description;
-                Menu[child_item.id].menu_id = item.id;
-                Menu[child_item.id].isVariant =
-                  item.variants.length > 1 ? true : false;
-                Menu[child_item.id].status = item.status;
-                Menu[child_item.id].restaurant_id = item.restaurant_id;
-              });
-            });
-            setmenuObject(Menu);
+            
+            if(restId!==JSON.parse(localStorage.getItem("menuItems"))[0].restaurant_id){
+              dataService.getMenuListbyRestID(restId).then((menuResponse)=>{
+                
+                let responseData = menuResponse.data.data.data;
+                localStorage.setItem('menuItems',JSON.stringify(responseData))
+                let MenuObjectData=ObjectMaker(responseData)
+                setmenuObject(MenuObjectData);
             var result = [];
             let new_cart = [];
+            JSON.parse(localStorage.getItem("cartItem")).map((value) => {
+              if (
+                Object.keys(MenuObjectData).length > 0 &&
+                MenuObjectData[value.variant_id].status === false
+              ) {
+                result.push(value);
+              } else {
+                new_cart.push(value);
+              }
+            });
+
+            setCartItem(new_cart);
+            localStorage.setItem("cartItem", JSON.stringify(new_cart));
+            setdeactivatedCart(result);
+              }).catch((e)=>{
+                console.log(e);
+              })
+            }else{
+              dataService.getMenuListbyRestID(restId).then((Itemresp)=>{
+              let MenuItemList=Itemresp.data.data.data
+              debugger
+              let Menu = ObjectMaker(MenuItemList )
+              setmenuObject(Menu);
+              var result = [];
+              let new_cart = [];
             JSON.parse(localStorage.getItem("cartItem")).map((value) => {
               if (
                 Object.keys(Menu).length > 0 &&
@@ -266,20 +295,48 @@ const Checkout = (props) => {
             setCartItem(new_cart);
             localStorage.setItem("cartItem", JSON.stringify(new_cart));
             setdeactivatedCart(result);
+          
 
             // })
-          }
+          })
+            
+        }
+      }
+        
         })
         .catch((e) => {
           console.log(e);
         });
+        
     }
+    
   }, []);
+
+  const ObjectMaker=(response)=>{
+    let Menu = { ...menuObject };
+            response.forEach((item) => {
+              item.variants.forEach((child_item) => {
+                Menu[child_item.id] = child_item;
+                Menu[child_item.id].image_url = item.image_url;
+                Menu[child_item.id].name = item.name;
+                Menu[child_item.id].veg = item.veg;
+                Menu[child_item.id].description = item.description;
+                Menu[child_item.id].menu_id = item.id;
+                Menu[child_item.id].isVariant =item.variants.length > 1 ? true : false;
+                Menu[child_item.id].status = item.status;
+                Menu[child_item.id].restaurant_id = item.restaurant_id;
+              });
+            });
+            return Menu
+  }
 
   useEffect(() => {}, [open]);
 
-  const Otpverification = async () => {
+  const handleNewMenuItems=(id)=>{
+    return dataService.getMenuListbyRestID(id)
+  }
 
+  const Otpverification = async () => {
     let currentAttempt = attempt + 1;
     setAttempt(currentAttempt);
     if (currentAttempt > 5) {
@@ -307,7 +364,6 @@ const Checkout = (props) => {
             handleMobileOtp();
           }
         } else {
-          
           //localStorage.setItem("user", JSON.stringify(res.data.data.data));
           setverify(false);
           setverifynow(false);
@@ -340,16 +396,13 @@ const Checkout = (props) => {
     });
   };
   const MobileNumberhandler = (type) => {
-    
     // setErrorMessage('')
     setShow(true);
     if (type === "mobilenumber") {
       setpopup(type);
     }
     if (type === "otp") {
-      
       if (!validatemobilenumber(Mobile_Number)) {
-
         setError(true);
         return;
       } else {
@@ -436,7 +489,6 @@ const Checkout = (props) => {
 
       handleCartinc(final);
     } else {
-
       var data_body = {
         rest_id: data.rest_id || Restaurant.id,
         item_id: data.item_id,
@@ -716,7 +768,7 @@ const Checkout = (props) => {
   const handleDeliveryOption = (e) => {
     localStorage.setItem("delivery_type", e.target.name);
     setdeliveryOption(e.target.name);
-  };
+  }; 
   const handleback = () => {
     window.location = localStorage.getItem("pathname");
   };
@@ -732,81 +784,56 @@ const Checkout = (props) => {
   const [lng, setLng] = useState(null);
   const [status, setStatus] = useState(null);
 
-    const getCurrentLoaction = () => {
-      if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => successPosition(pos),
-          (err) => deniedPosition(err)
-        );
-      } else {
-        alert("Your Browser doesn't support location service !");
-      }
-    };
-    const [address, setaddress] = useState("");
-    const handleMapaddress=(val)=>{
-      
-          setaddress(val)
-          localStorage.setItem("address", val);
-    }
-
-    const successPosition=(position)=>{
-      let lat = position.coords.latitude;
-      let lng = position.coords.longitude;
-      localStorage.setItem("latlong", JSON.stringify({ lat, lng }));
-
-      setLat(position.coords.latitude);
-      setLng(position.coords.longitude);
-      Geocode.setApiKey(API_Key);
-
-      // set response language. Defaults to english.
-      Geocode.setLanguage("en");
-  
-      // set response region. Its optional.
-      // A Geocoding request with region=es (Spain) will return the Spanish city.
-      Geocode.setRegion("es");
-  
-      // Enable or disable logs. Its optional.
-      Geocode.enableDebug();
-  
-      Geocode.fromLatLng(lat, lng).then(
-        (response) => {
-          const formatted_address = response.results[0].formatted_address;
-          localStorage.setItem("address",formatted_address);
-          setaddress(formatted_address)
-          
-
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-    }
-    const deniedPosition=(error)=>{
-      alert(
-        "You denied to location permission,\nAllow the permission from browser's settings or add you address manually."
-      );
-    }
-  
-  const getLocation = () => {
-    
-    if (!navigator.geolocation) {
-      setStatus("Geolocation is not supported by your browser");
-    } else {
-      setStatus("Locating...");
+  const getCurrentLoaction = () => {
+    if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setStatus(null);
-          setLat(position.coords.latitude);
-          setLng(position.coords.longitude);
-          let lat = position.coords.latitude;
-          let lng = position.coords.longitude;
-          localStorage.setItem("latlong", JSON.stringify({ lat, lng }));
-        },
-        () => {
-          setStatus("Unable to retrieve your location");
-        }
+        (pos) => successPosition(pos),
+        (err) => deniedPosition(err)
       );
+    } else {
+      alert("Your Browser doesn't support location service !");
     }
+  };
+  const [address, setaddress] = useState("");
+  const handleMapaddress = (val) => {
+    setaddress(val);
+    localStorage.setItem("address", val);
+  };
+
+  const successPosition = (position) => {
+    let lat = position.coords.latitude;
+    let lng = position.coords.longitude;
+    localStorage.setItem("latlong", JSON.stringify({ lat, lng }));
+
+    setLat(position.coords.latitude);
+    setLng(position.coords.longitude);
+    Geocode.setApiKey(API_Key);
+
+    // set response language. Defaults to english.
+    Geocode.setLanguage("en");
+
+    // set response region. Its optional.
+    // A Geocoding request with region=es (Spain) will return the Spanish city.
+    Geocode.setRegion("es");
+
+    // Enable or disable logs. Its optional.
+    Geocode.enableDebug();
+
+    Geocode.fromLatLng(lat, lng).then(
+      (response) => {
+        const formatted_address = response.results[0].formatted_address;
+        localStorage.setItem("address", formatted_address);
+        setaddress(formatted_address);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  };
+  const deniedPosition = (error) => {
+    alert(
+      "You denied to location permission,\nAllow the permission from browser's settings or add you address manually."
+    );
   };
 
   const handleAddress = (data) => {
@@ -821,10 +848,10 @@ const Checkout = (props) => {
         type: addressType,
         landmark: landmark,
         location: {
-          "latitude": JSON.stringify(
+          latitude: JSON.stringify(
             JSON.parse(localStorage.getItem("latlong")).lat
           ),
-          "longitude": JSON.stringify(
+          longitude: JSON.stringify(
             JSON.parse(localStorage.getItem("latlong")).lng
           ),
         },
@@ -860,7 +887,7 @@ const Checkout = (props) => {
     setflate_number(item.flat_number);
     setlandmark(item.landmark);
     setaddressType(item.type);
-    setaddress(item.address)
+    setaddress(item.address);
     let lat = item.location["latitude"];
     let lng = item.location["longitude"];
     let address = localStorage.setItem("address", item.address);
@@ -883,6 +910,8 @@ const Checkout = (props) => {
     setaddressType(null);
     setflate_number(null);
     setlandmark(null);
+    // getCurrentLoaction();
+
     setOpen(true);
   };
   const [isChange, setisChange] = useState(false);
@@ -914,26 +943,27 @@ const Checkout = (props) => {
     // let landmark =landmark
     let lat = JSON.parse(localStorage.getItem("latlong")).lat;
     let lng = JSON.parse(localStorage.getItem("latlong")).lng;
-    debugger
     if (typeof lat === "string") {
       lat = parseFloat(lat.replace(/\"/g, ""));
       lng = parseFloat(lng.replace(/\"/g, ""));
     }
-let fLat=JSON.stringify()
-    let payload = [{
-      addresses: localStorage.getItem("address"),
-      flat_number: flate_number,
-      type: addressType,
-      landmark: landmark,
-      location: {
-        latitude: JSON.stringify(lat),
-        longitude: JSON.stringify(lng),
+    let fLat = JSON.stringify();
+    let payload = [
+      {
+        addresses: localStorage.getItem("address"),
+        flat_number: flate_number,
+        type: addressType,
+        landmark: landmark,
+        location: {
+          latitude: JSON.stringify(lat),
+          longitude: JSON.stringify(lng),
+        },
       },
-    }];
+    ];
 
     // setloadingContent(true)
     dataService
-      .UpdateAllAddress(item.id,payload)
+      .UpdateAllAddress(item.id, payload)
       .then((resp) => {
         seteditModal(resp.data.data.data.address);
 
@@ -941,7 +971,8 @@ let fLat=JSON.stringify()
         // setloadingContent(false)
         setaddressList(resp.data.data.data.address);
         setOpen(false);
-      }).catch((e)=>{
+      })
+      .catch((e) => {
         console.log(e);
       });
   };
@@ -965,8 +996,9 @@ let fLat=JSON.stringify()
     });
     return myCart;
   };
-  
-  const [StripPublicKey, setStripPublicKey] = useState()
+
+  const [StripPublicKey, setStripPublicKey] = useState();
+  const [paymentIntent, setpaymentIntent] = useState();
   const PlaceNewOrder = () => {
     let payload = {
       restaurant_id: cartItem[0].rest_id,
@@ -980,28 +1012,51 @@ let fLat=JSON.stringify()
       note: suggestion,
       order_type: deliveryOption,
     };
-    dataService.PlaceOrder(payload).then((resp) => {
-      console.log("repsonse-->",resp.data.data.data)
-      setorderId(resp.data.data.data.order_id)
-      dataService.PaymentIntent(resp.data.data.data.order_id).then((response)=>{
-        console.log("Response-->",response.data.data.data.client_public_key)
-        let key=response.data.data.data.client_public_key
-        localStorage.setItem('Public_key',key)
-        // elements.getElement(CardElement)
-        if(key){
-          setStripPublicKey(key)
-          setIspayment(true)  
-        }
-      }).catch((e)=>{
-        console.log(e)
+    dataService
+      .PlaceOrder(payload)
+      .then((resp) => {
+        setorderId(resp.data.data.data.order_id);
+        dataService
+          .PaymentIntent(resp.data.data.data.order_id)
+          .then((response) => {
+            let key = response.data.data.data.client_secret;
+            let stripkey = response.data.data.data.client_public_key;
+            let intent = response.data.data.data.payment_intent_id;
+            console.log("response", response);
+            if (key) {
+              setStripSecrete(key);
+              setStripPublicKey(stripkey);
+              setIspayment(true);
+              setpaymentIntent(intent);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       })
-    }).catch((e)=>{
-      console.log(e.message)
-    });
+      .catch((e) => {
+        console.log(e.message);
+      });
   };
   const [paymentName, setPaymentName] = useState();
   const HandePayemnt = (val) => {
     setPaymentName(val);
+  };
+  const LoadingSkeleton = () => {
+    return (
+      <>
+        <div>
+          <SkeletonTheme color="#ced0d454 " highlightColor="#ffff">
+            <h6>
+              <Skeleton />
+            </h6>
+            <p>
+              <Skeleton count={3} />
+            </p>
+          </SkeletonTheme>
+        </div>
+      </>
+    );
   };
   return (
     <>
@@ -1635,7 +1690,10 @@ let fLat=JSON.stringify()
                                         {profileData.phone_number !== "" && (
                                           <p className="verified-no">
                                             Phone Number:
-                                            <span> +{profileData.phone_number}</span>
+                                            <span>
+                                              {" "}
+                                              +{profileData.phone_number}
+                                            </span>
                                           </p>
                                         )}
                                         {profileData.mobile_verified && (
@@ -1644,7 +1702,8 @@ let fLat=JSON.stringify()
                                           </p>
                                         )}
                                         {profileData.phone_number !== "" &&
-                                          profileData.mobile_verified === false && (
+                                          profileData.mobile_verified ===
+                                            false && (
                                             <div className="add-button verify-now">
                                               <a
                                                 href="#"
@@ -1661,13 +1720,15 @@ let fLat=JSON.stringify()
                                       </div>
                                       <div className="not-verified">
                                         {profileData.phone_number !== "" &&
-                                          profileData.mobile_verified === false && (
+                                          profileData.mobile_verified ===
+                                            false && (
                                             <p>
                                               your Phone Number is not verified
                                             </p>
                                           )}
                                       </div>
-                                      {profileData.mobile_verified === false && (
+                                      {profileData.mobile_verified ===
+                                        false && (
                                         <div className="verify-btn">
                                           <a
                                             href="#"
@@ -1758,8 +1819,9 @@ let fLat=JSON.stringify()
                                   <p>Set your delivery address or add new</p>
                                 </div>
                               </div>
-                              {profileData.mobile_verified&& isChange === false
-                                ? addressList!==null&&addressList.length > 0 && (
+                              {profileData.mobile_verified && isChange === false
+                                ? addressList !== null &&
+                                  addressList.length > 0 && (
                                     <div
                                       class="add-button change-btn"
                                       style={{ display: "block" }}
@@ -1779,10 +1841,10 @@ let fLat=JSON.stringify()
                             <>
                               {Spinner === false ? (
                                 <>
-                                  {
-                                    profileData.mobile_verified&&isChange === false && (
+                                  {profileData.mobile_verified &&
+                                    isChange === false && (
                                       <div class="address-outer custom-scrollbar">
-                                        {addressList!==null&&
+                                        {addressList !== null &&
                                           addressList.map((address, i) => (
                                             <>
                                               {address.default && (
@@ -1819,75 +1881,72 @@ let fLat=JSON.stringify()
                                     )}
                                 </>
                               ) : (
-                                <LoadingSpinner />
+                                <LoadingSkeleton />
                               )}
                             </>
 
-                            {
-                              isChange && (
-                                <div class="address-outer custom-scrollbar">
-                                  <div class="address-item add-new-item">
-                                    {isChange &&
-                                      addressList!==null &&
-                                      addressList.map((alladress, i) => (
-                                        <div
-                                          class="address-element"
-                                          style={{ display: "block" }}
-                                          key={i}
-                                        >
-                                          <div class="">
-                                            <h6>{alladress.type}</h6>
-                                            <p>{alladress.flat_number}</p>
-                                            <p>{alladress.address}</p>
-                                            <p>{alladress.landmark}</p>
-                                          </div>
-                                          <div class="address-actions">
-                                            <a
-                                              href="#"
-                                              class="deliver-here"
-                                              onClick={() =>
-                                                handleAddressUpdate(
-                                                  alladress.id
-                                                )
-                                              }
-                                            >
-                                              Deliver Here
-                                            </a>
-                                            <a
-                                              href="#"
-                                              data-toggle="modal"
-                                              data-target="#editAddress"
-                                              class="edit"
-                                              onClick={() =>
-                                                handleEditModal(alladress)
-                                              }
-                                            >
-                                              Edit
-                                            </a>
-                                          </div>
+                            {isChange && (
+                              <div class="address-outer custom-scrollbar">
+                                <div class="address-item add-new-item">
+                                  {isChange &&
+                                    addressList !== null &&
+                                    addressList.map((alladress, i) => (
+                                      <div
+                                        class="address-element"
+                                        style={{ display: "block" }}
+                                        key={i}
+                                      >
+                                        <div class="">
+                                          <h6>{alladress.type}</h6>
+                                          <p>{alladress.flat_number}</p>
+                                          <p>{alladress.address}</p>
+                                          <p>{alladress.landmark}</p>
                                         </div>
-                                      ))}
-
-                                    {addressList.length > 0 &&
-                                    isChange === true ? (
-                                      <div class="add-new-address-box">
-                                        <button
-                                          type="button"
-                                          data-toggle="modal"
-                                          data-target="#addAddress"
-                                          onClick={handleAddressModal}
-                                        >
-                                          + Add New Address
-                                        </button>
+                                        <div class="address-actions">
+                                          <a
+                                            href="#"
+                                            class="deliver-here"
+                                            onClick={() =>
+                                              handleAddressUpdate(alladress.id)
+                                            }
+                                          >
+                                            Deliver Here
+                                          </a>
+                                          <a
+                                            href="#"
+                                            data-toggle="modal"
+                                            data-target="#editAddress"
+                                            class="edit"
+                                            onClick={() =>
+                                              handleEditModal(alladress)
+                                            }
+                                          >
+                                            Edit
+                                          </a>
+                                        </div>
                                       </div>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </div>
+                                    ))}
+
+                                  {addressList.length > 0 &&
+                                  isChange === true ? (
+                                    <div class="add-new-address-box">
+                                      <button
+                                        type="button"
+                                        data-toggle="modal"
+                                        data-target="#addAddress"
+                                        onClick={handleAddressModal}
+                                      >
+                                        + Add New Address
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    ""
+                                  )}
                                 </div>
-                              )}
-                            {profileData.mobile_verified===true&&
-                            addressList.length===0&&
+                              </div>
+                            )}
+                            {profileData.mobile_verified === true &&
+                            addressList.length === 0 &&
                             isChange === false ? (
                               <div class="add-new-address-box">
                                 <button
@@ -1905,7 +1964,13 @@ let fLat=JSON.stringify()
                           </div>
                         </div>
                       )}
-                      <div className={profileData.mobile_verified&&addressList.length>0?"disclaimer-section personal-desclaimer-detail":"disclaimer-section personal-desclaimer-detail deactivate-tab"}>
+                      <div
+                        className={
+                          profileData.mobile_verified && addressList.length > 0
+                            ? "disclaimer-section personal-desclaimer-detail"
+                            : "disclaimer-section personal-desclaimer-detail deactivate-tab"
+                        }
+                      >
                         <div class="payment">
                           <div class="address-header">
                             <div class="address-left">
@@ -1922,62 +1987,75 @@ let fLat=JSON.stringify()
                               </div>
                             </div>
                           </div>
-                          {profileData
-                            .mobile_verified && addressList.length > 0 &&(
-                            <div className="payment-options">
-                              <div class="payment-item">
-                                <div class="payment-select">
-                                  <img
-                                    src="images/cc_icon.svg"
-                                    alt="Card_Payment"
-                                  />
-                                  <input
-                                    type="radio"
-                                    id="payment1"
-                                    name="PayOnline"
-                                    onChange={(e) =>
-                                      HandePayemnt(e.target.name)
-                                    }
-                                    checked={
-                                      paymentName === "PayOnline" ? true : false
-                                    }
-                                  />
-                                  <label for="payment1">
-                                    Pay with Debit or Credit Card
-                                  </label>
+                          {profileData.mobile_verified &&
+                            addressList.length > 0 && (
+                              <div className="payment-options">
+                                <div class="payment-item">
+                                  <div class="payment-select">
+                                    <img
+                                      src="images/cc_icon.svg"
+                                      alt="Card_Payment"
+                                    />
+                                    <input
+                                      type="radio"
+                                      id="payment1"
+                                      name="PayOnline"
+                                      onChange={(e) =>
+                                        HandePayemnt(e.target.name)
+                                      }
+                                      checked={
+                                        paymentName === "PayOnline"
+                                          ? true
+                                          : false
+                                      }
+                                    />
+                                    <label for="payment1">
+                                      Pay with Debit or Credit Card
+                                    </label>
+                                  </div>
                                 </div>
-                              </div>
-                              <div class="payment-item">
-                                <div class="payment-select">
-                                  <img
-                                    src="images/cash_icon.svg"
-                                    alt="Cash_on_delivery"
-                                  />
-                                  <input
-                                    type="radio"
-                                    id="payment4"
-                                    name="cod"
-                                    onChange={(e) =>
-                                      HandePayemnt(e.target.name)
-                                    }
-                                    checked={
-                                      paymentName === "cod" ? true : false
-                                    }
-                                  />
-                                  <label for="payment4">Cash on Delivery</label>
+                                <div class="payment-item">
+                                  <div class="payment-select">
+                                    <img
+                                      src="images/cash_icon.svg"
+                                      alt="Cash_on_delivery"
+                                    />
+                                    <input
+                                      type="radio"
+                                      id="payment4"
+                                      name="cod"
+                                      onChange={(e) =>
+                                        HandePayemnt(e.target.name)
+                                      }
+                                      checked={
+                                        paymentName === "cod" ? true : false
+                                      }
+                                    />
+                                    <label for="payment4">
+                                      Cash on Delivery
+                                    </label>
+                                  </div>
                                 </div>
+                                {isPayment && (
+                <PaymentGateway
+                  StripPublicKey={StripPublicKey}
+                  orderId={orderId}
+                  StripSecrete={StripSecrete}
+                  paymentIntent={paymentIntent}
+                  cards={savedCardList}
+                />
+              )}
                               </div>
-                            </div>
-                          )}
+                            )}
                           <div
                             class="proceed-button"
                             onClick={() => PlaceNewOrder()}
                           >
                             {paymentName === "cod" && (
-                              <a href="#">Place your Order</a>
+                              <a href="javascript:void(0)">Place your Order</a>
                             )}
                             {paymentName === "PayOnline" && (
-                              <a href="#">
+                              <a href="javascript:void(0)">
                                 Confirm to pay £ {handleTotalPrice()}
                               </a>
                             )}
@@ -1988,10 +2066,44 @@ let fLat=JSON.stringify()
                   </div>
                 </div>
               </div>
-              {isPayment&&<PaymentGateway StripPublicKey={StripPublicKey} orderId={orderId}/>}
+              
             </section>
           </section>
+          <ModalPopup open={open} onCloseModal={onCloseModal}>
+        {modalType === "Add" ? (
+          <AddAddress
+            addressType={addressType}
+            handleAddress={handleAddress}
+            handleFlatChange={handleFlatChange}
+            handleType={handleType}
+            lat={lat}
+            lng={lng}
+            flatnumber={flate_number}
+            landmark={landmark}
+            handleLandmark={handleLandmark}
+            currentLocation={getCurrentLoaction}
+            address={address}
+            handleMapaddress={handleMapaddress}
+          />
+        ) : (
+          <UpdateAddress
+            handleAddressUpdate={handleUpdate}
+            item={editData}
+            editModal={modalType}
+            handleType={handleType}
+            addressType={addressType}
+            flatnumber={flate_number}
+            landmark={landmark}
+            handleLandmark={handleLandmark}
+            handleFlatChange={handleFlatChange}
+            currentLocation={getCurrentLoaction}
+            handleMapaddress={handleMapaddress}
+            address={address}
+          />
+        )}
+      </ModalPopup>
         </div>
+
       ) : (
         <CheckoutLoader />
       )}
@@ -2185,40 +2297,9 @@ let fLat=JSON.stringify()
           </div>
         </div>
       </div>
-      <ModalPopup open={open} onCloseModal={onCloseModal}>
-        {modalType === "Add" ? (
-          <AddAddress
-            addressType={addressType}
-            handleAddress={handleAddress}
-            handleFlatChange={handleFlatChange}
-            handleType={handleType}
-            lat={lat}
-            lng={lng}
-            flatnumber={flate_number}
-            landmark={landmark}
-            handleLandmark={handleLandmark}
-            currentLocation={getCurrentLoaction}
-            address={address}
-            handleMapaddress={handleMapaddress}
-          />
-        ) : (
-          <UpdateAddress
-            handleAddressUpdate={handleUpdate}
-            item={editData}
-            editModal={modalType}
-            handleType={handleType}
-            addressType={addressType}
-            flatnumber={flate_number}
-            landmark={landmark}
-            handleLandmark={handleLandmark}
-            handleFlatChange={handleFlatChange}
-            currentLocation={getCurrentLoaction}
-            handleMapaddress={handleMapaddress}
-            address={address}
-          />
-        )}
-      </ModalPopup>
+      
     </>
+    
   );
 };
 const mapStateToProps = (state) => {

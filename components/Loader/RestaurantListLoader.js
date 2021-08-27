@@ -2,7 +2,7 @@ import React from 'react'
 
 function RestaurantListLoader() {
     const Skeleton=(
-        <div style={{display:"flex"}}>
+        <div className="food-list row frame">
                                 <div class="white-background top-rated listing-placeholder">
                                             <div class="gray-background inter-crop-img"></div>
                                             <div class="gray-background inter-crop-name"></div>

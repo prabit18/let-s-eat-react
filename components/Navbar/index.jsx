@@ -25,6 +25,8 @@ const Navbar = (props) => {
                 User.info.first_name=res.data.data.data.first_name;
                 User.info.last_name=res.data.data.data.last_name;
                 localStorage.setItem('user',JSON.stringify(User))
+            }).catch((e)=>{
+                console.log(e);
             })
             setProfilename(User.info.first_name);
         }

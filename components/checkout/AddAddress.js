@@ -53,6 +53,7 @@ function AddAddress({
                   placeholder="Home/Flat No"
                   required
                   onChange={(e) => handleFlatChange(e.target.value)}
+                  autoComplete="off"
                 />
               </div>
               <div className="form-group">
@@ -64,6 +65,7 @@ function AddAddress({
                   className="form-control"
                   placeholder="How to reach/ Landmark (Optional)"
                   onChange={(e) => handleLandmark(e.target.value)}
+                  autoComplete="off"
                   required
                 />
               </div>

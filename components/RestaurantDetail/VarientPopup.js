@@ -3,10 +3,10 @@ import React from 'react'
 function VarientPopup({variant,Name,cart_item_objs_v1,cart_item_objs_v2,handlecustomAdd,handleVarientincrement,handleVarientDecrement}) {
     return (
         <>{variant.length>0&&<div>
-            <div className="modal-header">
-                  <h2>{Name}</h2>
+            <div className="modal-header" style={{"padding": "20px 25px 10px"}}>
+                  <h2 style={{"margin": "5px 0 20px"}}>{Name}</h2>
                 </div>
-                <div className="modal-body">
+                <div className="modal-body" style={{"padding": "0 25px 20px"}}>
                   <div className="quantity">
                     <p>Quantity</p>
                   </div>
@@ -33,7 +33,7 @@ function VarientPopup({variant,Name,cart_item_objs_v1,cart_item_objs_v2,handlecu
                           </div>
                         ) : (
                           <div
-                            className="new-counter quantity-block"
+                            className="new-counter quantity-block detail-count"
                             key={data.id}
                           >
                             <div className="new-up">

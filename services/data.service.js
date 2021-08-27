@@ -36,7 +36,10 @@ export const dataService = {
     UpdateAllAddress,
     PlaceOrder,
     GetProfile,
-    PaymentIntent
+    PaymentIntent,
+    ValidatePayment,
+    SavedCards,
+    ChargeSavedCards
 }
 
 const handlecart=()=>{
@@ -636,7 +639,6 @@ async function UpdateAddress(id) {
 }
 async function UpdateAllAddress(id, Resp) {
   let body = Resp[0];
-  debugger;
   console.log("lat", payload);
 
   let payload = {
@@ -690,10 +692,68 @@ async function PaymentIntent(body) {
       JSON.stringify(payload),
       { headers: authHeader() }
     );
-    console.log("Intent Key", data);
     return { error: false, data: data };
   } catch (e) {
     console.log(e);
     return { error: true, message: e };
   }
 }
+async function ValidatePayment(paymentKey,orderID) {
+    let payload = {
+        "order_id": orderID,
+        "payment_intent":paymentKey
+      };
+    try {
+      var data = await axios.post(
+        apiURL + `orders/web/validate-payment`,
+        JSON.stringify(payload),
+        { headers: authHeader() }
+      );
+    //   console.log("Intent Key", data);
+      return { error: false, data: data };
+    } catch (e) {
+      console.log(e);
+      return { error: true, message: e };
+    }
+  }
+
+  //saved cards
+  async function SavedCards(customerId) {
+  
+    try {
+      var data = await axios.post(
+        apiURL + `orders/web/payment-methods`,
+        {},
+        { headers: authHeader() }
+      );
+    //   console.log("Intent Key", data);
+      return { error: false, data: data };
+    } catch (e) {
+      console.log(e);
+      return { error: true, message: e };
+    }
+  }
+  //charge on saved card
+  async function ChargeSavedCards(paymentMethod,orderId) {
+      
+    let payload = {
+        "payment_method": paymentMethod,
+        "order_id":orderId
+      };
+    try {
+      var data = await axios.post(
+        apiURL + `orders/web/charge-on-saved-card`,
+        JSON.stringify(payload),
+        { headers: authHeader() }
+      );
+    //   console.log("Intent Key", data);
+      return { error: false, data: data };
+    } catch (e) {
+      console.log(e);
+      return { error: true, message: e };
+    }
+  }
+
+  
+
+

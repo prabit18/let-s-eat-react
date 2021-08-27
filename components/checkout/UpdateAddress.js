@@ -16,12 +16,12 @@ function UpdateAddress({item,editModal,handleAddressUpdate,handleType,addressTyp
                             <label for="add-field2"></label>
                             
                             {/* <input type="text" id="add-field2" name="add-field2" class="form-control" placeholder="Home/Flat No" onChange={(e)=>setflate_number(e.target.value)}/> */}
-                            <input type="text" id="flat-update" name="add-field2" className="form-control" placeholder="Home/Flat No" value={flatnumber} onChange={(e)=>handleFlatChange(e.target.value)}/>
+                            <input type="text" id="flat-update" name="add-field2" className="form-control" placeholder="Home/Flat No" value={flatnumber} onChange={(e)=>handleFlatChange(e.target.value)} autoComplete="off"/>
                         </div>
                         
                         <div className="form-group">
                             <label for="add-field"></label>
-                            <input type="text" id="landmark-update" name="add-field4" className="form-control" placeholder="How to reach/ Landmark (Optional)" value={landmark} onChange={(e)=>handleLandmark(e.target.value)} />
+                            <input type="text" id="landmark-update" name="add-field4" className="form-control" placeholder="How to reach/ Landmark (Optional)" value={landmark} onChange={(e)=>handleLandmark(e.target.value)} autoComplete="off" />
                         </div>
                         <div className="form-row custom-form-row">
                             <div className="form-group">

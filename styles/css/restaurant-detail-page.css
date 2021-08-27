@@ -1534,6 +1534,9 @@ img.empty-heart {
     border: 1px solid #FFFFFF;
     background: transparent;
 }
+.new-counter.quantity-block.detail-count{
+    margin:0 0 0 30px !important;
+}
 /*media query*/
 @media (max-width: 1200px) {
     .menu-search {

@@ -1455,9 +1455,9 @@ button.signup-botton {
     width: 100%!important;
     height: 20px!important;
 }
-.white-background.top-rated {
-    height: 20px;
-    width: 35%;
+.white-background.top-rated.checkout-header {
+    height: 20px !important;
+    width: 35% !important;
 }
 .white-background.cart-left-side {
     margin-top: 10px;

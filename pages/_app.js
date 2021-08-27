@@ -7,9 +7,9 @@ import '../styles/css/common.css';
 import '../styles/css/header.css';
 import '../styles/css/home.css';
 import '../styles/css/footer.css';
-import '../styles/css/restaurant-list.css';
 import '../styles/css/restaurant-detail-page.css';
 import '../styles/css/checkout.css'
+import '../styles/css/restaurant-list.css';
 import '../styles/css/favourite-list.css'
 import '../styles/css/service-pages.css'
 import '../styles/css/profile-page.css'

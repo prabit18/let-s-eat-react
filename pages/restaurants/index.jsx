@@ -12,9 +12,9 @@ const RestaurantListing = (props) => {
 	// let UrlPrams=router.pathname==='/restaurants'?"":router.query.Curated_type
 	// console.log('url',router.pathname, UrlPrams);
 	useEffect(() => {
-   props.getRestaurants(router.query.Curated_type).then((Response)=>{setloading(false)});
+   props.getRestaurants(router.query.Curated_type||null).then((Response)=>{setloading(false)});
    props.getCuisineslist();
-  },[router.query.Curated_type]);
+  },[router.query.Curated_type||null]);
   const metacontent={title:"Order Food Online from Best Restaurants Around You | Let's Eat",description:"Order food online from restaurants and get it delivered."}
 const {Restaurants} = props
 console.log('all cuisines list',props.Cusinieslist.data);

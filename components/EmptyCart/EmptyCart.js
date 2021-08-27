@@ -11,7 +11,7 @@ function EmptyCart() {
                                 <img src="images/empty_cart.svg" alt="Empty_cart"/>
                                 <p>Your cart is currently empty</p>
                                 <div class="back-button">
-                                    <a href="/restaurants" class="hvr-icon-back"><img src="images/back_arrow.svg" alt="Back_Arrow" class="hvr-icon"/>Back to Restaurant</a>
+                                    <a href="/restaurants?Curated_type=best-in-city" class="hvr-icon-back"><img src="images/back_arrow.svg" alt="Back_Arrow" class="hvr-icon"/>Back to Restaurant</a>
                                 </div>
                             </div>
                         </div>
