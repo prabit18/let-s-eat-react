@@ -12,7 +12,7 @@ const FoodListing = (props) => {
    console.log("data is-->",props.data)
     const router = useRouter()
     const handleroute=(type)=>{
-        router.push({pathname:"/restaurants/",query:{Curated_type:type}})
+        router.push({pathname:"/restaurants/",query:{curated_list:type}})
         // props.getRestaurants();
     }
     const [loading, setloading] = useState(true)

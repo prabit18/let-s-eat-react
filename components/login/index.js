@@ -68,15 +68,14 @@ const Login=(props)=>{
                 access_token:response.tokenObj.access_token,
                 provider: "google",
             }
+            setpopup('')
             dataService.socialLogin(body).then((res)=>{
                 
-
+                    
                     setLogin(true);
-                    // localStorage.setItem('user',JSON.stringify(res.data))
+                    localStorage.setItem('user',JSON.stringify(res.data))
                     setProfilename(JSON.parse(localStorage.getItem('user')).info.first_name);
-                    setTimeout(() => {
                         router.reload(window.location.pathname)
-                    }, 1500);
                 
                 
         })
@@ -200,7 +199,7 @@ const Login=(props)=>{
     }
     const Loginhandler=(type)=>{
              setSuccess(false);
-             setOpen(true);
+             //setOpen(true);
                 setErrorMessage('')
                 setshow(true);
                 setError(false);

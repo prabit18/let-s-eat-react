@@ -28,12 +28,19 @@ const Signup=(props)=>{
     const[Disabled,setdisabled]=useState(false)
     const {dis1,setdis1} =useContext(SignupContext)
     useEffect(() => {
-        const loggedInUser = localStorage.getItem("user");        
+        const loggedInUser = localStorage.getItem("user");       
         if (loggedInUser) {
             const User = JSON.parse(localStorage.getItem("user"));
             console.log(User);
             setLogin(true);
-            setProfilename(User.info.first_name);
+            dataService.getProfile().then((res)=>{
+                console.log("After updating profile",res.data.data.data);
+                User.info.first_name=res.data.data.data.first_name;
+                User.info.last_name=res.data.data.data.last_name;
+                localStorage.setItem('user',JSON.stringify(User))
+                setProfilename(res.data.data.data.first_name);
+                
+            })
         }
       }, []);
 
@@ -127,8 +134,6 @@ const Signup=(props)=>{
                     router.reload(window.location.pathname)
                 }, 2000);
                 }
-                setProfilename(res.data.data.data.info.first_name);
-                console.log(res.data.data.data.info.first_name);
                 }
         })
     }

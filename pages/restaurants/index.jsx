@@ -5,28 +5,27 @@ import { connect } from "react-redux";
 import RestaurantListLoader from '../../components/Loader/RestaurantListLoader';
 import Metadata from '../../components/Metadata';
 import { useRouter } from 'next/router';
-import { Cusinieslist } from '../../redux/reducer/cuisinieslist.reducer';
 const RestaurantListing = (props) => {
 	const router=useRouter();
 	const[loading,setloading]=useState(true);
 	// let UrlPrams=router.pathname==='/restaurants'?"":router.query.Curated_type
-	// console.log('url',router.pathname, UrlPrams);
+	// console.log('url',router.pathname, UrlPrams);	
+	const[prams,setPrams]=useState('');
 	useEffect(() => {
-		let UrlPrams=router.query!==undefined?router.query.Curated_type:null;
-		console.log("urlprams",UrlPrams);
-		let cuisine_prams=router.query!==undefined?router.query.Cuisine_type:null;
-		var body={
-			"filters":[{
-			"key":"cuisine_types",
-			"value":[cuisine_prams]
-		}]}
-		if(UrlPrams===undefined||cuisine_prams){
-   props.getRestaurants().then((Response)=>{setloading(false)});
-		}else if(UrlPrams){
-			props.getRestaurants(UrlPrams).then((Response)=>{setloading(false)});
-		}else if(cuisine_prams){
-			props.getRestaurants(body).then((Response)=>{setloading(false)});
+		let path=router.asPath;
+		let finalpath=path.split("?")[1]===undefined?"":path.split("?")[1]
+		console.log(finalpath)
+		var body={}
+		if(finalpath===''){
+			 body={}
+		}else{
+			 body={
+				"filters":[{
+				"key":finalpath.split("=")[0],
+				"value":[finalpath.split("=")[1].replace('+'," ")]
+			}]}
 		}
+      props.getRestaurants(body).then((Response)=>{setloading(false)})
    props.getCuisineslist();
   },[]);
   const metacontent={title:"Order Food Online from Best Restaurants Around You | Let's Eat",description:"Order food online from restaurants and get it delivered."}

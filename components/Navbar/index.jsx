@@ -25,8 +25,9 @@ const Navbar = (props) => {
                 User.info.first_name=res.data.data.data.first_name;
                 User.info.last_name=res.data.data.data.last_name;
                 localStorage.setItem('user',JSON.stringify(User))
+                setProfilename(res.data.data.data.first_name);
+                
             })
-            setProfilename(User.info.first_name);
         }
         else console.log("user is not loggedin");
       }, []); 

@@ -11,7 +11,7 @@ import { NavItem } from 'reactstrap';
 const RestaurantListingPage = (props) => {
     const[filtertype,setFiltertype]=useState('');
     const router=useRouter();
-    console.log(router.query.Curated_type);  
+    console.log("urls is coming here",router.query.Curated_type);  
     const[val,setval]=useState(false);
     const[cuisinetype,setcuisinetype]=useState([]);
     const[odd,setOdd]=useState([]);
@@ -22,9 +22,13 @@ const RestaurantListingPage = (props) => {
         isPaneOpen: false,
         isPaneOpenLeft: false,
       });
+      const urls=router.query.Cuisine_type;
     var body={}
     const multiplefilter=()=>{
-    
+        if(urls){
+            cuisinetype.push(router.query.Cuisine_type);
+            setcuisinetype(cuisinetype);
+        }
         if(pickupoption){
             body={
                 "filters":[{
@@ -36,15 +40,26 @@ const RestaurantListingPage = (props) => {
                    "value":[true]
                 }]
               }
-        }else if(cuisinetype){
+        }else if(cuisinetype && router.query.Curated_type){
         body={
           "filters":[{
               "key":"cuisine_types",
               "value":cuisinetype
+          },
+          {
+              "key":"curated_list",
+              "value":[router.query.Curated_type]
           }]
         }
+    }else if(cuisinetype&&!router.query.Curated_type){
+        body={
+            "filters":[{
+                "key":"cuisine_types",
+                "value":cuisinetype
+            }]
+        }
     }else {
-        body={};
+        body={}
     }
        setFilterBody(body);
         props.getRestaurants(body)
@@ -75,17 +90,25 @@ const RestaurantListingPage = (props) => {
 }
     setState({ isPaneOpen: true })
 }
-const [checked,setChecked]=useState({})
+const [checked,setChecked]=useState([])
 const selectvaluehandler=(type,e)=>{
-    
-    setval(e.target.checked)
+    console.log("onchange value",val,e.target.checked)
     if(!cuisinetype.includes(type)){
     cuisinetype.push(type);
-    checked[type]=val;
-    setChecked(checked);
+    setcuisinetype(cuisinetype);
+    let checkList=[...checked]
+    checkList=[...checkList,type]
+    // checked[type]=e.target.checked;
+    setChecked(checkList);
+    console.log("checked",checked)
     }else{
-        delete checked[type];
-        setChecked(checked);
+        let checkList=[...checked]
+        const i = checkList.indexOf(type);
+        if(i> -1){
+            checkList.splice(i,1);
+            setChecked(checkList);
+        }
+        
         const index = cuisinetype.indexOf(type);
         if (index > -1) {
             cuisinetype.splice(index, 1);
@@ -95,6 +118,7 @@ const selectvaluehandler=(type,e)=>{
     console.log("cusinetype",cuisinetype);
 }
 const ClearAllhandler=()=>{
+    console.log("coming inside this function");
     while(cuisinetype.length>0){
         cuisinetype.pop();
     }
@@ -102,7 +126,7 @@ const ClearAllhandler=()=>{
     setcuisinetype(cuisinetype);
     setPickupoption('');
     console.log("updated cuisine",cuisinetype);
-    props.getRestaurants();
+    props.getRestaurants(body);
 }
 const pickuphandler=(type)=>{
     
@@ -186,7 +210,7 @@ return (
                                      <ul>
                                   {even.map((item)=>(
                                         <li>
-                                            <input className="form-check-input" type="checkbox" checked={checked.hasOwnProperty(item.name)&&val} value={item.name} onChange={(e)=>selectvaluehandler(item.name,e)} id={item.id}/>
+                                            <input className="form-check-input" type="checkbox" checked={checked.includes(item.name)?true:false} value={item.name} onChange={(e)=>selectvaluehandler(item.name,e)} id={item.id}/>
                                             <label className="form-check-label" htmlFor={item.id}>
                                                 {item.name}
                                             </label>
@@ -196,7 +220,7 @@ return (
                                         <ul>
                                      {odd.map((item)=>(
                                             <li>
-                                                <input className="form-check-input" type="checkbox" checked={checked.hasOwnProperty(item.name)&&val}value={item.name} onChange={(e)=>selectvaluehandler(item.name,e)} id={item.id}/>
+                                                <input className="form-check-input" type="checkbox" checked={checked.includes(item.name)?true:false} value={item.name} onChange={(e)=>selectvaluehandler(item.name,e)} id={item.id}/>
                                                 <label className="form-check-label" for={item.id}>
                                                     {item.name}
                                                 </label>
@@ -208,7 +232,7 @@ return (
                         </form>
                         <div className="modal-footer">
                         <div className="filter-action">
-                            <a href="javascript:void()" onClick={ClearAllhandler}>Clear All</a>
+                            <a href="#" onClick={ClearAllhandler}>Clear All</a>
                             <button type="button" onClick={multiplefilter}>Apply</button>
                         </div>
                     </div>

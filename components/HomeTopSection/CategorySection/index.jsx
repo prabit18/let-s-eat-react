@@ -58,7 +58,7 @@ const CategorySection = (props) => {
                         </div>
                         <OwlCarousel className="slider-items owl-carousel custom-navigation" id="mainCategory" {...options}>
                             { cuisines.data && cuisines.data.map((item) =>
-                                <a onClick={()=>router.push({pathname:"/restaurants/",query:{Cuisine_type:item.name}})} className="item hvr-shrink" key={item.id}>
+                                <a onClick={()=>router.push({pathname:"/restaurants/",query:{cuisine_types:item.name}})} className="item hvr-shrink" key={item.id}>
                                     <img src={`https://development-cdn.letseat.co.uk/resize-image/175x280/${item.image}`} alt="Food Image"/>
                                     <span>{item.name}</span>
                                 </a>
