@@ -31,11 +31,14 @@ const CartSummary = (props) => {
    let URL=window.location.pathname.split("-")[window.location.pathname.split("-").length-1]
 
     if (!JSON.parse(localStorage.getItem("user"))) {
-      let id =
-        JSON.parse(!localStorage.getItem("cartItem")) === null &&
-        JSON.parse(localStorage.getItem("cartItem"))
+      
+      let user=JSON.parse(localStorage.getItem("cartItem"))
+
+      
+      let id =user&&user.length>0
+        
           ? JSON.parse(localStorage.getItem("cartItem"))[0].restaurant_id
-          : "";
+          : URL.toLocaleUpperCase();
           
       dataService
         .getIndividualRestuarant(id)
@@ -193,7 +196,6 @@ const CartSummary = (props) => {
           restaurant_id: data.restaurant_id,
         },
       ];
-      debugger;
       if (cart_item_objs_v1[data.variant_id] === 1) {
         let index = findindex(data.variant_id);
         if (index > -1) {
@@ -402,7 +404,7 @@ const CartSummary = (props) => {
     if (deliveryOption === null) {
       setalert(true);
     } else {
-      router.push("/checkout");
+      window.location="/checkout"
     }
   };
   //   if(Object.keys(menuObj).length>0){

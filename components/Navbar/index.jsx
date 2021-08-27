@@ -27,6 +27,8 @@ const Navbar = (props) => {
                 localStorage.setItem('user',JSON.stringify(User))
                 setProfilename(res.data.data.data.first_name);
                 
+            }).catch((e)=>{
+                console.log(e);
             })
         }
         else console.log("user is not loggedin");

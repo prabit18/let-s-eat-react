@@ -18,11 +18,14 @@ const CARD_ELEMENT_OPTIONS = {
     },
   },
 };
-function CardSection() {
+function CardSection({handleSavecard,saveCard}) {
   return (
     <label>
       Card details
-      <CardElement options={CARD_ELEMENT_OPTIONS} />
+      <div style={{width:"400px"}}><CardElement options={CARD_ELEMENT_OPTIONS}  />
+     
+      <input type="checkbox" onChange={(e)=>handleSavecard(e)} checked={saveCard===true}/> <label>save this card </label>
+          </div>
     </label>
   );
 };

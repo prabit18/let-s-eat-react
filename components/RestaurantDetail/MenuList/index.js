@@ -926,38 +926,6 @@ const MenuItems = (props) => {
   const handleOpenClose=()=>{
     setOpen(false)
   }
-  // const ModalPopup = () => {
-  //   return (
-  //     <div>
-  //       <Modal open={open} onClose={onCloseModal} center>
-  //         <div class="exist-item-popup">
-  //           <div class="exist-cart-inner">
-  //             <h3>Items already in cart</h3>
-  //             <p>
-  //               Your cart contains items from other restaurant.
-  //               <br />
-  //               Would you like to reset your cart for adding items
-  //               <br /> from this restaurant?
-  //             </p>
-  //             <div class="exist-cart-btn">
-  //               <button type="button" >
-  //                 No
-  //               </button>
-  //               <button
-  //                 type="button"
-  //                 class="start-fresh"
-  //                 onClick={() => handleClearCart()}
-  //               >
-  //                 Yes, Start afresh
-  //               </button>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </Modal>
-  //     </div>
-  //   );
-  // };
-
   return (
     <>
       <div className="header-border">
@@ -1071,22 +1039,6 @@ const MenuItems = (props) => {
             ))}
           </ul>
         </div>
-        {/* <Modal
-          open={openVarient}
-          onClose={onCloseVarientModal}
-          center
-          styles={{ maxWidth: "500px" }}
-        >
-          <VarientPopup
-            variant={variant}
-            Name={Name}
-            cart_item_objs_v1={cart_item_objs_v1}
-            cart_item_objs_v2={cart_item_objs_v2}
-            handlecustomAdd={handlecustomAdd}
-            handleVarientDecrement={handleVarientDecrement}
-            handleVarientincrement={handleVarientincrement}
-          />
-        </Modal> */}
         <div className="menu-item-list">
           <h2>
             {foodtype}({item_count[foodtype]})

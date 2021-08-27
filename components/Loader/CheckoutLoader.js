@@ -1,6 +1,9 @@
 import React from 'react'
 
 function CheckoutLoader() {
+    const handleback = () => {
+        window.location = localStorage.getItem("pathname");
+      };
     return (
         <section class="main-section">
         <section class="cart-section">
@@ -9,8 +12,8 @@ function CheckoutLoader() {
                     <div class="row custom-row custom-scrollbar">
                         <div class="col-lg-6">
                             <div class="cart-left">
-                                <a class="back-to-restaurant" href="restaurant-detail-page.html"></a>
-                                <div class="white-background top-rated">
+                                <a class="back-to-restaurant" onClick={()=>handleback()}></a>
+                                <div class="white-background top-rated checkout-header">
                                     <div class="gray-background check-name"></div>
                                 </div>
                                 <div class="white-background cart-left-side">
@@ -46,7 +49,7 @@ function CheckoutLoader() {
                         </div>
                         <div class="col-lg-6">
                             <div class="checkout-header">
-                                <div class="white-background top-rated">
+                                <div class="white-background top-rated checkout-header">
                                     <div class="gray-background check-name"></div>
                                 </div>
                             </div>

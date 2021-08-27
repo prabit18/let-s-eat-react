@@ -37,7 +37,7 @@ function MapContainer(props) {
     const lng = latLng.lng();
     localStorage.setItem("latlong", JSON.stringify({ lat, lng }));
   };
-  const [zoom, setzoom] = useState(12);
+  const [zoom, setzoom] = useState(19);
   const handleZoomIncrement = (type) => {
     if (type === "zoom-in") {
       setzoom(zoom + 1);

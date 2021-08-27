@@ -231,7 +231,7 @@ p.rating-content {
 /*placeholder*/
 .white-background {
     background: #FFF;
-    width: 100%;
+    width: 100% ;
     height: 230px;
     position: relative;
     border: 1px solid #eeeeee;
@@ -245,12 +245,12 @@ p.rating-content {
       background: transparent;
   }
   .top-rated{
-      height: 320px;
+      height: 320px !important;
   }
   /*placeholder for listing*/
   .listing-placeholder{
-      width: 22.2%;
-      margin: 0 15px 30px 15px;
+      width: 22.2% !important;
+      margin: 0 15px 30px 15px !important;
   }
 @keyframes placeHolderShimmer{
     0%{
@@ -290,7 +290,7 @@ p.rating-content {
     box-shadow: none;
 }
 .top-rated .gray-background.inter-crop-img{
-    height: 165px;
+    height: 165px !important;
 }
 .inter-crop-name,.inter-crop-desc,
 .inter-crop-distance,.inter-crop-rating {
@@ -317,7 +317,7 @@ p.rating-content {
     left: auto;
 }
 .top-rated .inter-crop-name {
-    top: 180px;
+    top: 180px !important;
     width: 90%!important;
     height: 20px!important;
 }
