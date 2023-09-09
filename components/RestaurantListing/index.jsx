@@ -165,7 +165,8 @@ return (
                                             <li value="offers"className={filtertype==='close_by'?"active":""}><a href="javascript:void(0);" onClick={()=> handleFilter('close_by','')}>Close by</a></li>
                                             <li className="filter"><a href="javascript:void(0);" data-toggle="modal" data-target="#filterModal" onClick={clickhandler}>Filters
                                                     <span><img alt="filter-icon" src="../../images/filter.svg"/></span>
-                                                </a></li>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                  </div>
